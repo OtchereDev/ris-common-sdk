@@ -18,6 +18,11 @@ type list struct {
 	Admin              Alias
 }
 
+type NotificationEvent struct {
+	Type string      `json:"type"`
+	Data interface{} `json:"data"`
+}
+
 // Enum for public use
 var UserTypes = &list{
 	FrontDesk:          "FRONTDESK",
