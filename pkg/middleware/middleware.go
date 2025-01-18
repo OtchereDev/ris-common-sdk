@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	. "github.com/OtcherDev/ris-common-sdk/pkg/types"
-	. "github.com/OtcherDev/ris-common-sdk/pkg/utils"
+	. "github.com/OtchereDev/ris-common-sdk/pkg/types"
+	. "github.com/OtchereDev/ris-common-sdk/pkg/utils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 )

@@ -1,4 +1,4 @@
-module github.com/OtcherDev/ris-common-sdk
+module github.com/OtchereDev/ris-common-sdk
 
 go 1.23.2
 
