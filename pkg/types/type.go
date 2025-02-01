@@ -35,16 +35,16 @@ var UserTypes = &list{
 }
 
 type ApiPaginatedResponse struct {
-	StatusCode int
-	Message    string
-	HasError   bool
-	Data       *PaginationResult
+	StatusCode int               `json:"status_code"`
+	Message    string            `json:"message"`
+	HasError   bool              `json:"has_error"`
+	Data       *PaginationResult `json:"data"`
 }
 type ApiReponse struct {
-	StatusCode int
-	Message    string
-	HasError   bool
-	Data       *fiber.Map
+	StatusCode int        `json:"status_code"`
+	Message    string     `json:"message"`
+	HasError   bool       `json:"has_error"`
+	Data       *fiber.Map `json:"data"`
 }
 
 type PaginationResult struct {
