@@ -3,7 +3,7 @@ package env
 import (
 	"os"
 
-	"github.com/caarlos0/env/v7"
+	"github.com/caarlos0/env/v11"
 )
 
 type Options struct {
@@ -27,7 +27,7 @@ func Parse(v interface{}, opts ...Options) error {
 		})
 	}
 
-	return env.Parse(v, altOpts...)
+	return env.Parse(v)
 }
 
 func GetEnvVar(key, fall string) string {

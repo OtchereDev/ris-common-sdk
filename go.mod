@@ -3,8 +3,11 @@ module github.com/OtchereDev/ris-common-sdk
 go 1.23.2
 
 require (
+	github.com/caarlos0/env/v11 v11.3.1
 	github.com/go-playground/validator/v10 v10.24.0
+	github.com/nats-io/nats.go v1.38.0
 	golang.org/x/crypto v0.32.0
+	google.golang.org/api v0.217.0
 )
 
 require (
@@ -46,7 +49,6 @@ require (
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.16 // indirect
 	github.com/mattn/go-sqlite3 v1.14.22 // indirect
-	github.com/nats-io/nats.go v1.38.0 // indirect
 	github.com/nats-io/nkeys v0.4.9 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/planetscale/vtprotobuf v0.6.1-0.20240319094008-0393e58bdf10 // indirect
@@ -65,7 +67,6 @@ require (
 	golang.org/x/oauth2 v0.25.0 // indirect
 	golang.org/x/sync v0.10.0 // indirect
 	golang.org/x/time v0.9.0 // indirect
-	google.golang.org/api v0.217.0 // indirect
 	google.golang.org/appengine v1.6.8 // indirect
 	google.golang.org/genproto v0.0.0-20241118233622-e639e219e697 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20241209162323-e6fa225c2576 // indirect
@@ -77,7 +78,6 @@ require (
 require (
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/aws/aws-sdk-go v1.55.6
-	github.com/caarlos0/env/v7 v7.1.0
 	github.com/gabriel-vasile/mimetype v1.4.8 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
