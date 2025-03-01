@@ -1,6 +1,7 @@
 package users
 
 import (
+	"fmt"
 	"math/rand"
 	"time"
 
@@ -42,4 +43,13 @@ func GenerateOTP(otpLen int) string {
 	otp := string(b)
 
 	return otp
+}
+
+func CreateAuditLog(userId string, activity string, timestamp time.Time) (log map[string]interface{}) {
+	log = make(map[string]interface{})
+	log["userId"] = userId
+	log["activity"] = fmt.Sprintf(activity)
+	log["timestamp"] = timestamp.Format(time.RFC3339)
+
+	return
 }
