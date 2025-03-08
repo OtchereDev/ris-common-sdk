@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package = "pkg/proto/system";
+
+message SmsLogin{
+    string name = 1;
+    string phone = 2;
+    string otp = 3;
+}

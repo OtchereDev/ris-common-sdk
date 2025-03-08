@@ -31,3 +31,9 @@ message ReferringDoctor {
   google.protobuf.Timestamp created_at = 14; // Created at time
   string password = 15;
 }
+
+message DoctorLoggedIn{
+  uint32 doctorId = 1;
+  string deviceId = 2;
+  google.protobuf.Timestamp time = 3;
+}

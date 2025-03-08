@@ -22,3 +22,9 @@ message Patient {
   google.protobuf.Timestamp created_at = 13; // Automatically created timestamp
   google.protobuf.Timestamp updated_at = 14; // Automatically updated timestamp
 }
+
+
+message UpdatePatientDeviceId{
+  uint32 id = 1;
+  string deviceId =2;
+}
