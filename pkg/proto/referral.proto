@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package proto;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "pkg/proto/referral";
+
+message ReferringCenter {
+  uint32 id = 1; // Use uint32 for ID as Proto doesn't support uint
+  string name = 2; // Required name
+  string phone_number = 3; // Nullable phone number
+  string address = 4; // Nullable address
+  bool is_deleted = 5; // Default: false
+}
+
+message ReferringDoctor {
+  uint32 id = 1; // Use uint32 for ID
+  string first_name = 2; // Required first name
+  string last_name = 3; // Required last name
+  string phone_number = 4; // Required phone number
+  string email = 5; // Nullable email
+  uint32 referring_center_id = 6; // Nullable ReferringCenter ID
+  ReferringCenter referring_center = 7; // Optional referring center (nested message)
+  string device_id = 8; // Nullable device ID
+  bool has_updated_password = 9; // Default: false
+  bool is_access_request = 10; // Required flag
+  bool is_disabled = 11; // Required flag
+  bool is_deleted = 12; // Required flag
+  google.protobuf.Timestamp last_login = 13; // Last login time
+  google.protobuf.Timestamp created_at = 14; // Created at time
+}

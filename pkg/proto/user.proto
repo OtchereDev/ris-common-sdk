@@ -1,0 +1,25 @@
+syntax = "proto3";
+package proto;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "pkg/proto/users";
+
+
+message User {
+  uint32 id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string email = 4;
+  google.protobuf.Timestamp last_login = 5;
+  bool is_disabled = 6; 
+  bool is_deleted = 7;  
+  string role = 8;
+  string title_on_report = 9;
+  bool is_admin = 10;   
+  bool can_verify = 11; 
+  bool is_proxy = 12;   
+  bool special_appointment = 13;
+  google.protobuf.Timestamp created_at = 14;
+  google.protobuf.Timestamp updated_at = 15;
+}

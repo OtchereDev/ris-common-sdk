@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package proto;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "pkg/proto/patient";
+
+message Patient {
+  uint32 id = 1; // Use uint32 for ID since protobuf doesn't support uint directly
+  string patient_id = 2; // Unique identifier
+  string first_name = 3; // Required first name
+  string last_name = 4;  // Required last name
+  string phone_number = 5; // Required phone number
+  string gender = 6; // Gender (nullable)
+  string email = 7;  // Nullable email
+  string device_id = 8; // Nullable device ID
+  string address = 9; // Nullable address
+  google.protobuf.Timestamp dob = 10; // Date of birth
+  bool allow_mobile_login = 11; // Default: true
+  bool is_deleted = 12;  // Default: false
+  google.protobuf.Timestamp created_at = 13; // Automatically created timestamp
+  google.protobuf.Timestamp updated_at = 14; // Automatically updated timestamp
+}
