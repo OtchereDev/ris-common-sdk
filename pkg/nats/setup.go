@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"regexp"
 
 	"github.com/nats-io/nats.go"
 	"google.golang.org/protobuf/proto"
@@ -56,6 +57,12 @@ func Connect(conn, queue string, subject []string) (n Nat, err error) {
 	return
 }
 
+func sanitizeConsumerName(name string) string {
+	re := regexp.MustCompile(`[^a-zA-Z0-9-_]`)
+	sanitized := re.ReplaceAllString(name, "-")
+	return sanitized
+}
+
 func (n Nat) Subscribe(q string, subjects []NatSubjects) (err error) {
 
 	for _, subject := range subjects {
@@ -63,7 +70,7 @@ func (n Nat) Subscribe(q string, subjects []NatSubjects) (err error) {
 		sub, err := n.Jet.QueueSubscribe(s, q, func(m *nats.Msg) {
 			// Call the provided handler function
 			subject.Handler(s, m)
-		}, nats.Durable(fmt.Sprintf("durable-%s", s)), nats.ManualAck())
+		}, nats.Durable(fmt.Sprintf("durable-%s", sanitizeConsumerName(s))), nats.ManualAck())
 		if err != nil {
 			log.Fatalf("Error subscribing to subject %s: %v", s, err)
 			return err
