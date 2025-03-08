@@ -3,7 +3,6 @@ package nats
 import (
 	"errors"
 	"fmt"
-	"log"
 	"regexp"
 
 	"github.com/nats-io/nats.go"
@@ -65,18 +64,30 @@ func sanitizeConsumerName(name string) string {
 
 func (n Nat) Subscribe(q string, subjects []NatSubjects) (err error) {
 
+	var subs []*nats.Subscription = []*nats.Subscription{}
+
 	for _, subject := range subjects {
 		s := subject.Subject
 		sub, err := n.Jet.QueueSubscribe(s, q, func(m *nats.Msg) {
-			// Call the provided handler function
 			subject.Handler(s, m)
 		}, nats.Durable(fmt.Sprintf("durable-%s", sanitizeConsumerName(s))), nats.ManualAck())
+
 		if err != nil {
-			log.Fatalf("Error subscribing to subject %s: %v", s, err)
-			return err
+			// Clean up any subscriptions already created before returning error
+			for _, createdSub := range subs {
+				createdSub.Unsubscribe()
+			}
+			return fmt.Errorf("error subscribing to subject %s: %v", s, err)
 		}
-		defer sub.Unsubscribe()
+
+		subs = append(subs, sub)
 	}
+
+	defer func() {
+		for _, sub := range subs {
+			sub.Unsubscribe()
+		}
+	}()
 
 	select {}
 }
