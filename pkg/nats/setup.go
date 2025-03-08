@@ -1,11 +1,12 @@
 package nats
 
 import (
-	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 
 	"github.com/nats-io/nats.go"
+	"google.golang.org/protobuf/proto"
 )
 
 type Nat struct {
@@ -50,28 +51,13 @@ func Connect(conn, queue string, subject []string) (n Nat, err error) {
 	return
 }
 
-func (n Nat) Subscribe(q string, subjects []string, handler func(eventType string, data map[string]interface{})) (err error) {
+func (n Nat) Subscribe(q string, subjects []string, handler func(eventType string, m *nats.Msg)) (err error) {
 
 	for _, subject := range subjects {
 		subject := subject
 		sub, err := n.Jet.QueueSubscribe(subject, q, func(m *nats.Msg) {
-			var event struct {
-				Type string                 `json:"type"`
-				Data map[string]interface{} `json:"data"`
-			}
-
-			if err := json.Unmarshal(m.Data, &event); err != nil {
-				log.Printf("Error parsing message on subject %s: %v", m.Subject, err)
-				return
-			}
-
-			fmt.Printf("Received by %s from %s: %s\n",
-				q, m.Subject, string(m.Data))
-
 			// Call the provided handler function
-			handler(event.Type, event.Data)
-
-			m.Ack()
+			handler(subject, m)
 		}, nats.Durable(fmt.Sprintf("durable-%s", subject)), nats.ManualAck())
 		if err != nil {
 			log.Fatalf("Error subscribing to subject %s: %v", subject, err)
@@ -83,8 +69,12 @@ func (n Nat) Subscribe(q string, subjects []string, handler func(eventType strin
 	select {}
 }
 
-func (n Nat) Publish(subject string, data map[string]interface{}) (err error) {
-	message, err := json.Marshal(data)
+func (n Nat) Publish(subject string, protoMsg proto.Message) (err error) {
+	if protoMsg == nil {
+		return errors.New("proto message cannot be nil")
+	}
+
+	message, err := proto.Marshal(protoMsg)
 	if err != nil {
 		return
 	}
