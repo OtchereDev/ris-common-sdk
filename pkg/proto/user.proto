@@ -22,4 +22,5 @@ message User {
   bool special_appointment = 13;
   google.protobuf.Timestamp created_at = 14;
   google.protobuf.Timestamp updated_at = 15;
+  string password = 16;
 }
