@@ -29,4 +29,5 @@ message ReferringDoctor {
   bool is_deleted = 12; // Required flag
   google.protobuf.Timestamp last_login = 13; // Last login time
   google.protobuf.Timestamp created_at = 14; // Created at time
+  string password = 15;
 }
