@@ -1,0 +1,13 @@
+syntax = "proto3";
+package proto;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "pkg/proto/wallet";
+
+message Wallet {
+  int32 id = 1;                // Use int32 for ID
+  double amount = 2;            // Amount (float64)
+  int32 doctor_id = 3;         // Doctor ID
+  google.protobuf.Timestamp created_at = 4;  // Created timestamp
+}
