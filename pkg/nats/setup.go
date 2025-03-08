@@ -14,6 +14,11 @@ type Nat struct {
 	Jet    nats.JetStreamContext
 }
 
+type NatSubjects struct {
+	Subject string
+	Handler func(eventType string, m *nats.Msg)
+}
+
 func Connect(conn, queue string, subject []string) (n Nat, err error) {
 	nc, err := nats.Connect(conn)
 	if err != nil {
@@ -51,16 +56,16 @@ func Connect(conn, queue string, subject []string) (n Nat, err error) {
 	return
 }
 
-func (n Nat) Subscribe(q string, subjects []string, handler func(eventType string, m *nats.Msg)) (err error) {
+func (n Nat) Subscribe(q string, subjects []NatSubjects) (err error) {
 
 	for _, subject := range subjects {
-		subject := subject
-		sub, err := n.Jet.QueueSubscribe(subject, q, func(m *nats.Msg) {
+		s := subject.Subject
+		sub, err := n.Jet.QueueSubscribe(s, q, func(m *nats.Msg) {
 			// Call the provided handler function
-			handler(subject, m)
-		}, nats.Durable(fmt.Sprintf("durable-%s", subject)), nats.ManualAck())
+			subject.Handler(s, m)
+		}, nats.Durable(fmt.Sprintf("durable-%s", s)), nats.ManualAck())
 		if err != nil {
-			log.Fatalf("Error subscribing to subject %s: %v", subject, err)
+			log.Fatalf("Error subscribing to subject %s: %v", s, err)
 			return err
 		}
 		defer sub.Unsubscribe()
