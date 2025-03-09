@@ -19,7 +19,12 @@ type NatSubjects struct {
 	Handler func(eventType string, m *nats.Msg)
 }
 
-func Connect(conn, queue string, subject []string) (n Nat, err error) {
+type NatSetupOptions struct {
+	Queue    string
+	Subjects []string
+}
+
+func Connect(conn string) (n Nat, err error) {
 	nc, err := nats.Connect(conn)
 	if err != nil {
 		return
@@ -35,21 +40,43 @@ func Connect(conn, queue string, subject []string) (n Nat, err error) {
 		Jet:    js,
 	}
 
-	streamInfo, err := js.StreamInfo(queue)
-	if err != nil && err != nats.ErrStreamNotFound {
+	return
+}
+
+func Setup(conn string, options []NatSetupOptions) (n Nat, err error) {
+	nc, err := nats.Connect(conn)
+	if err != nil {
 		return
 	}
 
-	if streamInfo != nil {
+	js, err := nc.JetStream()
+	if err != nil {
 		return
-	} else {
-		// Add the stream if it doesn't exist
-		_, err = js.AddStream(&nats.StreamConfig{
-			Name:     queue,
-			Subjects: subject,
-		})
-		if err != nil {
-			return
+	}
+
+	n = Nat{
+		Client: nc,
+		Jet:    js,
+	}
+
+	for _, o := range options {
+
+		streamInfo, e := js.StreamInfo(o.Queue)
+		if e != nil && e != nats.ErrStreamNotFound {
+			return n, e
+		}
+
+		if streamInfo != nil {
+			return n, e
+		} else {
+			// Add the stream if it doesn't exist
+			_, err = js.AddStream(&nats.StreamConfig{
+				Name:     o.Queue,
+				Subjects: o.Subjects,
+			})
+			if err != nil {
+				return
+			}
 		}
 	}
 
