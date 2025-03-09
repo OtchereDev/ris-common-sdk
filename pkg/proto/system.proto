@@ -9,3 +9,45 @@ message SmsLogin{
     string phone = 2;
     string otp = 3;
 }
+
+message EmailDoctorForgotPassword {
+    string email = 1;
+    string code = 2;
+    string doctorName = 3;
+}
+
+message EmailReport {
+    string email = 1;
+    string link = 2;
+    string name = 3;
+}
+
+message SmsForgotPassword{
+    string name = 1;
+    string phone = 2;
+    string otp = 3;
+}
+
+message LoginWithPhone{
+    string name = 1;
+    string phone = 2;
+    string otp = 3;
+}
+
+message PushNotificationMessage{
+    repeated string devices = 1;
+    string title = 2;
+    string message = 3;
+}
+
+message EmailDoctorCreated{
+    string name = 1;
+    string email = 2;
+    string generatedPassword = 3;
+}
+
+message WhatsappReport {
+    string phone = 1;
+    string firstName = 2;
+    string link = 3;
+}
