@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package proto;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "pkg/proto/appointment";
+
+message Appointment {
+    uint32 id = 1;
+    uint32 patient_id = 2;
+    bool is_emergency = 3;
+    uint32 procedure_id = 4;
+    uint32 report_id = 5;
+    uint32 referring_doctor_id = 6;
+    uint32 reporting_doctor_id = 7;
+    google.protobuf.Timestamp appointment_time = 8;
+    uint32 payment_id = 9;
+    string note = 10;
+    string status = 11;
+    bool has_paid_commission = 12;
+}
+
+message Report {
+    uint32 id = 1;
+    uint32 appointment_id = 2;
+    string referring_hospital = 3;
+    string findings = 4;
+    string impressions = 5;
+    string clinical_details = 6;
+    string url = 7;
+    string status = 8;
+}
+
+message RequestForm {
+    uint32 id = 1;
+    uint32 appointment_id = 2;
+    string url = 3;
+    bool is_file = 4;
+}
+
