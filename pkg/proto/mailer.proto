@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package = "pkg/proto/mailer";
+
+message ShareReportEmail{
+    string name = 1;
+    string link = 2;
+    string email =3;
+}
+
+message RequestResetDataEmail{
+    string doctorName =1;
+    string code  = 2;
+    string email =3;
+}
+
+message WelcomeDoctorEmail{
+    string doctorName =1;
+    string password  = 2;
+    string email =3;
+}
