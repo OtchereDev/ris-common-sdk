@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package = "pkg/proto/facility";
+
+message Modality {
+    uint32 id = 1;
+    string name = 2;
+    string shortName = 3;
+}
+
+message Procedure {
+    uint32 id = 1;
+    string name = 2;
+    uint32 modalityId = 3;
+    double price = 4;
+}
