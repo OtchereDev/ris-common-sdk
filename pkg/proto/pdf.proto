@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package = "pkg/proto/pdf";
+
+message PaymentItem {
+  string code = 1;
+  string description = 2;
+  int32 quantity = 3;
+  string unitPrice = 4;
+  string amount = 5;
+}
+
+message ReceiptData {
+  string fileName = 1;
+  string name = 2;
+  string patientId = 3;
+  string paymentDate = 4;
+  string receiptNumber = 5;
+  string paymentMethod = 6;
+  string discount = 7;
+  string subTotal = 8;
+  string total = 9;
+  repeated PaymentItem paymentItems = 10;
+}
+
+message RequestFormData {
+  string patientName = 1;
+  string sex = 2;
+  string date = 3;
+  string age = 4;
+  string phoneNumber = 5;
+  string address = 6;
+  string requestingDoctor = 7;
+  string requestingFacility = 8;
+  string examination = 9;
+  string query = 10;
+  string fileName = 11;
+}
+
+message ReportData {
+  string name = 1;
+  string dob = 2;
+  string age = 3;
+  string patientId = 4;
+  string referringDoctor = 5;
+  string referringFacility = 6;
+  string detail = 7;
+  string procedure = 8;
+  string examinationDate = 9;
+  string radiologist = 10;
+  string verifiedAt = 11;
+  string fileName = 12;
+  string titleOnReport = 13;
+  string impressions = 14;
+  string findings = 15;
+  string approvedBy = 16;
+  string approverTitle = 17;
+  string withHeader = 18;
+}
+
+message PdfEvent {
+  oneof event {
+    ReceiptData receipt = 1;
+    RequestFormData requestForm = 2;
+    ReportData report = 3;
+  }
+}
