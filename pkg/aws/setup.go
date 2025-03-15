@@ -39,9 +39,7 @@ func Connect(ak, r, as, b string) (s *S3, err error) {
 	return
 }
 
-func (s S3) UploadFileToS3(fileType string, base64File string, patientId string) (string, error) {
-	date := time.Now().Format(time.RFC3339)
-	key := fileType + "/" + patientId + "/" + date + ".pdf"
+func (s S3) UploadFileToS3(fileName, base64File, contentType string) (string, error) {
 
 	b64data := base64File[strings.IndexByte(base64File, ',')+1:]
 
@@ -53,16 +51,16 @@ func (s S3) UploadFileToS3(fileType string, base64File string, patientId string)
 	}
 	_, err = s.Client.PutObject(&s3.PutObjectInput{
 		Bucket:      aws.String(s.BucketName),
-		Key:         aws.String(key),
+		Key:         aws.String(fileName),
 		Body:        bytes.NewReader(decode),
-		ContentType: aws.String("application/pdf"),
+		ContentType: aws.String(contentType),
 	})
 
 	if err != nil {
 		fmt.Println("Error uploading file:", err)
 		return "", err
 	}
-	return key, nil
+	return fileName, nil
 }
 
 func (s S3) UploadApptFileToS3(fileType string, file multipart.File, patientId string, extn string, contentType string) (string, error) {
@@ -109,7 +107,7 @@ func (s S3) GetFileLink(key string) (string, error) {
 		return "", req.Error
 	}
 
-	url, err := req.Presign(30 * time.Minute)
+	url, err := req.Presign(7 * 24 * time.Hour)
 	if err != nil {
 		return "", err
 	}
