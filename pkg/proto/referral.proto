@@ -41,4 +41,5 @@ message DoctorLoggedIn{
 message DoctorWalletPayCommission{
   uint32 doctorId =1;
   double commission = 2;
+  uint32 appointmentId =3;
 }
