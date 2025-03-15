@@ -501,6 +501,58 @@ func (x *WhatsappReport) GetLink() string {
 	return ""
 }
 
+type SendSms struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PhoneNumber   string                 `protobuf:"bytes,1,opt,name=phoneNumber,proto3" json:"phoneNumber,omitempty"`
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SendSms) Reset() {
+	*x = SendSms{}
+	mi := &file_pkg_proto_system_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SendSms) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SendSms) ProtoMessage() {}
+
+func (x *SendSms) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_proto_system_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SendSms.ProtoReflect.Descriptor instead.
+func (*SendSms) Descriptor() ([]byte, []int) {
+	return file_pkg_proto_system_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *SendSms) GetPhoneNumber() string {
+	if x != nil {
+		return x.PhoneNumber
+	}
+	return ""
+}
+
+func (x *SendSms) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
 var File_pkg_proto_system_proto protoreflect.FileDescriptor
 
 var file_pkg_proto_system_proto_rawDesc = string([]byte{
@@ -550,9 +602,13 @@ var file_pkg_proto_system_proto_rawDesc = string([]byte{
 	0x70, 0x68, 0x6f, 0x6e, 0x65, 0x12, 0x1c, 0x0a, 0x09, 0x66, 0x69, 0x72, 0x73, 0x74, 0x4e, 0x61,
 	0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x66, 0x69, 0x72, 0x73, 0x74, 0x4e,
 	0x61, 0x6d, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x6c, 0x69, 0x6e, 0x6b, 0x18, 0x03, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x04, 0x6c, 0x69, 0x6e, 0x6b, 0x42, 0x12, 0x5a, 0x10, 0x70, 0x6b, 0x67, 0x2f, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x73, 0x79, 0x73, 0x74, 0x65, 0x6d, 0x62, 0x06, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x33,
+	0x09, 0x52, 0x04, 0x6c, 0x69, 0x6e, 0x6b, 0x22, 0x45, 0x0a, 0x07, 0x53, 0x65, 0x6e, 0x64, 0x53,
+	0x6d, 0x73, 0x12, 0x20, 0x0a, 0x0b, 0x70, 0x68, 0x6f, 0x6e, 0x65, 0x4e, 0x75, 0x6d, 0x62, 0x65,
+	0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x70, 0x68, 0x6f, 0x6e, 0x65, 0x4e, 0x75,
+	0x6d, 0x62, 0x65, 0x72, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x42, 0x12,
+	0x5a, 0x10, 0x70, 0x6b, 0x67, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x73, 0x79, 0x73, 0x74,
+	0x65, 0x6d, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 })
 
 var (
@@ -567,7 +623,7 @@ func file_pkg_proto_system_proto_rawDescGZIP() []byte {
 	return file_pkg_proto_system_proto_rawDescData
 }
 
-var file_pkg_proto_system_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_pkg_proto_system_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_pkg_proto_system_proto_goTypes = []any{
 	(*SmsLogin)(nil),                  // 0: proto.SmsLogin
 	(*EmailDoctorForgotPassword)(nil), // 1: proto.EmailDoctorForgotPassword
@@ -577,6 +633,7 @@ var file_pkg_proto_system_proto_goTypes = []any{
 	(*PushNotificationMessage)(nil),   // 5: proto.PushNotificationMessage
 	(*EmailDoctorCreated)(nil),        // 6: proto.EmailDoctorCreated
 	(*WhatsappReport)(nil),            // 7: proto.WhatsappReport
+	(*SendSms)(nil),                   // 8: proto.SendSms
 }
 var file_pkg_proto_system_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
@@ -597,7 +654,7 @@ func file_pkg_proto_system_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_pkg_proto_system_proto_rawDesc), len(file_pkg_proto_system_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   8,
+			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
