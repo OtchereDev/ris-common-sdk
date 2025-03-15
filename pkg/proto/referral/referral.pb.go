@@ -314,6 +314,58 @@ func (x *DoctorLoggedIn) GetTime() *timestamppb.Timestamp {
 	return nil
 }
 
+type DoctorWalletPayCommission struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	DoctorId      uint32                 `protobuf:"varint,1,opt,name=doctorId,proto3" json:"doctorId,omitempty"`
+	Commission    uint32                 `protobuf:"varint,2,opt,name=commission,proto3" json:"commission,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DoctorWalletPayCommission) Reset() {
+	*x = DoctorWalletPayCommission{}
+	mi := &file_pkg_proto_referral_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DoctorWalletPayCommission) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DoctorWalletPayCommission) ProtoMessage() {}
+
+func (x *DoctorWalletPayCommission) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_proto_referral_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DoctorWalletPayCommission.ProtoReflect.Descriptor instead.
+func (*DoctorWalletPayCommission) Descriptor() ([]byte, []int) {
+	return file_pkg_proto_referral_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *DoctorWalletPayCommission) GetDoctorId() uint32 {
+	if x != nil {
+		return x.DoctorId
+	}
+	return 0
+}
+
+func (x *DoctorWalletPayCommission) GetCommission() uint32 {
+	if x != nil {
+		return x.Commission
+	}
+	return 0
+}
+
 var File_pkg_proto_referral_proto protoreflect.FileDescriptor
 
 var file_pkg_proto_referral_proto_rawDesc = string([]byte{
@@ -375,9 +427,14 @@ var file_pkg_proto_referral_proto_rawDesc = string([]byte{
 	0x08, 0x64, 0x65, 0x76, 0x69, 0x63, 0x65, 0x49, 0x64, 0x12, 0x2e, 0x0a, 0x04, 0x74, 0x69, 0x6d,
 	0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65,
 	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74,
-	0x61, 0x6d, 0x70, 0x52, 0x04, 0x74, 0x69, 0x6d, 0x65, 0x42, 0x14, 0x5a, 0x12, 0x70, 0x6b, 0x67,
-	0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x72, 0x65, 0x66, 0x65, 0x72, 0x72, 0x61, 0x6c, 0x62,
-	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x61, 0x6d, 0x70, 0x52, 0x04, 0x74, 0x69, 0x6d, 0x65, 0x22, 0x57, 0x0a, 0x19, 0x44, 0x6f, 0x63,
+	0x74, 0x6f, 0x72, 0x57, 0x61, 0x6c, 0x6c, 0x65, 0x74, 0x50, 0x61, 0x79, 0x43, 0x6f, 0x6d, 0x6d,
+	0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x12, 0x1a, 0x0a, 0x08, 0x64, 0x6f, 0x63, 0x74, 0x6f, 0x72,
+	0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x08, 0x64, 0x6f, 0x63, 0x74, 0x6f, 0x72,
+	0x49, 0x64, 0x12, 0x1e, 0x0a, 0x0a, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x0a, 0x63, 0x6f, 0x6d, 0x6d, 0x69, 0x73, 0x73, 0x69,
+	0x6f, 0x6e, 0x42, 0x14, 0x5a, 0x12, 0x70, 0x6b, 0x67, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f,
+	0x72, 0x65, 0x66, 0x65, 0x72, 0x72, 0x61, 0x6c, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 })
 
 var (
@@ -392,18 +449,19 @@ func file_pkg_proto_referral_proto_rawDescGZIP() []byte {
 	return file_pkg_proto_referral_proto_rawDescData
 }
 
-var file_pkg_proto_referral_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_pkg_proto_referral_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_pkg_proto_referral_proto_goTypes = []any{
-	(*ReferringCenter)(nil),       // 0: proto.ReferringCenter
-	(*ReferringDoctor)(nil),       // 1: proto.ReferringDoctor
-	(*DoctorLoggedIn)(nil),        // 2: proto.DoctorLoggedIn
-	(*timestamppb.Timestamp)(nil), // 3: google.protobuf.Timestamp
+	(*ReferringCenter)(nil),           // 0: proto.ReferringCenter
+	(*ReferringDoctor)(nil),           // 1: proto.ReferringDoctor
+	(*DoctorLoggedIn)(nil),            // 2: proto.DoctorLoggedIn
+	(*DoctorWalletPayCommission)(nil), // 3: proto.DoctorWalletPayCommission
+	(*timestamppb.Timestamp)(nil),     // 4: google.protobuf.Timestamp
 }
 var file_pkg_proto_referral_proto_depIdxs = []int32{
 	0, // 0: proto.ReferringDoctor.referring_center:type_name -> proto.ReferringCenter
-	3, // 1: proto.ReferringDoctor.last_login:type_name -> google.protobuf.Timestamp
-	3, // 2: proto.ReferringDoctor.created_at:type_name -> google.protobuf.Timestamp
-	3, // 3: proto.DoctorLoggedIn.time:type_name -> google.protobuf.Timestamp
+	4, // 1: proto.ReferringDoctor.last_login:type_name -> google.protobuf.Timestamp
+	4, // 2: proto.ReferringDoctor.created_at:type_name -> google.protobuf.Timestamp
+	4, // 3: proto.DoctorLoggedIn.time:type_name -> google.protobuf.Timestamp
 	4, // [4:4] is the sub-list for method output_type
 	4, // [4:4] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name
@@ -422,7 +480,7 @@ func file_pkg_proto_referral_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_pkg_proto_referral_proto_rawDesc), len(file_pkg_proto_referral_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

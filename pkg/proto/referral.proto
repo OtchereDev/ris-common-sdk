@@ -37,3 +37,8 @@ message DoctorLoggedIn{
   string deviceId = 2;
   google.protobuf.Timestamp time = 3;
 }
+
+message DoctorWalletPayCommission{
+  uint32 doctorId =1;
+  uint32 commission = 2;
+}
