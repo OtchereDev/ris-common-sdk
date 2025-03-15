@@ -23,9 +23,11 @@ message ReceiptData {
   string subTotal = 8;
   string total = 9;
   repeated PaymentItem paymentItems = 10;
+  uint32 id = 11;
 }
 
 message RequestFormData {
+  uint32 id = 12;
   string patientName = 1;
   string sex = 2;
   string date = 3;
@@ -40,6 +42,7 @@ message RequestFormData {
 }
 
 message ReportData {
+  uint32 id = 19;
   string name = 1;
   string dob = 2;
   string age = 3;
@@ -66,4 +69,9 @@ message PdfEvent {
     RequestFormData requestForm = 2;
     ReportData report = 3;
   }
+}
+
+message FileUploaded{
+  string fileKey =1;
+  uint32 id = 2;
 }
