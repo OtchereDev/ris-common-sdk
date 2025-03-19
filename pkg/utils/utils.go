@@ -18,6 +18,7 @@ type JwtPayload struct {
 	UserID    string `json:"user_id"`
 	IsAdmin   bool   `json:"is_admin"`
 	CanVerify bool   `json:"can_verify"`
+	IsRefresh bool   `json:"is_refresh"`
 }
 
 func SerializeRequestUser(c *fiber.Ctx) (*JwtPayload, error) {
