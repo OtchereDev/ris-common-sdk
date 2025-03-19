@@ -147,7 +147,11 @@ func New(config Config) fiber.Handler {
 }
 
 func SetupMiddleAuthMiddleware(s string, cache cache.Cache) {
-	AuthMiddleware = New(Config{Secret: s, Cache: cache})
+	if cache == nil {
+		AuthMiddleware = New(Config{Secret: s, Cache: nil})
+	} else {
+		AuthMiddleware = New(Config{Secret: s, Cache: cache})
+	}
 }
 
 func RoleMiddleware(roles []string) fiber.Handler {

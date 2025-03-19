@@ -1,4 +1,4 @@
-package users
+package doctor
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	u "github.com/OtchereDev/ris-common-sdk/pkg/proto/users"
+	"github.com/OtchereDev/ris-common-sdk/pkg/proto/referral"
 	"github.com/nats-io/nats.go"
 	"google.golang.org/protobuf/proto"
 )
@@ -28,13 +28,13 @@ func NewUserStatusCache() *UserStatusCache {
 }
 
 // UpdateStatus updates the cache based on an event
-func (c *UserStatusCache) UpdateStatus(event *u.User) {
+func (c *UserStatusCache) UpdateStatus(event *referral.ReferringDoctor) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
 	id := strconv.Itoa(int(event.Id))
 	if event.IsDisabled {
-		c.disabledUsers[id] = event.UpdatedAt.Seconds
+		c.disabledUsers[id] = event.CreatedAt.Seconds
 	} else {
 		delete(c.disabledUsers, id)
 	}
@@ -52,13 +52,13 @@ func (c *UserStatusCache) IsUnSafe(userID uint32) bool {
 }
 
 // UpdateDeleted updates the cache based on an event
-func (c *UserStatusCache) UpdateDeleted(event *u.User) {
+func (c *UserStatusCache) UpdateDeleted(event *referral.ReferringDoctor) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
 	id := strconv.Itoa(int(event.Id))
 	if event.IsDeleted {
-		c.deletedUsers[id] = event.UpdatedAt.Seconds
+		c.deletedUsers[id] = event.CreatedAt.Seconds
 	} else {
 		delete(c.deletedUsers, id)
 	}
@@ -67,8 +67,8 @@ func (c *UserStatusCache) UpdateDeleted(event *u.User) {
 // LoadHistoricalStatus loads all historical user status events from JetStream
 func (c *UserStatusCache) LoadHistoricalStatus(js nats.JetStreamContext, service string) error {
 	// Create a consumer that starts from the beginning of the stream
-	sub, err := js.Subscribe("user.disabled", func(msg *nats.Msg) {
-		event := &u.User{}
+	sub, err := js.Subscribe("referral.doctor.disabled", func(msg *nats.Msg) {
+		event := &referral.ReferringDoctor{}
 		if err := proto.Unmarshal(msg.Data, event); err != nil {
 			log.Printf("Error unmarshalling historical event: %v", err)
 			return
@@ -93,8 +93,8 @@ func (c *UserStatusCache) LoadHistoricalStatus(js nats.JetStreamContext, service
 // LoadHistoricalDeleted loads all historical user deleted events from JetStream
 func (c *UserStatusCache) LoadHistoricalDeleted(js nats.JetStreamContext, service string) error {
 	// Create a consumer that starts from the beginning of the stream
-	sub, err := js.Subscribe("user.deleted", func(msg *nats.Msg) {
-		event := &u.User{}
+	sub, err := js.Subscribe("referral.doctor.deleted", func(msg *nats.Msg) {
+		event := &referral.ReferringDoctor{}
 		if err := proto.Unmarshal(msg.Data, event); err != nil {
 			log.Printf("Error unmarshalling historical event: %v", err)
 			return
