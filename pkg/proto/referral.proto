@@ -43,3 +43,26 @@ message DoctorWalletPayCommission{
   double commission = 2;
   uint32 appointmentId =3;
 }
+
+message TempAppointment {
+  uint32 id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string phone_number = 4;
+  google.protobuf.Timestamp examination_date = 5;
+  int32 age = 6;
+  uint32 procedure_id = 7;
+  string other_procedure = 9;
+  uint32 modality_id = 10;
+  uint32 referring_doctor_id = 12;
+  string clinical_history = 14;
+  string referring_center = 15;
+  string sex = 16;
+  string address = 17;
+  string request_form_url = 18;
+  bool is_moved = 19;
+  bool is_deleted = 20;
+  bool is_completed = 21;
+  google.protobuf.Timestamp created_at = 22;
+  google.protobuf.Timestamp updated_at = 23;
+}
