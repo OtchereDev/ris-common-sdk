@@ -28,13 +28,22 @@ func NewUserStatusCache() *UserStatusCache {
 }
 
 // UpdateStatus updates the cache based on an event
-func (c *UserStatusCache) UpdateStatus(event *u.User) {
+func (c *UserStatusCache) UpdateStatus(event proto.Message) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	id := strconv.Itoa(int(event.Id))
-	if event.IsDisabled {
-		c.disabledUsers[id] = event.UpdatedAt.Seconds
+	e, ok := event.(*u.User)
+	if !ok {
+		return
+	}
+
+	id := strconv.Itoa(int(e.Id))
+	if e.IsDisabled {
+		if e.UpdatedAt != nil {
+			c.disabledUsers[id] = e.UpdatedAt.Seconds
+		} else {
+			c.disabledUsers[id] = time.Now().Unix()
+		}
 	} else {
 		delete(c.disabledUsers, id)
 	}
