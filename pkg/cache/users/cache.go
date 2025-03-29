@@ -52,13 +52,22 @@ func (c *UserStatusCache) IsUnSafe(userID uint32) bool {
 }
 
 // UpdateDeleted updates the cache based on an event
-func (c *UserStatusCache) UpdateDeleted(event *u.User) {
+func (c *UserStatusCache) UpdateDeleted(event proto.Message) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	id := strconv.Itoa(int(event.Id))
-	if event.IsDeleted {
-		c.deletedUsers[id] = event.UpdatedAt.Seconds
+	userEvent, ok := event.(*u.User)
+	if !ok {
+		return
+	}
+
+	id := strconv.Itoa(int(userEvent.Id))
+	if userEvent.IsDeleted {
+		if userEvent.UpdatedAt != nil {
+			c.deletedUsers[id] = userEvent.UpdatedAt.Seconds
+		} else {
+			c.deletedUsers[id] = time.Now().Unix()
+		}
 	} else {
 		delete(c.deletedUsers, id)
 	}

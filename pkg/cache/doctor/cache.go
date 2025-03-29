@@ -28,13 +28,22 @@ func NewUserStatusCache() *UserStatusCache {
 }
 
 // UpdateStatus updates the cache based on an event
-func (c *UserStatusCache) UpdateStatus(event *referral.ReferringDoctor) {
+func (c *UserStatusCache) UpdateStatus(event proto.Message) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	id := strconv.Itoa(int(event.Id))
-	if event.IsDisabled {
-		c.disabledUsers[id] = event.CreatedAt.Seconds
+	e, ok := event.(*referral.ReferringDoctor)
+	if !ok {
+		return
+	}
+
+	id := strconv.Itoa(int(e.Id))
+	if e.IsDisabled {
+		if e.CreatedAt != nil {
+			c.disabledUsers[id] = e.CreatedAt.Seconds
+		} else {
+			c.disabledUsers[id] = time.Now().Unix()
+		}
 	} else {
 		delete(c.disabledUsers, id)
 	}
@@ -52,16 +61,27 @@ func (c *UserStatusCache) IsUnSafe(userID uint32) bool {
 }
 
 // UpdateDeleted updates the cache based on an event
-func (c *UserStatusCache) UpdateDeleted(event *referral.ReferringDoctor) {
+func (c *UserStatusCache) UpdateDeleted(event proto.Message) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
-	id := strconv.Itoa(int(event.Id))
-	if event.IsDeleted {
-		c.deletedUsers[id] = event.CreatedAt.Seconds
+	e, ok := event.(*referral.ReferringDoctor)
+
+	if !ok {
+		return
+	}
+
+	id := strconv.Itoa(int(e.Id))
+	if e.IsDeleted {
+		if e.CreatedAt != nil {
+			c.deletedUsers[id] = e.CreatedAt.Seconds
+		} else {
+			c.deletedUsers[id] = time.Now().Unix()
+		}
 	} else {
 		delete(c.deletedUsers, id)
 	}
+
 }
 
 // LoadHistoricalStatus loads all historical user status events from JetStream
