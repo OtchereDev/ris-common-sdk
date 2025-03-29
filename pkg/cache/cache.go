@@ -6,9 +6,11 @@ import (
 )
 
 type Cache interface {
-	UpdateStatus(event proto.Message)
-	IsUnSafe(id uint32) bool
-	UpdateDeleted(event proto.Message)
-	LoadHistoricalStatus(js nats.JetStreamContext, service string) error
-	LoadHistoricalDeleted(js nats.JetStreamContext, service string) error
+	UpdateStatus(event proto.Message, role string)
+	IsUnSafe(id uint32, role string) bool
+	UpdateDeleted(event proto.Message, role string)
+	LoadHistoricalUserStatus(js nats.JetStreamContext, service string) error
+	LoadHistoricalUserDeleted(js nats.JetStreamContext, service string) error
+	LoadHistoricalDoctorStatus(js nats.JetStreamContext, service string) error
+	LoadHistoricalDoctorDeleted(js nats.JetStreamContext, service string) error
 }

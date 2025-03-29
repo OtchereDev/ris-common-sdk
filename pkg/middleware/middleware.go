@@ -96,19 +96,22 @@ func configDefault(config ...Config) Config {
 			}
 
 			if cfg.Cache != nil {
-				var userId string
-				if val, ok := claim["user_id"].(string); ok {
-					userId = val
-				} else {
-					return nil, errors.New("user id not found on token")
+				userId, ok := claim["user_id"].(string)
+				if !ok {
+					return nil, errors.New("invalid or missing user_id in token")
+				}
+
+				role, ok := claim["role"].(string)
+				if !ok {
+					return nil, errors.New("invalid or missing role in token")
 				}
 
 				id, err := strconv.ParseUint(userId, 10, 32)
 				if err != nil {
-					return nil, err
+					return nil, fmt.Errorf("invalid user_id format: %w", err)
 				}
 
-				if cfg.Cache.IsUnSafe(uint32(id)) {
+				if cfg.Cache.IsUnSafe(uint32(id), role) {
 					return nil, errors.New("this account has been disabled or deleted")
 				}
 			}
