@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
+	"time"
 
 	"github.com/nats-io/nats.go"
 	"google.golang.org/protobuf/proto"
@@ -71,8 +72,11 @@ func Setup(conn string, options []NatSetupOptions) (n Nat, err error) {
 		} else {
 			// Add the stream if it doesn't exist
 			_, err = js.AddStream(&nats.StreamConfig{
-				Name:     o.Queue,
-				Subjects: o.Subjects,
+				Name:      o.Queue,
+				Subjects:  o.Subjects,
+				Retention: nats.LimitsPolicy,
+				Storage:   nats.FileStorage,
+				MaxAge:    time.Nanosecond * 2592000000000000,
 			})
 			if err != nil {
 				return
@@ -97,7 +101,13 @@ func (n Nat) Subscribe(q string, subjects []NatSubjects) (err error) {
 		s := subject.Subject
 		sub, err := n.Jet.QueueSubscribe(s, q, func(m *nats.Msg) {
 			subject.Handler(s, m)
-		}, nats.Durable(fmt.Sprintf("durable-%s", sanitizeConsumerName(s))), nats.ManualAck())
+		},
+			nats.Durable(fmt.Sprintf("durable-%s", sanitizeConsumerName(s))),
+			nats.ManualAck(),
+			nats.DeliverAll(),
+			nats.MaxDeliver(5),
+			nats.AckWait(30*time.Second),
+		)
 
 		if err != nil {
 			// Clean up any subscriptions already created before returning error

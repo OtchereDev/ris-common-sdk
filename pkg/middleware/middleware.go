@@ -4,9 +4,11 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
+	"github.com/OtchereDev/ris-common-sdk/pkg/cache"
 	. "github.com/OtchereDev/ris-common-sdk/pkg/types"
 	. "github.com/OtchereDev/ris-common-sdk/pkg/utils"
 	"github.com/gofiber/fiber/v2"
@@ -18,6 +20,7 @@ type Config struct {
 	Unauthorized fiber.Handler
 	Secret       string
 	Decode       func(c *fiber.Ctx) (*jwt.MapClaims, error)
+	Cache        cache.Cache
 }
 
 var DefaultConfig = Config{
@@ -25,6 +28,7 @@ var DefaultConfig = Config{
 	Unauthorized: nil,
 	Secret:       "TestSenior",
 	Decode:       nil,
+	Cache:        nil,
 }
 
 var ReportingTeamMiddleware = RoleMiddleware([]string{
@@ -87,6 +91,28 @@ func configDefault(config ...Config) Config {
 				return nil, errors.New("token is expired")
 			}
 
+			if isRefresh, ok := claim["is_refresh"].(bool); ok && isRefresh {
+				return nil, errors.New("invalid token, use the access token instead of the refresh token")
+			}
+
+			if cfg.Cache != nil {
+				var userId string
+				if val, ok := claim["user_id"].(string); ok {
+					userId = val
+				} else {
+					return nil, errors.New("user id not found on token")
+				}
+
+				id, err := strconv.ParseUint(userId, 10, 32)
+				if err != nil {
+					return nil, err
+				}
+
+				if cfg.Cache.IsUnSafe(uint32(id)) {
+					return nil, errors.New("this account has been disabled or deleted")
+				}
+			}
+
 			return &claim, nil
 
 		}
@@ -120,8 +146,12 @@ func New(config Config) fiber.Handler {
 	}
 }
 
-func SetupMiddleAuthMiddleware(s string) {
-	AuthMiddleware = New(Config{Secret: s})
+func SetupMiddleAuthMiddleware(s string, cache cache.Cache) {
+	if cache == nil {
+		AuthMiddleware = New(Config{Secret: s, Cache: nil})
+	} else {
+		AuthMiddleware = New(Config{Secret: s, Cache: cache})
+	}
 }
 
 func RoleMiddleware(roles []string) fiber.Handler {
