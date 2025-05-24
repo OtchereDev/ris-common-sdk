@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package appointment;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "pkg/proto/payment";
+
+message AppointmentPayment {
+  uint32 id = 1;
+  repeated uint32 appointment_ids = 2;
+  double amount = 3;
+  bool has_discount = 4;
+  bool is_receipted = 5;
+  string payment_method = 6;
+  double discount_amount = 7;
+  string discount_authorizer = 8;
+  google.protobuf.Timestamp paid_at = 9;
+  bool is_deleted = 10;
+  string receipt_url = 11;
+  string receipt_number = 12;
+  string insurance_company = 13;
+  string insurance_id = 14;
+  string payment_details = 15;
+}
