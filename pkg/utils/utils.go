@@ -12,13 +12,14 @@ import (
 )
 
 type JwtPayload struct {
-	Name      string `json:"name"`
-	Email     string `json:"email"`
-	UserType  string `json:"role"`
-	UserID    string `json:"user_id"`
-	IsAdmin   bool   `json:"is_admin"`
-	CanVerify bool   `json:"can_verify"`
-	IsRefresh bool   `json:"is_refresh"`
+	Name           string `json:"name"`
+	Email          string `json:"email"`
+	UserType       string `json:"role"`
+	UserID         string `json:"user_id"`
+	IsAdmin        bool   `json:"is_admin"`
+	CanVerify      bool   `json:"can_verify"`
+	IsRefresh      bool   `json:"is_refresh"`
+	OrganizationID uint   `json:"organization_id"`
 }
 
 func SerializeRequestUser(c *fiber.Ctx) (*JwtPayload, error) {

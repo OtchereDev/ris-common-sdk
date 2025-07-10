@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package = "pkg/proto/portals";
+
+import "google/protobuf/timestamp.proto";
+
+
+message Organization {
+  uint32 id = 1;
+  string name = 2;
+  string address = 3;
+  string phone_number = 4;
+  string logo = 5;
+  string domain = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
+}
+
+message Staff {
+  uint32 id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string email = 4;
+  uint32 organization_id = 5;
+  string password = 6;
+  google.protobuf.Timestamp last_login = 7;
+  bool is_disabled = 8;
+  bool is_deleted = 9;
+  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp updated_at = 11;
+}
