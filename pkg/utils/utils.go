@@ -20,6 +20,8 @@ type JwtPayload struct {
 	CanVerify      bool   `json:"can_verify"`
 	IsRefresh      bool   `json:"is_refresh"`
 	OrganizationID uint   `json:"organization_id"`
+	IsBiometric    bool   `json:"is_biometric"`
+	DeviceID       string `json:"device_id,omitempty"`
 }
 
 func SerializeRequestUser(c *fiber.Ctx) (*JwtPayload, error) {
