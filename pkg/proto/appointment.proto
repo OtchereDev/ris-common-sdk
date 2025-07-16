@@ -19,6 +19,7 @@ message Appointment {
     string note = 10;
     string status = 11;
     bool has_paid_commission = 12;
+    uint32 organization_id = 13;
 }
 
 message Report {
