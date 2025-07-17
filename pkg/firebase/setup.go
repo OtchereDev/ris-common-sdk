@@ -51,7 +51,7 @@ func Connection(authkey string) (f *Firebase, err error) {
 }
 
 func (f *Firebase) Broadcast(ctx context.Context, m *messaging.MulticastMessage, dc int64) (success bool, err error) {
-	r, err := f.Client.SendMulticast(ctx, m)
+	r, err := f.Client.SendEachForMulticast(ctx, m)
 	if err != nil {
 		return false, err
 	}
