@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/base64"
 
-	firebase "firebase.google.com/go"
-	"firebase.google.com/go/messaging"
+	firebase "firebase.google.com/go/v4"
+	"firebase.google.com/go/v4/messaging"
 	"google.golang.org/api/option"
 )
 
@@ -14,38 +14,37 @@ type Firebase struct {
 }
 
 func getDecodedFireBaseKey(a string) (d []byte, err error) {
-
 	d, err = base64.StdEncoding.DecodeString(a)
 	if err != nil {
 		return
 	}
-
 	return
 }
 
 func Connection(authkey string) (f *Firebase, err error) {
-
 	ctx := context.Background()
 
 	decodedKey, err := getDecodedFireBaseKey(authkey)
-
 	if err != nil {
 		return
 	}
 
 	opt := option.WithCredentialsJSON(decodedKey)
 
-	//Firebase admin SDK initialization
-	app, err := firebase.NewApp(context.Background(), nil, opt)
+	// Firebase admin SDK initialization
+	app, err := firebase.NewApp(ctx, nil, opt)
 	if err != nil {
-		panic("Firebase load error")
+		return nil, err // Return error instead of panic
 	}
 
-	//Messaging client
-	s, err := app.Messaging(ctx)
+	// Messaging client
+	client, err := app.Messaging(ctx)
+	if err != nil {
+		return nil, err
+	}
 
 	f = &Firebase{
-		Client: s,
+		Client: client,
 	}
 
 	return
@@ -53,8 +52,10 @@ func Connection(authkey string) (f *Firebase, err error) {
 
 func (f *Firebase) Broadcast(ctx context.Context, m *messaging.MulticastMessage, dc int64) (success bool, err error) {
 	r, err := f.Client.SendMulticast(ctx, m)
+	if err != nil {
+		return false, err
+	}
 
 	success = int64(r.SuccessCount) == dc
-
 	return
 }
