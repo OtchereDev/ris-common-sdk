@@ -173,6 +173,7 @@ type ReportVersion struct {
 	Url             string                 `protobuf:"bytes,7,opt,name=url,proto3" json:"url,omitempty"`
 	Status          string                 `protobuf:"bytes,8,opt,name=status,proto3" json:"status,omitempty"`
 	NoHeaderUrl     string                 `protobuf:"bytes,9,opt,name=no_header_url,json=noHeaderUrl,proto3" json:"no_header_url,omitempty"`
+	ConfirmedAt     *timestamp.Timestamp   `protobuf:"bytes,10,opt,name=confirmed_at,json=confirmedAt,proto3" json:"confirmed_at,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
@@ -270,14 +271,20 @@ func (x *ReportVersion) GetNoHeaderUrl() string {
 	return ""
 }
 
+func (x *ReportVersion) GetConfirmedAt() *timestamp.Timestamp {
+	if x != nil {
+		return x.ConfirmedAt
+	}
+	return nil
+}
+
 type Report struct {
 	state             protoimpl.MessageState `protogen:"open.v1"`
 	Id                uint32                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	AppointmentId     uint32                 `protobuf:"varint,2,opt,name=appointment_id,json=appointmentId,proto3" json:"appointment_id,omitempty"`
 	ReferringHospital string                 `protobuf:"bytes,3,opt,name=referring_hospital,json=referringHospital,proto3" json:"referring_hospital,omitempty"`
 	IsCompleted       bool                   `protobuf:"varint,4,opt,name=is_completed,json=isCompleted,proto3" json:"is_completed,omitempty"`
-	ConfirmedAt       *timestamp.Timestamp   `protobuf:"bytes,5,opt,name=confirmed_at,json=confirmedAt,proto3" json:"confirmed_at,omitempty"`
-	Versions          []*ReportVersion       `protobuf:"bytes,6,rep,name=versions,proto3" json:"versions,omitempty"`
+	Versions          []*ReportVersion       `protobuf:"bytes,5,rep,name=versions,proto3" json:"versions,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
@@ -338,13 +345,6 @@ func (x *Report) GetIsCompleted() bool {
 		return x.IsCompleted
 	}
 	return false
-}
-
-func (x *Report) GetConfirmedAt() *timestamp.Timestamp {
-	if x != nil {
-		return x.ConfirmedAt
-	}
-	return nil
 }
 
 func (x *Report) GetVersions() []*ReportVersion {
@@ -443,7 +443,7 @@ const file_pkg_proto_appointment_proto_rawDesc = "" +
 	" \x01(\tR\x04note\x12\x16\n" +
 	"\x06status\x18\v \x01(\tR\x06status\x12.\n" +
 	"\x13has_paid_commission\x18\f \x01(\bR\x11hasPaidCommission\x12'\n" +
-	"\x0forganization_id\x18\r \x01(\rR\x0eorganizationId\"\x9a\x02\n" +
+	"\x0forganization_id\x18\r \x01(\rR\x0eorganizationId\"\xd9\x02\n" +
 	"\rReportVersion\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\rR\x02id\x12\x1b\n" +
 	"\treport_id\x18\x02 \x01(\rR\breportId\x12%\n" +
@@ -453,14 +453,15 @@ const file_pkg_proto_appointment_proto_rawDesc = "" +
 	"\x10clinical_details\x18\x06 \x01(\tR\x0fclinicalDetails\x12\x10\n" +
 	"\x03url\x18\a \x01(\tR\x03url\x12\x16\n" +
 	"\x06status\x18\b \x01(\tR\x06status\x12\"\n" +
-	"\rno_header_url\x18\t \x01(\tR\vnoHeaderUrl\"\x82\x02\n" +
+	"\rno_header_url\x18\t \x01(\tR\vnoHeaderUrl\x12=\n" +
+	"\fconfirmed_at\x18\n" +
+	" \x01(\v2\x1a.google.protobuf.TimestampR\vconfirmedAt\"\xc3\x01\n" +
 	"\x06Report\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\rR\x02id\x12%\n" +
 	"\x0eappointment_id\x18\x02 \x01(\rR\rappointmentId\x12-\n" +
 	"\x12referring_hospital\x18\x03 \x01(\tR\x11referringHospital\x12!\n" +
-	"\fis_completed\x18\x04 \x01(\bR\visCompleted\x12=\n" +
-	"\fconfirmed_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\vconfirmedAt\x120\n" +
-	"\bversions\x18\x06 \x03(\v2\x14.proto.ReportVersionR\bversions\"o\n" +
+	"\fis_completed\x18\x04 \x01(\bR\visCompleted\x120\n" +
+	"\bversions\x18\x05 \x03(\v2\x14.proto.ReportVersionR\bversions\"o\n" +
 	"\vRequestForm\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\rR\x02id\x12%\n" +
 	"\x0eappointment_id\x18\x02 \x01(\rR\rappointmentId\x12\x10\n" +
@@ -489,7 +490,7 @@ var file_pkg_proto_appointment_proto_goTypes = []any{
 }
 var file_pkg_proto_appointment_proto_depIdxs = []int32{
 	4, // 0: proto.Appointment.appointment_time:type_name -> google.protobuf.Timestamp
-	4, // 1: proto.Report.confirmed_at:type_name -> google.protobuf.Timestamp
+	4, // 1: proto.ReportVersion.confirmed_at:type_name -> google.protobuf.Timestamp
 	1, // 2: proto.Report.versions:type_name -> proto.ReportVersion
 	3, // [3:3] is the sub-list for method output_type
 	3, // [3:3] is the sub-list for method input_type
