@@ -22,15 +22,25 @@ message Appointment {
     uint32 organization_id = 13;
 }
 
-message Report {
+message ReportVersion {
     uint32 id = 1;
-    uint32 appointment_id = 2;
-    string referring_hospital = 3;
+    uint32 report_id = 2;
+    uint32 radiologist_id = 3;
     string findings = 4;
     string impressions = 5;
     string clinical_details = 6;
     string url = 7;
     string status = 8;
+    string no_header_url = 9;
+}
+
+message Report {
+    uint32 id = 1;
+    uint32 appointment_id = 2;
+    string referring_hospital = 3;
+    bool is_completed = 4;
+    google.protobuf.Timestamp confirmed_at = 5; 
+    repeated ReportVersion versions = 6;
 }
 
 message RequestForm {

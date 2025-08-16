@@ -162,23 +162,129 @@ func (x *Appointment) GetOrganizationId() uint32 {
 	return 0
 }
 
+type ReportVersion struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Id              uint32                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	ReportId        uint32                 `protobuf:"varint,2,opt,name=report_id,json=reportId,proto3" json:"report_id,omitempty"`
+	RadiologistId   uint32                 `protobuf:"varint,3,opt,name=radiologist_id,json=radiologistId,proto3" json:"radiologist_id,omitempty"`
+	Findings        string                 `protobuf:"bytes,4,opt,name=findings,proto3" json:"findings,omitempty"`
+	Impressions     string                 `protobuf:"bytes,5,opt,name=impressions,proto3" json:"impressions,omitempty"`
+	ClinicalDetails string                 `protobuf:"bytes,6,opt,name=clinical_details,json=clinicalDetails,proto3" json:"clinical_details,omitempty"`
+	Url             string                 `protobuf:"bytes,7,opt,name=url,proto3" json:"url,omitempty"`
+	Status          string                 `protobuf:"bytes,8,opt,name=status,proto3" json:"status,omitempty"`
+	NoHeaderUrl     string                 `protobuf:"bytes,9,opt,name=no_header_url,json=noHeaderUrl,proto3" json:"no_header_url,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *ReportVersion) Reset() {
+	*x = ReportVersion{}
+	mi := &file_pkg_proto_appointment_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ReportVersion) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReportVersion) ProtoMessage() {}
+
+func (x *ReportVersion) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_proto_appointment_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReportVersion.ProtoReflect.Descriptor instead.
+func (*ReportVersion) Descriptor() ([]byte, []int) {
+	return file_pkg_proto_appointment_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *ReportVersion) GetId() uint32 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *ReportVersion) GetReportId() uint32 {
+	if x != nil {
+		return x.ReportId
+	}
+	return 0
+}
+
+func (x *ReportVersion) GetRadiologistId() uint32 {
+	if x != nil {
+		return x.RadiologistId
+	}
+	return 0
+}
+
+func (x *ReportVersion) GetFindings() string {
+	if x != nil {
+		return x.Findings
+	}
+	return ""
+}
+
+func (x *ReportVersion) GetImpressions() string {
+	if x != nil {
+		return x.Impressions
+	}
+	return ""
+}
+
+func (x *ReportVersion) GetClinicalDetails() string {
+	if x != nil {
+		return x.ClinicalDetails
+	}
+	return ""
+}
+
+func (x *ReportVersion) GetUrl() string {
+	if x != nil {
+		return x.Url
+	}
+	return ""
+}
+
+func (x *ReportVersion) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *ReportVersion) GetNoHeaderUrl() string {
+	if x != nil {
+		return x.NoHeaderUrl
+	}
+	return ""
+}
+
 type Report struct {
 	state             protoimpl.MessageState `protogen:"open.v1"`
 	Id                uint32                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	AppointmentId     uint32                 `protobuf:"varint,2,opt,name=appointment_id,json=appointmentId,proto3" json:"appointment_id,omitempty"`
 	ReferringHospital string                 `protobuf:"bytes,3,opt,name=referring_hospital,json=referringHospital,proto3" json:"referring_hospital,omitempty"`
-	Findings          string                 `protobuf:"bytes,4,opt,name=findings,proto3" json:"findings,omitempty"`
-	Impressions       string                 `protobuf:"bytes,5,opt,name=impressions,proto3" json:"impressions,omitempty"`
-	ClinicalDetails   string                 `protobuf:"bytes,6,opt,name=clinical_details,json=clinicalDetails,proto3" json:"clinical_details,omitempty"`
-	Url               string                 `protobuf:"bytes,7,opt,name=url,proto3" json:"url,omitempty"`
-	Status            string                 `protobuf:"bytes,8,opt,name=status,proto3" json:"status,omitempty"`
+	IsCompleted       bool                   `protobuf:"varint,4,opt,name=is_completed,json=isCompleted,proto3" json:"is_completed,omitempty"`
+	ConfirmedAt       *timestamp.Timestamp   `protobuf:"bytes,5,opt,name=confirmed_at,json=confirmedAt,proto3" json:"confirmed_at,omitempty"`
+	Versions          []*ReportVersion       `protobuf:"bytes,6,rep,name=versions,proto3" json:"versions,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
 
 func (x *Report) Reset() {
 	*x = Report{}
-	mi := &file_pkg_proto_appointment_proto_msgTypes[1]
+	mi := &file_pkg_proto_appointment_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -190,7 +296,7 @@ func (x *Report) String() string {
 func (*Report) ProtoMessage() {}
 
 func (x *Report) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_proto_appointment_proto_msgTypes[1]
+	mi := &file_pkg_proto_appointment_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -203,7 +309,7 @@ func (x *Report) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Report.ProtoReflect.Descriptor instead.
 func (*Report) Descriptor() ([]byte, []int) {
-	return file_pkg_proto_appointment_proto_rawDescGZIP(), []int{1}
+	return file_pkg_proto_appointment_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *Report) GetId() uint32 {
@@ -227,39 +333,25 @@ func (x *Report) GetReferringHospital() string {
 	return ""
 }
 
-func (x *Report) GetFindings() string {
+func (x *Report) GetIsCompleted() bool {
 	if x != nil {
-		return x.Findings
+		return x.IsCompleted
 	}
-	return ""
+	return false
 }
 
-func (x *Report) GetImpressions() string {
+func (x *Report) GetConfirmedAt() *timestamp.Timestamp {
 	if x != nil {
-		return x.Impressions
+		return x.ConfirmedAt
 	}
-	return ""
+	return nil
 }
 
-func (x *Report) GetClinicalDetails() string {
+func (x *Report) GetVersions() []*ReportVersion {
 	if x != nil {
-		return x.ClinicalDetails
+		return x.Versions
 	}
-	return ""
-}
-
-func (x *Report) GetUrl() string {
-	if x != nil {
-		return x.Url
-	}
-	return ""
-}
-
-func (x *Report) GetStatus() string {
-	if x != nil {
-		return x.Status
-	}
-	return ""
+	return nil
 }
 
 type RequestForm struct {
@@ -274,7 +366,7 @@ type RequestForm struct {
 
 func (x *RequestForm) Reset() {
 	*x = RequestForm{}
-	mi := &file_pkg_proto_appointment_proto_msgTypes[2]
+	mi := &file_pkg_proto_appointment_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -286,7 +378,7 @@ func (x *RequestForm) String() string {
 func (*RequestForm) ProtoMessage() {}
 
 func (x *RequestForm) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_proto_appointment_proto_msgTypes[2]
+	mi := &file_pkg_proto_appointment_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -299,7 +391,7 @@ func (x *RequestForm) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RequestForm.ProtoReflect.Descriptor instead.
 func (*RequestForm) Descriptor() ([]byte, []int) {
-	return file_pkg_proto_appointment_proto_rawDescGZIP(), []int{2}
+	return file_pkg_proto_appointment_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *RequestForm) GetId() uint32 {
@@ -351,16 +443,24 @@ const file_pkg_proto_appointment_proto_rawDesc = "" +
 	" \x01(\tR\x04note\x12\x16\n" +
 	"\x06status\x18\v \x01(\tR\x06status\x12.\n" +
 	"\x13has_paid_commission\x18\f \x01(\bR\x11hasPaidCommission\x12'\n" +
-	"\x0forganization_id\x18\r \x01(\rR\x0eorganizationId\"\x81\x02\n" +
-	"\x06Report\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\rR\x02id\x12%\n" +
-	"\x0eappointment_id\x18\x02 \x01(\rR\rappointmentId\x12-\n" +
-	"\x12referring_hospital\x18\x03 \x01(\tR\x11referringHospital\x12\x1a\n" +
+	"\x0forganization_id\x18\r \x01(\rR\x0eorganizationId\"\x9a\x02\n" +
+	"\rReportVersion\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\rR\x02id\x12\x1b\n" +
+	"\treport_id\x18\x02 \x01(\rR\breportId\x12%\n" +
+	"\x0eradiologist_id\x18\x03 \x01(\rR\rradiologistId\x12\x1a\n" +
 	"\bfindings\x18\x04 \x01(\tR\bfindings\x12 \n" +
 	"\vimpressions\x18\x05 \x01(\tR\vimpressions\x12)\n" +
 	"\x10clinical_details\x18\x06 \x01(\tR\x0fclinicalDetails\x12\x10\n" +
 	"\x03url\x18\a \x01(\tR\x03url\x12\x16\n" +
-	"\x06status\x18\b \x01(\tR\x06status\"o\n" +
+	"\x06status\x18\b \x01(\tR\x06status\x12\"\n" +
+	"\rno_header_url\x18\t \x01(\tR\vnoHeaderUrl\"\x82\x02\n" +
+	"\x06Report\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\rR\x02id\x12%\n" +
+	"\x0eappointment_id\x18\x02 \x01(\rR\rappointmentId\x12-\n" +
+	"\x12referring_hospital\x18\x03 \x01(\tR\x11referringHospital\x12!\n" +
+	"\fis_completed\x18\x04 \x01(\bR\visCompleted\x12=\n" +
+	"\fconfirmed_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\vconfirmedAt\x120\n" +
+	"\bversions\x18\x06 \x03(\v2\x14.proto.ReportVersionR\bversions\"o\n" +
 	"\vRequestForm\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\rR\x02id\x12%\n" +
 	"\x0eappointment_id\x18\x02 \x01(\rR\rappointmentId\x12\x10\n" +
@@ -379,20 +479,23 @@ func file_pkg_proto_appointment_proto_rawDescGZIP() []byte {
 	return file_pkg_proto_appointment_proto_rawDescData
 }
 
-var file_pkg_proto_appointment_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_pkg_proto_appointment_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_pkg_proto_appointment_proto_goTypes = []any{
 	(*Appointment)(nil),         // 0: proto.Appointment
-	(*Report)(nil),              // 1: proto.Report
-	(*RequestForm)(nil),         // 2: proto.RequestForm
-	(*timestamp.Timestamp)(nil), // 3: google.protobuf.Timestamp
+	(*ReportVersion)(nil),       // 1: proto.ReportVersion
+	(*Report)(nil),              // 2: proto.Report
+	(*RequestForm)(nil),         // 3: proto.RequestForm
+	(*timestamp.Timestamp)(nil), // 4: google.protobuf.Timestamp
 }
 var file_pkg_proto_appointment_proto_depIdxs = []int32{
-	3, // 0: proto.Appointment.appointment_time:type_name -> google.protobuf.Timestamp
-	1, // [1:1] is the sub-list for method output_type
-	1, // [1:1] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	4, // 0: proto.Appointment.appointment_time:type_name -> google.protobuf.Timestamp
+	4, // 1: proto.Report.confirmed_at:type_name -> google.protobuf.Timestamp
+	1, // 2: proto.Report.versions:type_name -> proto.ReportVersion
+	3, // [3:3] is the sub-list for method output_type
+	3, // [3:3] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_pkg_proto_appointment_proto_init() }
@@ -406,7 +509,7 @@ func file_pkg_proto_appointment_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_pkg_proto_appointment_proto_rawDesc), len(file_pkg_proto_appointment_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
