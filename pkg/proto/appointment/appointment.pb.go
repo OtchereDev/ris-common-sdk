@@ -438,6 +438,58 @@ func (x *RequestForm) GetIsFile() bool {
 	return false
 }
 
+type ModifyProcedure struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	OldVersion    *Appointment           `protobuf:"bytes,1,opt,name=old_version,json=oldVersion,proto3" json:"old_version,omitempty"`
+	NewVersion    *Appointment           `protobuf:"bytes,2,opt,name=new_version,json=newVersion,proto3" json:"new_version,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ModifyProcedure) Reset() {
+	*x = ModifyProcedure{}
+	mi := &file_pkg_proto_appointment_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ModifyProcedure) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ModifyProcedure) ProtoMessage() {}
+
+func (x *ModifyProcedure) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_proto_appointment_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ModifyProcedure.ProtoReflect.Descriptor instead.
+func (*ModifyProcedure) Descriptor() ([]byte, []int) {
+	return file_pkg_proto_appointment_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *ModifyProcedure) GetOldVersion() *Appointment {
+	if x != nil {
+		return x.OldVersion
+	}
+	return nil
+}
+
+func (x *ModifyProcedure) GetNewVersion() *Appointment {
+	if x != nil {
+		return x.NewVersion
+	}
+	return nil
+}
+
 var File_pkg_proto_appointment_proto protoreflect.FileDescriptor
 
 const file_pkg_proto_appointment_proto_rawDesc = "" +
@@ -485,7 +537,12 @@ const file_pkg_proto_appointment_proto_rawDesc = "" +
 	"\x02id\x18\x01 \x01(\rR\x02id\x12%\n" +
 	"\x0eappointment_id\x18\x02 \x01(\rR\rappointmentId\x12\x10\n" +
 	"\x03url\x18\x03 \x01(\tR\x03url\x12\x17\n" +
-	"\ais_file\x18\x04 \x01(\bR\x06isFileB\x17Z\x15pkg/proto/appointmentb\x06proto3"
+	"\ais_file\x18\x04 \x01(\bR\x06isFile\"{\n" +
+	"\x0fModifyProcedure\x123\n" +
+	"\vold_version\x18\x01 \x01(\v2\x12.proto.AppointmentR\n" +
+	"oldVersion\x123\n" +
+	"\vnew_version\x18\x02 \x01(\v2\x12.proto.AppointmentR\n" +
+	"newVersionB\x17Z\x15pkg/proto/appointmentb\x06proto3"
 
 var (
 	file_pkg_proto_appointment_proto_rawDescOnce sync.Once
@@ -499,25 +556,28 @@ func file_pkg_proto_appointment_proto_rawDescGZIP() []byte {
 	return file_pkg_proto_appointment_proto_rawDescData
 }
 
-var file_pkg_proto_appointment_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_pkg_proto_appointment_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_pkg_proto_appointment_proto_goTypes = []any{
 	(*Appointment)(nil),         // 0: proto.Appointment
 	(*ReportVersion)(nil),       // 1: proto.ReportVersion
 	(*Report)(nil),              // 2: proto.Report
 	(*RequestForm)(nil),         // 3: proto.RequestForm
-	(*timestamp.Timestamp)(nil), // 4: google.protobuf.Timestamp
+	(*ModifyProcedure)(nil),     // 4: proto.ModifyProcedure
+	(*timestamp.Timestamp)(nil), // 5: google.protobuf.Timestamp
 }
 var file_pkg_proto_appointment_proto_depIdxs = []int32{
-	4, // 0: proto.Appointment.appointment_time:type_name -> google.protobuf.Timestamp
+	5, // 0: proto.Appointment.appointment_time:type_name -> google.protobuf.Timestamp
 	3, // 1: proto.Appointment.request_form:type_name -> proto.RequestForm
-	4, // 2: proto.Appointment.created_at:type_name -> google.protobuf.Timestamp
-	4, // 3: proto.ReportVersion.confirmed_at:type_name -> google.protobuf.Timestamp
+	5, // 2: proto.Appointment.created_at:type_name -> google.protobuf.Timestamp
+	5, // 3: proto.ReportVersion.confirmed_at:type_name -> google.protobuf.Timestamp
 	1, // 4: proto.Report.versions:type_name -> proto.ReportVersion
-	5, // [5:5] is the sub-list for method output_type
-	5, // [5:5] is the sub-list for method input_type
-	5, // [5:5] is the sub-list for extension type_name
-	5, // [5:5] is the sub-list for extension extendee
-	0, // [0:5] is the sub-list for field type_name
+	0, // 5: proto.ModifyProcedure.old_version:type_name -> proto.Appointment
+	0, // 6: proto.ModifyProcedure.new_version:type_name -> proto.Appointment
+	7, // [7:7] is the sub-list for method output_type
+	7, // [7:7] is the sub-list for method input_type
+	7, // [7:7] is the sub-list for extension type_name
+	7, // [7:7] is the sub-list for extension extendee
+	0, // [0:7] is the sub-list for field type_name
 }
 
 func init() { file_pkg_proto_appointment_proto_init() }
@@ -531,7 +591,7 @@ func file_pkg_proto_appointment_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_pkg_proto_appointment_proto_rawDesc), len(file_pkg_proto_appointment_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

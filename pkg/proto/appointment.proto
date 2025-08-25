@@ -52,3 +52,8 @@ message RequestForm {
     bool is_file = 4;
 }
 
+
+message ModifyProcedure {
+    Appointment old_version = 1;
+    Appointment new_version = 2;
+}
