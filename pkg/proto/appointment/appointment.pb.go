@@ -23,24 +23,32 @@ const (
 )
 
 type Appointment struct {
-	state             protoimpl.MessageState `protogen:"open.v1"`
-	Id                uint32                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	PatientId         uint32                 `protobuf:"varint,2,opt,name=patient_id,json=patientId,proto3" json:"patient_id,omitempty"`
-	IsEmergency       bool                   `protobuf:"varint,3,opt,name=is_emergency,json=isEmergency,proto3" json:"is_emergency,omitempty"`
-	ProcedureId       uint32                 `protobuf:"varint,4,opt,name=procedure_id,json=procedureId,proto3" json:"procedure_id,omitempty"`
-	ReportId          uint32                 `protobuf:"varint,5,opt,name=report_id,json=reportId,proto3" json:"report_id,omitempty"`
-	ReferringDoctorId uint32                 `protobuf:"varint,6,opt,name=referring_doctor_id,json=referringDoctorId,proto3" json:"referring_doctor_id,omitempty"`
-	ReportingDoctorId uint32                 `protobuf:"varint,7,opt,name=reporting_doctor_id,json=reportingDoctorId,proto3" json:"reporting_doctor_id,omitempty"`
-	AppointmentTime   *timestamp.Timestamp   `protobuf:"bytes,8,opt,name=appointment_time,json=appointmentTime,proto3" json:"appointment_time,omitempty"`
-	OrganizationId    uint32                 `protobuf:"varint,9,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
-	PaymentId         uint32                 `protobuf:"varint,10,opt,name=payment_id,json=paymentId,proto3" json:"payment_id,omitempty"`
-	Note              string                 `protobuf:"bytes,11,opt,name=note,proto3" json:"note,omitempty"`
-	Status            string                 `protobuf:"bytes,12,opt,name=status,proto3" json:"status,omitempty"`
-	RequestForm       []*RequestForm         `protobuf:"bytes,13,rep,name=request_form,json=requestForm,proto3" json:"request_form,omitempty"`
-	HasPaidCommission bool                   `protobuf:"varint,14,opt,name=has_paid_commission,json=hasPaidCommission,proto3" json:"has_paid_commission,omitempty"`
-	CreatedAt         *timestamp.Timestamp   `protobuf:"bytes,15,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	unknownFields     protoimpl.UnknownFields
-	sizeCache         protoimpl.SizeCache
+	state                 protoimpl.MessageState `protogen:"open.v1"`
+	Id                    uint32                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	PatientId             uint32                 `protobuf:"varint,2,opt,name=patient_id,json=patientId,proto3" json:"patient_id,omitempty"`
+	IsEmergency           bool                   `protobuf:"varint,3,opt,name=is_emergency,json=isEmergency,proto3" json:"is_emergency,omitempty"`
+	ProcedureId           uint32                 `protobuf:"varint,4,opt,name=procedure_id,json=procedureId,proto3" json:"procedure_id,omitempty"`
+	ReportId              uint32                 `protobuf:"varint,5,opt,name=report_id,json=reportId,proto3" json:"report_id,omitempty"`
+	ReferringDoctorId     uint32                 `protobuf:"varint,6,opt,name=referring_doctor_id,json=referringDoctorId,proto3" json:"referring_doctor_id,omitempty"`
+	ReportingDoctorId     uint32                 `protobuf:"varint,7,opt,name=reporting_doctor_id,json=reportingDoctorId,proto3" json:"reporting_doctor_id,omitempty"`
+	AppointmentTime       *timestamp.Timestamp   `protobuf:"bytes,8,opt,name=appointment_time,json=appointmentTime,proto3" json:"appointment_time,omitempty"`
+	OrganizationId        uint32                 `protobuf:"varint,9,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
+	PaymentId             uint32                 `protobuf:"varint,10,opt,name=payment_id,json=paymentId,proto3" json:"payment_id,omitempty"`
+	Note                  string                 `protobuf:"bytes,11,opt,name=note,proto3" json:"note,omitempty"`
+	Status                string                 `protobuf:"bytes,12,opt,name=status,proto3" json:"status,omitempty"`
+	RequestForm           []*RequestForm         `protobuf:"bytes,13,rep,name=request_form,json=requestForm,proto3" json:"request_form,omitempty"`
+	HasPaidCommission     bool                   `protobuf:"varint,14,opt,name=has_paid_commission,json=hasPaidCommission,proto3" json:"has_paid_commission,omitempty"`
+	CreatedAt             *timestamp.Timestamp   `protobuf:"bytes,15,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	OriginalAppointmentId uint32                 `protobuf:"varint,16,opt,name=original_appointment_id,json=originalAppointmentId,proto3" json:"original_appointment_id,omitempty"`
+	ParentAppointmentId   uint32                 `protobuf:"varint,17,opt,name=parent_appointment_id,json=parentAppointmentId,proto3" json:"parent_appointment_id,omitempty"`
+	Version               int32                  `protobuf:"varint,18,opt,name=version,proto3" json:"version,omitempty"`
+	IsActive              bool                   `protobuf:"varint,19,opt,name=is_active,json=isActive,proto3" json:"is_active,omitempty"`
+	IsOriginal            bool                   `protobuf:"varint,20,opt,name=is_original,json=isOriginal,proto3" json:"is_original,omitempty"`
+	ModifiedBy            uint32                 `protobuf:"varint,22,opt,name=modified_by,json=modifiedBy,proto3" json:"modified_by,omitempty"`
+	ModificationReason    string                 `protobuf:"bytes,23,opt,name=modification_reason,json=modificationReason,proto3" json:"modification_reason,omitempty"`
+	ModifiedAt            *timestamp.Timestamp   `protobuf:"bytes,24,opt,name=modified_at,json=modifiedAt,proto3" json:"modified_at,omitempty"`
+	unknownFields         protoimpl.UnknownFields
+	sizeCache             protoimpl.SizeCache
 }
 
 func (x *Appointment) Reset() {
@@ -174,6 +182,62 @@ func (x *Appointment) GetHasPaidCommission() bool {
 func (x *Appointment) GetCreatedAt() *timestamp.Timestamp {
 	if x != nil {
 		return x.CreatedAt
+	}
+	return nil
+}
+
+func (x *Appointment) GetOriginalAppointmentId() uint32 {
+	if x != nil {
+		return x.OriginalAppointmentId
+	}
+	return 0
+}
+
+func (x *Appointment) GetParentAppointmentId() uint32 {
+	if x != nil {
+		return x.ParentAppointmentId
+	}
+	return 0
+}
+
+func (x *Appointment) GetVersion() int32 {
+	if x != nil {
+		return x.Version
+	}
+	return 0
+}
+
+func (x *Appointment) GetIsActive() bool {
+	if x != nil {
+		return x.IsActive
+	}
+	return false
+}
+
+func (x *Appointment) GetIsOriginal() bool {
+	if x != nil {
+		return x.IsOriginal
+	}
+	return false
+}
+
+func (x *Appointment) GetModifiedBy() uint32 {
+	if x != nil {
+		return x.ModifiedBy
+	}
+	return 0
+}
+
+func (x *Appointment) GetModificationReason() string {
+	if x != nil {
+		return x.ModificationReason
+	}
+	return ""
+}
+
+func (x *Appointment) GetModifiedAt() *timestamp.Timestamp {
+	if x != nil {
+		return x.ModifiedAt
 	}
 	return nil
 }
@@ -494,7 +558,7 @@ var File_pkg_proto_appointment_proto protoreflect.FileDescriptor
 
 const file_pkg_proto_appointment_proto_rawDesc = "" +
 	"\n" +
-	"\x1bpkg/proto/appointment.proto\x12\x05proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xdc\x04\n" +
+	"\x1bpkg/proto/appointment.proto\x12\x05proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xaf\a\n" +
 	"\vAppointment\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\rR\x02id\x12\x1d\n" +
 	"\n" +
@@ -514,7 +578,18 @@ const file_pkg_proto_appointment_proto_rawDesc = "" +
 	"\frequest_form\x18\r \x03(\v2\x12.proto.RequestFormR\vrequestForm\x12.\n" +
 	"\x13has_paid_commission\x18\x0e \x01(\bR\x11hasPaidCommission\x129\n" +
 	"\n" +
-	"created_at\x18\x0f \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\"\xd9\x02\n" +
+	"created_at\x18\x0f \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x126\n" +
+	"\x17original_appointment_id\x18\x10 \x01(\rR\x15originalAppointmentId\x122\n" +
+	"\x15parent_appointment_id\x18\x11 \x01(\rR\x13parentAppointmentId\x12\x18\n" +
+	"\aversion\x18\x12 \x01(\x05R\aversion\x12\x1b\n" +
+	"\tis_active\x18\x13 \x01(\bR\bisActive\x12\x1f\n" +
+	"\vis_original\x18\x14 \x01(\bR\n" +
+	"isOriginal\x12\x1f\n" +
+	"\vmodified_by\x18\x16 \x01(\rR\n" +
+	"modifiedBy\x12/\n" +
+	"\x13modification_reason\x18\x17 \x01(\tR\x12modificationReason\x12;\n" +
+	"\vmodified_at\x18\x18 \x01(\v2\x1a.google.protobuf.TimestampR\n" +
+	"modifiedAt\"\xd9\x02\n" +
 	"\rReportVersion\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\rR\x02id\x12\x1b\n" +
 	"\treport_id\x18\x02 \x01(\rR\breportId\x12%\n" +
@@ -569,15 +644,16 @@ var file_pkg_proto_appointment_proto_depIdxs = []int32{
 	5, // 0: proto.Appointment.appointment_time:type_name -> google.protobuf.Timestamp
 	3, // 1: proto.Appointment.request_form:type_name -> proto.RequestForm
 	5, // 2: proto.Appointment.created_at:type_name -> google.protobuf.Timestamp
-	5, // 3: proto.ReportVersion.confirmed_at:type_name -> google.protobuf.Timestamp
-	1, // 4: proto.Report.versions:type_name -> proto.ReportVersion
-	0, // 5: proto.ModifyProcedure.old_version:type_name -> proto.Appointment
-	0, // 6: proto.ModifyProcedure.new_version:type_name -> proto.Appointment
-	7, // [7:7] is the sub-list for method output_type
-	7, // [7:7] is the sub-list for method input_type
-	7, // [7:7] is the sub-list for extension type_name
-	7, // [7:7] is the sub-list for extension extendee
-	0, // [0:7] is the sub-list for field type_name
+	5, // 3: proto.Appointment.modified_at:type_name -> google.protobuf.Timestamp
+	5, // 4: proto.ReportVersion.confirmed_at:type_name -> google.protobuf.Timestamp
+	1, // 5: proto.Report.versions:type_name -> proto.ReportVersion
+	0, // 6: proto.ModifyProcedure.old_version:type_name -> proto.Appointment
+	0, // 7: proto.ModifyProcedure.new_version:type_name -> proto.Appointment
+	8, // [8:8] is the sub-list for method output_type
+	8, // [8:8] is the sub-list for method input_type
+	8, // [8:8] is the sub-list for extension type_name
+	8, // [8:8] is the sub-list for extension extendee
+	0, // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_pkg_proto_appointment_proto_init() }

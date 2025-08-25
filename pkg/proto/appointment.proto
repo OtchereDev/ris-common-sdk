@@ -22,6 +22,14 @@ message Appointment {
   repeated RequestForm request_form = 13;
   bool has_paid_commission = 14;
   google.protobuf.Timestamp created_at = 15;
+  uint32 original_appointment_id = 16; 
+  uint32 parent_appointment_id = 17;  
+  int32 version = 18;                           
+  bool is_active = 19;                          
+  bool is_original = 20;                        
+  uint32 modified_by = 22;            
+  string modification_reason = 23;              
+  google.protobuf.Timestamp modified_at = 24;
 }
 
 message ReportVersion {
