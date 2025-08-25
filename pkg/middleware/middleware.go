@@ -209,3 +209,20 @@ func AdminMiddleware() fiber.Handler {
 
 	}
 }
+
+func FinanceMiddleware() fiber.Handler {
+
+	return func(c *fiber.Ctx) error {
+		user, _ := SerializeRequestUser(c)
+
+		if Contains([]string{
+			UserTypes.Accountant,
+			UserTypes.Cashier,
+		}, user.UserType) {
+			return c.Next()
+		}
+
+		return c.Status(fiber.StatusForbidden).JSON(PermissionNotFulfilledError)
+
+	}
+}
