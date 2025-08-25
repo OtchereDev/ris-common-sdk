@@ -6,20 +6,42 @@ import "google/protobuf/timestamp.proto";
 
 option go_package = "pkg/proto/payment";
 
+// Appointment Payment
 message AppointmentPayment {
   uint32 id = 1;
-  repeated uint32 appointment_ids = 2;
-  double amount = 3;
-  bool has_discount = 4;
-  bool is_receipted = 5;
-  string payment_method = 6;
-  double discount_amount = 7;
-  string discount_authorizer = 8;
-  google.protobuf.Timestamp paid_at = 9;
-  bool is_deleted = 10;
-  string receipt_url = 11;
-  string receipt_number = 12;
-  string insurance_company = 13;
-  string insurance_id = 14;
-  string payment_details = 15;
+  uint32 appointment_id = 2;
+  double total_amount = 4;
+  bool has_discount = 5;
+  bool is_receipted = 6;
+  string payment_method = 7;
+  double discount_amount = 8;
+  string discount_authorizer = 9;
+  google.protobuf.Timestamp paid_at = 10;
+  string receipt_number = 11;
+
+  bool is_active = 12;
+  uint32 replaced_by_payment_id = 13;
+  repeated PaymentAdjustment adjustments = 14;
+
+  string receipt_url = 15;
+  string insurance_company = 16;
+  string insurance_id = 17;
+  string payment_details = 18;
+  uint32 insuraner_id = 19;
+}
+
+// Payment adjustment
+message PaymentAdjustment {
+  uint32 id = 1;
+  uint32 original_payment_id = 2;
+  uint32 new_payment_id = 4;
+  string adjustment_type = 6;
+  double amount = 7;
+  double previous_amount = 8;
+  double new_amount = 9;
+  string reason = 10;
+  string status = 11;
+  google.protobuf.Timestamp processed_at = 12;
+  uint32 processed_by = 13;
+  google.protobuf.Timestamp created_at = 14;
 }

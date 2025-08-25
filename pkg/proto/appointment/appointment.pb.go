@@ -32,11 +32,13 @@ type Appointment struct {
 	ReferringDoctorId uint32                 `protobuf:"varint,6,opt,name=referring_doctor_id,json=referringDoctorId,proto3" json:"referring_doctor_id,omitempty"`
 	ReportingDoctorId uint32                 `protobuf:"varint,7,opt,name=reporting_doctor_id,json=reportingDoctorId,proto3" json:"reporting_doctor_id,omitempty"`
 	AppointmentTime   *timestamp.Timestamp   `protobuf:"bytes,8,opt,name=appointment_time,json=appointmentTime,proto3" json:"appointment_time,omitempty"`
-	PaymentId         uint32                 `protobuf:"varint,9,opt,name=payment_id,json=paymentId,proto3" json:"payment_id,omitempty"`
-	Note              string                 `protobuf:"bytes,10,opt,name=note,proto3" json:"note,omitempty"`
-	Status            string                 `protobuf:"bytes,11,opt,name=status,proto3" json:"status,omitempty"`
-	HasPaidCommission bool                   `protobuf:"varint,12,opt,name=has_paid_commission,json=hasPaidCommission,proto3" json:"has_paid_commission,omitempty"`
-	OrganizationId    uint32                 `protobuf:"varint,13,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
+	OrganizationId    uint32                 `protobuf:"varint,9,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
+	PaymentId         uint32                 `protobuf:"varint,10,opt,name=payment_id,json=paymentId,proto3" json:"payment_id,omitempty"`
+	Note              string                 `protobuf:"bytes,11,opt,name=note,proto3" json:"note,omitempty"`
+	Status            string                 `protobuf:"bytes,12,opt,name=status,proto3" json:"status,omitempty"`
+	RequestForm       []*RequestForm         `protobuf:"bytes,13,rep,name=request_form,json=requestForm,proto3" json:"request_form,omitempty"`
+	HasPaidCommission bool                   `protobuf:"varint,14,opt,name=has_paid_commission,json=hasPaidCommission,proto3" json:"has_paid_commission,omitempty"`
+	CreatedAt         *timestamp.Timestamp   `protobuf:"bytes,15,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
@@ -127,6 +129,13 @@ func (x *Appointment) GetAppointmentTime() *timestamp.Timestamp {
 	return nil
 }
 
+func (x *Appointment) GetOrganizationId() uint32 {
+	if x != nil {
+		return x.OrganizationId
+	}
+	return 0
+}
+
 func (x *Appointment) GetPaymentId() uint32 {
 	if x != nil {
 		return x.PaymentId
@@ -148,6 +157,13 @@ func (x *Appointment) GetStatus() string {
 	return ""
 }
 
+func (x *Appointment) GetRequestForm() []*RequestForm {
+	if x != nil {
+		return x.RequestForm
+	}
+	return nil
+}
+
 func (x *Appointment) GetHasPaidCommission() bool {
 	if x != nil {
 		return x.HasPaidCommission
@@ -155,11 +171,11 @@ func (x *Appointment) GetHasPaidCommission() bool {
 	return false
 }
 
-func (x *Appointment) GetOrganizationId() uint32 {
+func (x *Appointment) GetCreatedAt() *timestamp.Timestamp {
 	if x != nil {
-		return x.OrganizationId
+		return x.CreatedAt
 	}
-	return 0
+	return nil
 }
 
 type ReportVersion struct {
@@ -426,7 +442,7 @@ var File_pkg_proto_appointment_proto protoreflect.FileDescriptor
 
 const file_pkg_proto_appointment_proto_rawDesc = "" +
 	"\n" +
-	"\x1bpkg/proto/appointment.proto\x12\x05proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xea\x03\n" +
+	"\x1bpkg/proto/appointment.proto\x12\x05proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xdc\x04\n" +
 	"\vAppointment\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\rR\x02id\x12\x1d\n" +
 	"\n" +
@@ -436,14 +452,17 @@ const file_pkg_proto_appointment_proto_rawDesc = "" +
 	"\treport_id\x18\x05 \x01(\rR\breportId\x12.\n" +
 	"\x13referring_doctor_id\x18\x06 \x01(\rR\x11referringDoctorId\x12.\n" +
 	"\x13reporting_doctor_id\x18\a \x01(\rR\x11reportingDoctorId\x12E\n" +
-	"\x10appointment_time\x18\b \x01(\v2\x1a.google.protobuf.TimestampR\x0fappointmentTime\x12\x1d\n" +
+	"\x10appointment_time\x18\b \x01(\v2\x1a.google.protobuf.TimestampR\x0fappointmentTime\x12'\n" +
+	"\x0forganization_id\x18\t \x01(\rR\x0eorganizationId\x12\x1d\n" +
 	"\n" +
-	"payment_id\x18\t \x01(\rR\tpaymentId\x12\x12\n" +
-	"\x04note\x18\n" +
-	" \x01(\tR\x04note\x12\x16\n" +
-	"\x06status\x18\v \x01(\tR\x06status\x12.\n" +
-	"\x13has_paid_commission\x18\f \x01(\bR\x11hasPaidCommission\x12'\n" +
-	"\x0forganization_id\x18\r \x01(\rR\x0eorganizationId\"\xd9\x02\n" +
+	"payment_id\x18\n" +
+	" \x01(\rR\tpaymentId\x12\x12\n" +
+	"\x04note\x18\v \x01(\tR\x04note\x12\x16\n" +
+	"\x06status\x18\f \x01(\tR\x06status\x125\n" +
+	"\frequest_form\x18\r \x03(\v2\x12.proto.RequestFormR\vrequestForm\x12.\n" +
+	"\x13has_paid_commission\x18\x0e \x01(\bR\x11hasPaidCommission\x129\n" +
+	"\n" +
+	"created_at\x18\x0f \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\"\xd9\x02\n" +
 	"\rReportVersion\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\rR\x02id\x12\x1b\n" +
 	"\treport_id\x18\x02 \x01(\rR\breportId\x12%\n" +
@@ -490,13 +509,15 @@ var file_pkg_proto_appointment_proto_goTypes = []any{
 }
 var file_pkg_proto_appointment_proto_depIdxs = []int32{
 	4, // 0: proto.Appointment.appointment_time:type_name -> google.protobuf.Timestamp
-	4, // 1: proto.ReportVersion.confirmed_at:type_name -> google.protobuf.Timestamp
-	1, // 2: proto.Report.versions:type_name -> proto.ReportVersion
-	3, // [3:3] is the sub-list for method output_type
-	3, // [3:3] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	3, // 1: proto.Appointment.request_form:type_name -> proto.RequestForm
+	4, // 2: proto.Appointment.created_at:type_name -> google.protobuf.Timestamp
+	4, // 3: proto.ReportVersion.confirmed_at:type_name -> google.protobuf.Timestamp
+	1, // 4: proto.Report.versions:type_name -> proto.ReportVersion
+	5, // [5:5] is the sub-list for method output_type
+	5, // [5:5] is the sub-list for method input_type
+	5, // [5:5] is the sub-list for extension type_name
+	5, // [5:5] is the sub-list for extension extendee
+	0, // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_pkg_proto_appointment_proto_init() }

@@ -7,19 +7,21 @@ import "google/protobuf/timestamp.proto";
 option go_package = "pkg/proto/appointment";
 
 message Appointment {
-    uint32 id = 1;
-    uint32 patient_id = 2;
-    bool is_emergency = 3;
-    uint32 procedure_id = 4;
-    uint32 report_id = 5;
-    uint32 referring_doctor_id = 6;
-    uint32 reporting_doctor_id = 7;
-    google.protobuf.Timestamp appointment_time = 8;
-    uint32 payment_id = 9;
-    string note = 10;
-    string status = 11;
-    bool has_paid_commission = 12;
-    uint32 organization_id = 13;
+  uint32 id = 1;
+  uint32 patient_id = 2;
+  bool is_emergency = 3;
+  uint32 procedure_id = 4;
+  uint32 report_id = 5;
+  uint32 referring_doctor_id = 6;
+  uint32 reporting_doctor_id = 7;
+  google.protobuf.Timestamp appointment_time = 8;
+  uint32 organization_id = 9;
+  uint32 payment_id = 10;
+  string note = 11;
+  string status = 12;
+  repeated RequestForm request_form = 13;
+  bool has_paid_commission = 14;
+  google.protobuf.Timestamp created_at = 15;
 }
 
 message ReportVersion {
