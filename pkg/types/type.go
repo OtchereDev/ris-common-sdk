@@ -75,6 +75,7 @@ type UpdateUserPassword struct {
 	CanVerfiy          bool      `json:"can_verify" gorm:"default:false"`
 	SpecialAppointment bool      `json:"special_appointment" gorm:"default:false"`
 	IsProxy            bool      `json:"is_proxy"`
+	PhoneNumber        string    `json:"phone_number" validate:"required,e164"`
 }
 
 type AllUserParam struct {
