@@ -3,11 +3,11 @@ package services
 import (
 	"testing"
 
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/dictionary/tags"
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/media"
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/network"
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/network/dicomstatus"
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/utils"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/dictionary/tags"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/media"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/network"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/network/dicomstatus"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/utils"
 )
 
 func Test_scu_EchoSCU(t *testing.T) {

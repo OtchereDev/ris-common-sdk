@@ -3,9 +3,9 @@ package utils
 import (
 	"time"
 
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/dictionary/tags"
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/media"
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/uuids"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/dictionary/tags"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/media"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/uuids"
 )
 
 // DefaultCFindRequest - Creates a default C-Find request

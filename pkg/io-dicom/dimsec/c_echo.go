@@ -3,11 +3,11 @@ package dimsec
 import (
 	"errors"
 
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/dictionary/tags"
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/media"
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/network"
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/network/dicomcommand"
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/network/dicomstatus"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/dictionary/tags"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/media"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/network"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/network/dicomcommand"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/network/dicomstatus"
 )
 
 // CEchoReadRQ CEcho request read

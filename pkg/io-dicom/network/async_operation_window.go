@@ -1,6 +1,6 @@
 package network
 
-import "github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/media"
+import "github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/media"
 
 // AsyncOperationWindow - AsyncOperationWindow
 type AsyncOperationWindow interface {

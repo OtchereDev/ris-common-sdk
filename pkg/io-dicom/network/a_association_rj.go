@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"log/slog"
 
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/media"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/media"
 )
 
 // PermanentRejectReasons - Permanent association reject reasons

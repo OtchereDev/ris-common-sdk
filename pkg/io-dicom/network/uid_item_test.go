@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/dictionary/sopclass"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/dictionary/sopclass"
 )
 
 func TestNewUIDitem(t *testing.T) {

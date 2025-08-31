@@ -6,7 +6,7 @@ import (
 	"errors"
 	"log"
 
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/dictionary/transfersyntax"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/dictionary/transfersyntax"
 )
 
 // BufData - is an interface to buffer manipulation class

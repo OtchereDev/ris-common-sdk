@@ -3,7 +3,7 @@ package media
 import (
 	"testing"
 
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/dictionary/transfersyntax"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/dictionary/transfersyntax"
 )
 
 func TestNewDCMObjFromFile(t *testing.T) {

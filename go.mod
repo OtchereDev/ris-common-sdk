@@ -8,6 +8,7 @@ require (
 	github.com/caarlos0/env/v11 v11.3.1
 	github.com/go-playground/validator/v10 v10.24.0
 	github.com/golang/protobuf v1.5.4
+	github.com/mattn/go-sqlite3 v1.14.22
 	github.com/nats-io/nats.go v1.38.0
 	golang.org/x/crypto v0.39.0
 	google.golang.org/api v0.231.0
@@ -62,7 +63,6 @@ require (
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.16 // indirect
-	github.com/mattn/go-sqlite3 v1.14.22 // indirect
 	github.com/nats-io/nkeys v0.4.9 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/planetscale/vtprotobuf v0.6.1-0.20240319094008-0393e58bdf10 // indirect

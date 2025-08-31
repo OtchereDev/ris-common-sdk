@@ -10,12 +10,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/dictionary/sopclass"
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/dictionary/tags"
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/dictionary/transfersyntax"
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/imp"
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/media"
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/network/pdutype"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/dictionary/sopclass"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/dictionary/tags"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/dictionary/transfersyntax"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/imp"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/media"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/network/pdutype"
 )
 
 // PDUService - struct for PDUService

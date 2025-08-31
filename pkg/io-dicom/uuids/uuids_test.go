@@ -3,7 +3,7 @@ package uuids
 import (
 	"testing"
 
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/imp"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/imp"
 )
 
 func Test_hash32(t *testing.T) {

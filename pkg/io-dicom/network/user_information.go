@@ -5,7 +5,7 @@ import (
 	"errors"
 	"strconv"
 
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/media"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/media"
 )
 
 // UserInformation - UserInformation

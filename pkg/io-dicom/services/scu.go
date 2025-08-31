@@ -6,13 +6,13 @@ import (
 	"log/slog"
 	"strconv"
 
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/dictionary/sopclass"
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/dictionary/tags"
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/dictionary/transfersyntax"
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/dimsec"
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/media"
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/network"
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/network/dicomstatus"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/dictionary/sopclass"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/dictionary/tags"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/dictionary/transfersyntax"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/dimsec"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/media"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/network"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/network/dicomstatus"
 )
 
 // SCU - inteface to a scu

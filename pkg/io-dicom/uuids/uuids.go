@@ -4,7 +4,7 @@ import (
 	"hash/fnv"
 	"strconv"
 
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/imp"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/imp"
 )
 
 func hash32(text string) uint32 {

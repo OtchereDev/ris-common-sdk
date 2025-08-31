@@ -4,9 +4,9 @@ import (
 	"bufio"
 	"log/slog"
 
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/dictionary/sopclass"
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/dictionary/transfersyntax"
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/media"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/dictionary/sopclass"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/dictionary/transfersyntax"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/media"
 )
 
 // PresentationContextAccept accepted presentation context

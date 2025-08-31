@@ -9,12 +9,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/dictionary/sopclass"
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/dictionary/tags"
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/dictionary/transfersyntax"
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/jpeglib"
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/openjpeg"
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/transcoder"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/dictionary/sopclass"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/dictionary/tags"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/dictionary/transfersyntax"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/jpeglib"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/openjpeg"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/transcoder"
 )
 
 // DcmObj - DICOM Object structure

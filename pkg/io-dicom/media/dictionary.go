@@ -5,7 +5,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/OtchereDev/ris-ms-dicom-server/internal/io-dicom/dictionary/tags"
+	"github.com/OtchereDev/ris-common-sdk/pkg/io-dicom/dictionary/tags"
 )
 
 type dictionary struct {
