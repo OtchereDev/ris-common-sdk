@@ -3,6 +3,7 @@ package users
 import (
 	"fmt"
 	"math/rand"
+	"strings"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
@@ -12,6 +13,9 @@ const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456
 const numberBytes = "0123456789"
 
 func HashPassword(password string) ([]byte, error) {
+	if len(strings.Trim(password, " ")) == 0 {
+		return nil, fmt.Errorf("password cannot be empty ")
+	}
 	return bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 }
 
