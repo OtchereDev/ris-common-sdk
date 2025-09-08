@@ -8,6 +8,7 @@ message Modality {
     uint32 id = 1;
     string name = 2;
     string shortName = 3;
+    uint32 estimatedReportingTime = 4;
 }
 
 message Procedure {
