@@ -28,6 +28,7 @@ message AppointmentPayment {
   string insurance_id = 17;
   string payment_details = 18;
   uint32 insuraner_id = 19;
+  double amount_paid = 20;
 }
 
 // Payment adjustment

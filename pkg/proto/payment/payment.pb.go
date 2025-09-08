@@ -43,6 +43,7 @@ type AppointmentPayment struct {
 	InsuranceId         string                 `protobuf:"bytes,17,opt,name=insurance_id,json=insuranceId,proto3" json:"insurance_id,omitempty"`
 	PaymentDetails      string                 `protobuf:"bytes,18,opt,name=payment_details,json=paymentDetails,proto3" json:"payment_details,omitempty"`
 	InsuranerId         uint32                 `protobuf:"varint,19,opt,name=insuraner_id,json=insuranerId,proto3" json:"insuraner_id,omitempty"`
+	AmountPaid          float64                `protobuf:"fixed64,20,opt,name=amount_paid,json=amountPaid,proto3" json:"amount_paid,omitempty"`
 	unknownFields       protoimpl.UnknownFields
 	sizeCache           protoimpl.SizeCache
 }
@@ -203,6 +204,13 @@ func (x *AppointmentPayment) GetInsuranerId() uint32 {
 	return 0
 }
 
+func (x *AppointmentPayment) GetAmountPaid() float64 {
+	if x != nil {
+		return x.AmountPaid
+	}
+	return 0
+}
+
 // Payment adjustment
 type PaymentAdjustment struct {
 	state             protoimpl.MessageState `protogen:"open.v1"`
@@ -340,7 +348,7 @@ var File_pkg_proto_payment_proto protoreflect.FileDescriptor
 
 const file_pkg_proto_payment_proto_rawDesc = "" +
 	"\n" +
-	"\x17pkg/proto/payment.proto\x12\vappointment\x1a\x1fgoogle/protobuf/timestamp.proto\"\xe2\x05\n" +
+	"\x17pkg/proto/payment.proto\x12\vappointment\x1a\x1fgoogle/protobuf/timestamp.proto\"\x83\x06\n" +
 	"\x12AppointmentPayment\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\rR\x02id\x12%\n" +
 	"\x0eappointment_id\x18\x02 \x01(\rR\rappointmentId\x12!\n" +
@@ -361,7 +369,9 @@ const file_pkg_proto_payment_proto_rawDesc = "" +
 	"\x11insurance_company\x18\x10 \x01(\tR\x10insuranceCompany\x12!\n" +
 	"\finsurance_id\x18\x11 \x01(\tR\vinsuranceId\x12'\n" +
 	"\x0fpayment_details\x18\x12 \x01(\tR\x0epaymentDetails\x12!\n" +
-	"\finsuraner_id\x18\x13 \x01(\rR\vinsuranerId\"\xcf\x03\n" +
+	"\finsuraner_id\x18\x13 \x01(\rR\vinsuranerId\x12\x1f\n" +
+	"\vamount_paid\x18\x14 \x01(\x01R\n" +
+	"amountPaid\"\xcf\x03\n" +
 	"\x11PaymentAdjustment\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\rR\x02id\x12.\n" +
 	"\x13original_payment_id\x18\x02 \x01(\rR\x11originalPaymentId\x12$\n" +
