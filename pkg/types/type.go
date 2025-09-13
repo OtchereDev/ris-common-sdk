@@ -48,11 +48,11 @@ type ApiReponse struct {
 }
 
 type PaginationResult struct {
-	Page       int        `json:"page"`
-	TotalCount int64      `json:"total_count"`
-	Limit      int        `json:"limit"`
-	TotalPage  float64    `json:"total_page"`
-	Data       *fiber.Map `json:"data"`
+	Page       int     `json:"page"`
+	TotalCount int64   `json:"total_count"`
+	Limit      int     `json:"limit"`
+	TotalPage  float64 `json:"total_page"`
+	Data       any     `json:"data"`
 }
 
 type DisbaleDoctorPayload struct {
