@@ -30,6 +30,8 @@ message ReferringDoctor {
   google.protobuf.Timestamp last_login = 13; // Last login time
   google.protobuf.Timestamp created_at = 14; // Created at time
   string password = 15;
+  string profession = 16;
+  string license_number = 17;
 }
 
 message DoctorLoggedIn{
@@ -65,6 +67,4 @@ message TempAppointment {
   bool is_completed = 21;
   google.protobuf.Timestamp created_at = 22;
   google.protobuf.Timestamp updated_at = 23;
-  string profession = 24;
-  string license_number = 25;
 }

@@ -115,6 +115,8 @@ type ReferringDoctor struct {
 	LastLogin          *timestamp.Timestamp   `protobuf:"bytes,13,opt,name=last_login,json=lastLogin,proto3" json:"last_login,omitempty"`                              // Last login time
 	CreatedAt          *timestamp.Timestamp   `protobuf:"bytes,14,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`                              // Created at time
 	Password           string                 `protobuf:"bytes,15,opt,name=password,proto3" json:"password,omitempty"`
+	Profession         string                 `protobuf:"bytes,16,opt,name=profession,proto3" json:"profession,omitempty"`
+	LicenseNumber      string                 `protobuf:"bytes,17,opt,name=license_number,json=licenseNumber,proto3" json:"license_number,omitempty"`
 	unknownFields      protoimpl.UnknownFields
 	sizeCache          protoimpl.SizeCache
 }
@@ -250,6 +252,20 @@ func (x *ReferringDoctor) GetCreatedAt() *timestamp.Timestamp {
 func (x *ReferringDoctor) GetPassword() string {
 	if x != nil {
 		return x.Password
+	}
+	return ""
+}
+
+func (x *ReferringDoctor) GetProfession() string {
+	if x != nil {
+		return x.Profession
+	}
+	return ""
+}
+
+func (x *ReferringDoctor) GetLicenseNumber() string {
+	if x != nil {
+		return x.LicenseNumber
 	}
 	return ""
 }
@@ -396,8 +412,6 @@ type TempAppointment struct {
 	IsCompleted       bool                   `protobuf:"varint,21,opt,name=is_completed,json=isCompleted,proto3" json:"is_completed,omitempty"`
 	CreatedAt         *timestamp.Timestamp   `protobuf:"bytes,22,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	UpdatedAt         *timestamp.Timestamp   `protobuf:"bytes,23,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
-	Profession        string                 `protobuf:"bytes,24,opt,name=profession,proto3" json:"profession,omitempty"`
-	LicenseNumber     string                 `protobuf:"bytes,25,opt,name=license_number,json=licenseNumber,proto3" json:"license_number,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
@@ -572,20 +586,6 @@ func (x *TempAppointment) GetUpdatedAt() *timestamp.Timestamp {
 	return nil
 }
 
-func (x *TempAppointment) GetProfession() string {
-	if x != nil {
-		return x.Profession
-	}
-	return ""
-}
-
-func (x *TempAppointment) GetLicenseNumber() string {
-	if x != nil {
-		return x.LicenseNumber
-	}
-	return ""
-}
-
 var File_pkg_proto_referral_proto protoreflect.FileDescriptor
 
 const file_pkg_proto_referral_proto_rawDesc = "" +
@@ -597,7 +597,7 @@ const file_pkg_proto_referral_proto_rawDesc = "" +
 	"\fphone_number\x18\x03 \x01(\tR\vphoneNumber\x12\x18\n" +
 	"\aaddress\x18\x04 \x01(\tR\aaddress\x12\x1d\n" +
 	"\n" +
-	"is_deleted\x18\x05 \x01(\bR\tisDeleted\"\xd6\x04\n" +
+	"is_deleted\x18\x05 \x01(\bR\tisDeleted\"\x9d\x05\n" +
 	"\x0fReferringDoctor\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\rR\x02id\x12\x1d\n" +
 	"\n" +
@@ -619,7 +619,11 @@ const file_pkg_proto_referral_proto_rawDesc = "" +
 	"last_login\x18\r \x01(\v2\x1a.google.protobuf.TimestampR\tlastLogin\x129\n" +
 	"\n" +
 	"created_at\x18\x0e \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x12\x1a\n" +
-	"\bpassword\x18\x0f \x01(\tR\bpassword\"x\n" +
+	"\bpassword\x18\x0f \x01(\tR\bpassword\x12\x1e\n" +
+	"\n" +
+	"profession\x18\x10 \x01(\tR\n" +
+	"profession\x12%\n" +
+	"\x0elicense_number\x18\x11 \x01(\tR\rlicenseNumber\"x\n" +
 	"\x0eDoctorLoggedIn\x12\x1a\n" +
 	"\bdoctorId\x18\x01 \x01(\rR\bdoctorId\x12\x1a\n" +
 	"\bdeviceId\x18\x02 \x01(\tR\bdeviceId\x12.\n" +
@@ -629,7 +633,7 @@ const file_pkg_proto_referral_proto_rawDesc = "" +
 	"\n" +
 	"commission\x18\x02 \x01(\x01R\n" +
 	"commission\x12$\n" +
-	"\rappointmentId\x18\x03 \x01(\rR\rappointmentId\"\xbc\x06\n" +
+	"\rappointmentId\x18\x03 \x01(\rR\rappointmentId\"\xf5\x05\n" +
 	"\x0fTempAppointment\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\rR\x02id\x12\x1d\n" +
 	"\n" +
@@ -656,11 +660,7 @@ const file_pkg_proto_referral_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\x16 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
 	"\n" +
-	"updated_at\x18\x17 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\x12\x1e\n" +
-	"\n" +
-	"profession\x18\x18 \x01(\tR\n" +
-	"profession\x12%\n" +
-	"\x0elicense_number\x18\x19 \x01(\tR\rlicenseNumberB\x14Z\x12pkg/proto/referralb\x06proto3"
+	"updated_at\x18\x17 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAtB\x14Z\x12pkg/proto/referralb\x06proto3"
 
 var (
 	file_pkg_proto_referral_proto_rawDescOnce sync.Once
