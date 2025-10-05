@@ -76,6 +76,7 @@ type UpdateUserPassword struct {
 	SpecialAppointment bool      `json:"special_appointment" gorm:"default:false"`
 	IsProxy            bool      `json:"is_proxy"`
 	PhoneNumber        string    `json:"phone_number" validate:"required,e164"`
+	UseEmailOTP        bool      `json:"use_email_otp" gorm:"default:false"`
 }
 
 type AllUserParam struct {
