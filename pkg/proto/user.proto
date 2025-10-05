@@ -24,4 +24,5 @@ message User {
   google.protobuf.Timestamp updated_at = 15;
   string password = 16;
   string phone_number = 17;
+  bool use_email_otp = 18;
 }

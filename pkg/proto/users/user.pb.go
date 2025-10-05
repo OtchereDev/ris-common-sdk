@@ -41,6 +41,7 @@ type User struct {
 	UpdatedAt          *timestamp.Timestamp   `protobuf:"bytes,15,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
 	Password           string                 `protobuf:"bytes,16,opt,name=password,proto3" json:"password,omitempty"`
 	PhoneNumber        string                 `protobuf:"bytes,17,opt,name=phone_number,json=phoneNumber,proto3" json:"phone_number,omitempty"`
+	UseEmailOtp        bool                   `protobuf:"varint,18,opt,name=use_email_otp,json=useEmailOtp,proto3" json:"use_email_otp,omitempty"`
 	unknownFields      protoimpl.UnknownFields
 	sizeCache          protoimpl.SizeCache
 }
@@ -194,11 +195,18 @@ func (x *User) GetPhoneNumber() string {
 	return ""
 }
 
+func (x *User) GetUseEmailOtp() bool {
+	if x != nil {
+		return x.UseEmailOtp
+	}
+	return false
+}
+
 var File_pkg_proto_user_proto protoreflect.FileDescriptor
 
 const file_pkg_proto_user_proto_rawDesc = "" +
 	"\n" +
-	"\x14pkg/proto/user.proto\x12\x05proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xda\x04\n" +
+	"\x14pkg/proto/user.proto\x12\x05proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xfe\x04\n" +
 	"\x04User\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\rR\x02id\x12\x1d\n" +
 	"\n" +
@@ -224,7 +232,8 @@ const file_pkg_proto_user_proto_rawDesc = "" +
 	"\n" +
 	"updated_at\x18\x0f \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\x12\x1a\n" +
 	"\bpassword\x18\x10 \x01(\tR\bpassword\x12!\n" +
-	"\fphone_number\x18\x11 \x01(\tR\vphoneNumberB\x11Z\x0fpkg/proto/usersb\x06proto3"
+	"\fphone_number\x18\x11 \x01(\tR\vphoneNumber\x12\"\n" +
+	"\ruse_email_otp\x18\x12 \x01(\bR\vuseEmailOtpB\x11Z\x0fpkg/proto/usersb\x06proto3"
 
 var (
 	file_pkg_proto_user_proto_rawDescOnce sync.Once
