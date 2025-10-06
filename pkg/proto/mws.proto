@@ -24,6 +24,7 @@ message CreateWorklistEntry {
 message CreateModality {
   string modality = 1;
   string station_ae_title = 2;
+  int32 modality_id = 3;
 }
 
 message CreateStation {
@@ -32,4 +33,5 @@ message CreateStation {
   int32 port = 3;
   string description = 4;
   string modality = 5;
+  int32 station_id = 6;
 }

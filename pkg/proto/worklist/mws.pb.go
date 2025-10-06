@@ -174,6 +174,7 @@ type CreateModality struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
 	Modality       string                 `protobuf:"bytes,1,opt,name=modality,proto3" json:"modality,omitempty"`
 	StationAeTitle string                 `protobuf:"bytes,2,opt,name=station_ae_title,json=stationAeTitle,proto3" json:"station_ae_title,omitempty"`
+	ModalityId     int32                  `protobuf:"varint,3,opt,name=modality_id,json=modalityId,proto3" json:"modality_id,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -222,6 +223,13 @@ func (x *CreateModality) GetStationAeTitle() string {
 	return ""
 }
 
+func (x *CreateModality) GetModalityId() int32 {
+	if x != nil {
+		return x.ModalityId
+	}
+	return 0
+}
+
 type CreateStation struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	AeTitle       string                 `protobuf:"bytes,1,opt,name=ae_title,json=aeTitle,proto3" json:"ae_title,omitempty"`
@@ -229,6 +237,7 @@ type CreateStation struct {
 	Port          int32                  `protobuf:"varint,3,opt,name=port,proto3" json:"port,omitempty"`
 	Description   string                 `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
 	Modality      string                 `protobuf:"bytes,5,opt,name=modality,proto3" json:"modality,omitempty"`
+	StationId     int32                  `protobuf:"varint,6,opt,name=station_id,json=stationId,proto3" json:"station_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -298,6 +307,13 @@ func (x *CreateStation) GetModality() string {
 	return ""
 }
 
+func (x *CreateStation) GetStationId() int32 {
+	if x != nil {
+		return x.StationId
+	}
+	return 0
+}
+
 var File_pkg_proto_mws_proto protoreflect.FileDescriptor
 
 const file_pkg_proto_mws_proto_rawDesc = "" +
@@ -320,16 +336,20 @@ const file_pkg_proto_mws_proto_rawDesc = "" +
 	"\x14performing_physician\x18\v \x01(\tR\x13performingPhysician\x12\x16\n" +
 	"\x06status\x18\f \x01(\tR\x06status\x12\x1a\n" +
 	"\bpriority\x18\r \x01(\tR\bpriority\x12%\n" +
-	"\x0econtrast_agent\x18\x0e \x01(\tR\rcontrastAgent\"V\n" +
+	"\x0econtrast_agent\x18\x0e \x01(\tR\rcontrastAgent\"w\n" +
 	"\x0eCreateModality\x12\x1a\n" +
 	"\bmodality\x18\x01 \x01(\tR\bmodality\x12(\n" +
-	"\x10station_ae_title\x18\x02 \x01(\tR\x0estationAeTitle\"\x98\x01\n" +
+	"\x10station_ae_title\x18\x02 \x01(\tR\x0estationAeTitle\x12\x1f\n" +
+	"\vmodality_id\x18\x03 \x01(\x05R\n" +
+	"modalityId\"\xb7\x01\n" +
 	"\rCreateStation\x12\x19\n" +
 	"\bae_title\x18\x01 \x01(\tR\aaeTitle\x12\x1a\n" +
 	"\bhostname\x18\x02 \x01(\tR\bhostname\x12\x12\n" +
 	"\x04port\x18\x03 \x01(\x05R\x04port\x12 \n" +
 	"\vdescription\x18\x04 \x01(\tR\vdescription\x12\x1a\n" +
-	"\bmodality\x18\x05 \x01(\tR\bmodalityB\x14Z\x12pkg/proto/worklistb\x06proto3"
+	"\bmodality\x18\x05 \x01(\tR\bmodality\x12\x1d\n" +
+	"\n" +
+	"station_id\x18\x06 \x01(\x05R\tstationIdB\x14Z\x12pkg/proto/worklistb\x06proto3"
 
 var (
 	file_pkg_proto_mws_proto_rawDescOnce sync.Once
