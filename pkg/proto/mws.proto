@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+option go_package = "pkg/proto/worklist";
+
+import "google/protobuf/timestamp.proto";
+
+message CreateWorklistEntry {
+  string patient_id = 1;
+  string patient_name = 2;
+  google.protobuf.Timestamp patient_birth_date = 3;
+  string patient_sex = 4;
+  string study_instance_uid = 5;
+  string sps_id = 6;
+  google.protobuf.Timestamp sps_start_date = 7;
+  string modality = 8;
+  string requesting_physician = 9;
+  string referring_physician = 10;
+  string performing_physician = 11;
+  string status = 12;
+  string priority = 13;
+  string contrast_agent = 14;
+}
+
+message CreateModality {
+  string modality = 1;
+  string station_ae_title = 2;
+}
+
+message CreateStation {
+  string ae_title = 1;
+  string hostname = 2;
+  int32 port = 3;
+  string description = 4;
+  string modality = 5;
+}
