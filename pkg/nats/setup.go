@@ -312,18 +312,25 @@ func (n *Nat) Subscribe(options SubscribeOptions) error {
 	return nil
 }
 
+// Add this enhanced version of subscribeToStream to your nats package
+
 func (n *Nat) subscribeToStream(streamName, serviceName string, subjects []NatSubjects, options SubscribeOptions) error {
 	consumerName := fmt.Sprintf("%s-%s-consumer", serviceName, streamName)
 	queueGroup := serviceName
 
-	log.Printf("Creating consumer %s for stream %s with %d subjects", consumerName, streamName, len(subjects))
+	log.Printf("[INFO] Creating consumer %s for stream %s with %d subjects", consumerName, streamName, len(subjects))
 
 	var subs []*nats.Subscription
 
-	for _, subject := range subjects {
+	for idx, subject := range subjects {
+		durableName := consumerName + "-" + sanitizeConsumerName(subject.Subject)
+
+		log.Printf("[INFO] [%d/%d] Subscribing to subject: %s (durable: %s)",
+			idx+1, len(subjects), subject.Subject, durableName)
+
 		// Build subscription options
 		subOpts := []nats.SubOpt{
-			nats.Durable(consumerName + "-" + sanitizeConsumerName(subject.Subject)),
+			nats.Durable(durableName),
 			nats.ManualAck(),
 			nats.MaxDeliver(options.MaxDeliver),
 			nats.AckWait(options.AckWait),
@@ -343,34 +350,50 @@ func (n *Nat) subscribeToStream(streamName, serviceName string, subjects []NatSu
 			subOpts = append(subOpts, nats.DeliverAll())
 		}
 
+		// Wrap the handler with logging
+		wrappedHandler := func(subj string, handler func(string, *nats.Msg)) func(*nats.Msg) {
+			return func(m *nats.Msg) {
+				log.Printf("[DEBUG] Message received - Subject: %s, Size: %d bytes, Reply: %s",
+					m.Subject, len(m.Data), m.Reply)
+
+				// Call the original handler
+				handler(subj, m)
+			}
+		}(subject.Subject, subject.Handler)
+
 		sub, err := n.Jet.QueueSubscribe(
 			subject.Subject,
 			queueGroup,
-			func(m *nats.Msg) {
-				subject.Handler(subject.Subject, m)
-			},
+			wrappedHandler,
 			subOpts...,
 		)
 
 		if err != nil {
+			log.Printf("[ERROR] Failed to subscribe to %s: %v", subject.Subject, err)
 			// Clean up any subscriptions already created
 			for _, createdSub := range subs {
-				createdSub.Unsubscribe()
+				if unsubErr := createdSub.Unsubscribe(); unsubErr != nil {
+					log.Printf("[ERROR] Failed to unsubscribe during cleanup: %v", unsubErr)
+				}
 			}
 			return fmt.Errorf("error subscribing to subject %s: %w", subject.Subject, err)
 		}
 
 		subs = append(subs, sub)
-		log.Printf("Subscribed to subject: %s in stream: %s", subject.Subject, streamName)
+		log.Printf("[SUCCESS] Subscribed to subject: %s in stream: %s", subject.Subject, streamName)
 	}
+
+	log.Printf("[INFO] Successfully created %d subscriptions for stream %s", len(subs), streamName)
 
 	// Keep subscriptions alive until context is cancelled
 	<-n.ctx.Done()
 
+	log.Printf("[INFO] Shutting down subscriptions for stream %s", streamName)
+
 	// Clean up subscriptions
 	for _, sub := range subs {
 		if err := sub.Unsubscribe(); err != nil {
-			log.Printf("Error unsubscribing: %v", err)
+			log.Printf("[ERROR] Error unsubscribing: %v", err)
 		}
 	}
 
