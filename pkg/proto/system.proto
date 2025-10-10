@@ -56,3 +56,11 @@ message SendSms{
     string phoneNumber = 1;
     string message =2;
 }
+
+message SendAppointmentRequest{
+    string phone = 1;
+    string patientName = 2;
+    string procedureName = 3;
+    string doctorName = 4;
+    string appointmentTime = 5;
+}
