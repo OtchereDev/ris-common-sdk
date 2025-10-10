@@ -20,8 +20,6 @@ message EmailReport {
     string email = 1;
     string link = 2;
     string name = 3;
-    uint32 appointmentId = 4;
-    uint32 reportId = 5;
 }
 
 message SmsForgotPassword{
