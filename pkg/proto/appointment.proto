@@ -65,3 +65,13 @@ message ModifyProcedure {
     Appointment old_version = 1;
     Appointment new_version = 2;
 }
+
+message ReportDeliveryStatus {
+  uint32 report_id = 1;
+  uint32 appointment_id = 2;
+  string delivery_method = 3;
+  string status = 4; // "sent", "failed"
+  string message = 5;
+  string recipient = 6;
+  google.protobuf.Timestamp timestamp = 7;
+}

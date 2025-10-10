@@ -554,6 +554,98 @@ func (x *ModifyProcedure) GetNewVersion() *Appointment {
 	return nil
 }
 
+type ReportDeliveryStatus struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	ReportId       uint32                 `protobuf:"varint,1,opt,name=report_id,json=reportId,proto3" json:"report_id,omitempty"`
+	AppointmentId  uint32                 `protobuf:"varint,2,opt,name=appointment_id,json=appointmentId,proto3" json:"appointment_id,omitempty"`
+	DeliveryMethod string                 `protobuf:"bytes,3,opt,name=delivery_method,json=deliveryMethod,proto3" json:"delivery_method,omitempty"`
+	Status         string                 `protobuf:"bytes,4,opt,name=status,proto3" json:"status,omitempty"` // "sent", "failed"
+	Message        string                 `protobuf:"bytes,5,opt,name=message,proto3" json:"message,omitempty"`
+	Recipient      string                 `protobuf:"bytes,6,opt,name=recipient,proto3" json:"recipient,omitempty"`
+	Timestamp      *timestamp.Timestamp   `protobuf:"bytes,7,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *ReportDeliveryStatus) Reset() {
+	*x = ReportDeliveryStatus{}
+	mi := &file_pkg_proto_appointment_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ReportDeliveryStatus) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReportDeliveryStatus) ProtoMessage() {}
+
+func (x *ReportDeliveryStatus) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_proto_appointment_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReportDeliveryStatus.ProtoReflect.Descriptor instead.
+func (*ReportDeliveryStatus) Descriptor() ([]byte, []int) {
+	return file_pkg_proto_appointment_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *ReportDeliveryStatus) GetReportId() uint32 {
+	if x != nil {
+		return x.ReportId
+	}
+	return 0
+}
+
+func (x *ReportDeliveryStatus) GetAppointmentId() uint32 {
+	if x != nil {
+		return x.AppointmentId
+	}
+	return 0
+}
+
+func (x *ReportDeliveryStatus) GetDeliveryMethod() string {
+	if x != nil {
+		return x.DeliveryMethod
+	}
+	return ""
+}
+
+func (x *ReportDeliveryStatus) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *ReportDeliveryStatus) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *ReportDeliveryStatus) GetRecipient() string {
+	if x != nil {
+		return x.Recipient
+	}
+	return ""
+}
+
+func (x *ReportDeliveryStatus) GetTimestamp() *timestamp.Timestamp {
+	if x != nil {
+		return x.Timestamp
+	}
+	return nil
+}
+
 var File_pkg_proto_appointment_proto protoreflect.FileDescriptor
 
 const file_pkg_proto_appointment_proto_rawDesc = "" +
@@ -617,7 +709,15 @@ const file_pkg_proto_appointment_proto_rawDesc = "" +
 	"\vold_version\x18\x01 \x01(\v2\x12.proto.AppointmentR\n" +
 	"oldVersion\x123\n" +
 	"\vnew_version\x18\x02 \x01(\v2\x12.proto.AppointmentR\n" +
-	"newVersionB\x17Z\x15pkg/proto/appointmentb\x06proto3"
+	"newVersion\"\x8d\x02\n" +
+	"\x14ReportDeliveryStatus\x12\x1b\n" +
+	"\treport_id\x18\x01 \x01(\rR\breportId\x12%\n" +
+	"\x0eappointment_id\x18\x02 \x01(\rR\rappointmentId\x12'\n" +
+	"\x0fdelivery_method\x18\x03 \x01(\tR\x0edeliveryMethod\x12\x16\n" +
+	"\x06status\x18\x04 \x01(\tR\x06status\x12\x18\n" +
+	"\amessage\x18\x05 \x01(\tR\amessage\x12\x1c\n" +
+	"\trecipient\x18\x06 \x01(\tR\trecipient\x128\n" +
+	"\ttimestamp\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\ttimestampB\x17Z\x15pkg/proto/appointmentb\x06proto3"
 
 var (
 	file_pkg_proto_appointment_proto_rawDescOnce sync.Once
@@ -631,29 +731,31 @@ func file_pkg_proto_appointment_proto_rawDescGZIP() []byte {
 	return file_pkg_proto_appointment_proto_rawDescData
 }
 
-var file_pkg_proto_appointment_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_pkg_proto_appointment_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_pkg_proto_appointment_proto_goTypes = []any{
-	(*Appointment)(nil),         // 0: proto.Appointment
-	(*ReportVersion)(nil),       // 1: proto.ReportVersion
-	(*Report)(nil),              // 2: proto.Report
-	(*RequestForm)(nil),         // 3: proto.RequestForm
-	(*ModifyProcedure)(nil),     // 4: proto.ModifyProcedure
-	(*timestamp.Timestamp)(nil), // 5: google.protobuf.Timestamp
+	(*Appointment)(nil),          // 0: proto.Appointment
+	(*ReportVersion)(nil),        // 1: proto.ReportVersion
+	(*Report)(nil),               // 2: proto.Report
+	(*RequestForm)(nil),          // 3: proto.RequestForm
+	(*ModifyProcedure)(nil),      // 4: proto.ModifyProcedure
+	(*ReportDeliveryStatus)(nil), // 5: proto.ReportDeliveryStatus
+	(*timestamp.Timestamp)(nil),  // 6: google.protobuf.Timestamp
 }
 var file_pkg_proto_appointment_proto_depIdxs = []int32{
-	5, // 0: proto.Appointment.appointment_time:type_name -> google.protobuf.Timestamp
+	6, // 0: proto.Appointment.appointment_time:type_name -> google.protobuf.Timestamp
 	3, // 1: proto.Appointment.request_form:type_name -> proto.RequestForm
-	5, // 2: proto.Appointment.created_at:type_name -> google.protobuf.Timestamp
-	5, // 3: proto.Appointment.modified_at:type_name -> google.protobuf.Timestamp
-	5, // 4: proto.ReportVersion.confirmed_at:type_name -> google.protobuf.Timestamp
+	6, // 2: proto.Appointment.created_at:type_name -> google.protobuf.Timestamp
+	6, // 3: proto.Appointment.modified_at:type_name -> google.protobuf.Timestamp
+	6, // 4: proto.ReportVersion.confirmed_at:type_name -> google.protobuf.Timestamp
 	1, // 5: proto.Report.versions:type_name -> proto.ReportVersion
 	0, // 6: proto.ModifyProcedure.old_version:type_name -> proto.Appointment
 	0, // 7: proto.ModifyProcedure.new_version:type_name -> proto.Appointment
-	8, // [8:8] is the sub-list for method output_type
-	8, // [8:8] is the sub-list for method input_type
-	8, // [8:8] is the sub-list for extension type_name
-	8, // [8:8] is the sub-list for extension extendee
-	0, // [0:8] is the sub-list for field type_name
+	6, // 8: proto.ReportDeliveryStatus.timestamp:type_name -> google.protobuf.Timestamp
+	9, // [9:9] is the sub-list for method output_type
+	9, // [9:9] is the sub-list for method input_type
+	9, // [9:9] is the sub-list for extension type_name
+	9, // [9:9] is the sub-list for extension extendee
+	0, // [0:9] is the sub-list for field type_name
 }
 
 func init() { file_pkg_proto_appointment_proto_init() }
@@ -667,7 +769,7 @@ func file_pkg_proto_appointment_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_pkg_proto_appointment_proto_rawDesc), len(file_pkg_proto_appointment_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   5,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
