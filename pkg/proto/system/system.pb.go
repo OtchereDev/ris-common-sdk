@@ -146,6 +146,8 @@ type EmailReport struct {
 	Email         string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
 	Link          string                 `protobuf:"bytes,2,opt,name=link,proto3" json:"link,omitempty"`
 	Name          string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	AppointmentId uint32                 `protobuf:"varint,4,opt,name=appointmentId,proto3" json:"appointmentId,omitempty"`
+	ReportId      uint32                 `protobuf:"varint,5,opt,name=reportId,proto3" json:"reportId,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -199,6 +201,20 @@ func (x *EmailReport) GetName() string {
 		return x.Name
 	}
 	return ""
+}
+
+func (x *EmailReport) GetAppointmentId() uint32 {
+	if x != nil {
+		return x.AppointmentId
+	}
+	return 0
+}
+
+func (x *EmailReport) GetReportId() uint32 {
+	if x != nil {
+		return x.ReportId
+	}
+	return 0
 }
 
 type SmsForgotPassword struct {
@@ -386,8 +402,6 @@ type EmailDoctorCreated struct {
 	Name              string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	Email             string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
 	GeneratedPassword string                 `protobuf:"bytes,3,opt,name=generatedPassword,proto3" json:"generatedPassword,omitempty"`
-	AppointmentId     uint32                 `protobuf:"varint,4,opt,name=appointmentId,proto3" json:"appointmentId,omitempty"`
-	ReportId          uint32                 `protobuf:"varint,5,opt,name=reportId,proto3" json:"reportId,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
@@ -441,20 +455,6 @@ func (x *EmailDoctorCreated) GetGeneratedPassword() string {
 		return x.GeneratedPassword
 	}
 	return ""
-}
-
-func (x *EmailDoctorCreated) GetAppointmentId() uint32 {
-	if x != nil {
-		return x.AppointmentId
-	}
-	return 0
-}
-
-func (x *EmailDoctorCreated) GetReportId() uint32 {
-	if x != nil {
-		return x.ReportId
-	}
-	return 0
 }
 
 type WhatsappReport struct {
@@ -675,11 +675,13 @@ const file_pkg_proto_system_proto_rawDesc = "" +
 	"\x04code\x18\x02 \x01(\tR\x04code\x12\x1e\n" +
 	"\n" +
 	"doctorName\x18\x03 \x01(\tR\n" +
-	"doctorName\"K\n" +
+	"doctorName\"\x8d\x01\n" +
 	"\vEmailReport\x12\x14\n" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12\x12\n" +
 	"\x04link\x18\x02 \x01(\tR\x04link\x12\x12\n" +
-	"\x04name\x18\x03 \x01(\tR\x04name\"O\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12$\n" +
+	"\rappointmentId\x18\x04 \x01(\rR\rappointmentId\x12\x1a\n" +
+	"\breportId\x18\x05 \x01(\rR\breportId\"O\n" +
 	"\x11SmsForgotPassword\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x14\n" +
 	"\x05phone\x18\x02 \x01(\tR\x05phone\x12\x10\n" +
@@ -691,13 +693,11 @@ const file_pkg_proto_system_proto_rawDesc = "" +
 	"\x17PushNotificationMessage\x12\x18\n" +
 	"\adevices\x18\x01 \x03(\tR\adevices\x12\x14\n" +
 	"\x05title\x18\x02 \x01(\tR\x05title\x12\x18\n" +
-	"\amessage\x18\x03 \x01(\tR\amessage\"\xae\x01\n" +
+	"\amessage\x18\x03 \x01(\tR\amessage\"l\n" +
 	"\x12EmailDoctorCreated\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x14\n" +
 	"\x05email\x18\x02 \x01(\tR\x05email\x12,\n" +
-	"\x11generatedPassword\x18\x03 \x01(\tR\x11generatedPassword\x12$\n" +
-	"\rappointmentId\x18\x04 \x01(\rR\rappointmentId\x12\x1a\n" +
-	"\breportId\x18\x05 \x01(\rR\breportId\"\x9a\x01\n" +
+	"\x11generatedPassword\x18\x03 \x01(\tR\x11generatedPassword\"\x9a\x01\n" +
 	"\x0eWhatsappReport\x12\x14\n" +
 	"\x05phone\x18\x01 \x01(\tR\x05phone\x12\x1c\n" +
 	"\tfirstName\x18\x02 \x01(\tR\tfirstName\x12\x12\n" +
