@@ -1,12 +1,17 @@
-package users
+package utils
 
 import (
+	"crypto/rand"
 	"fmt"
-	"math/rand"
+	"math/big"
+
 	"strings"
 	"time"
 
+	"github.com/OtchereDev/ris-common-sdk/pkg/proto/audit"
 	"golang.org/x/crypto/bcrypt"
+	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -23,37 +28,37 @@ func CompareUserPassword(password string, userPassword string) error {
 	return bcrypt.CompareHashAndPassword([]byte(userPassword), []byte(password))
 }
 
-func GenerateRandomPassword(passwordLen int) string {
-	rand.Seed(time.Now().UnixNano())
-
+func GenerateRandomPassword(passwordLen int) (string, error) {
 	b := make([]byte, passwordLen)
 	for i := range b {
-		b[i] = letterBytes[rand.Intn(len(letterBytes))]
+		num, err := rand.Int(rand.Reader, big.NewInt(int64(len(letterBytes))))
+		if err != nil {
+			return "", err
+		}
+		b[i] = letterBytes[num.Int64()]
 	}
-
-	password := string(b)
-
-	return password
+	return string(b), nil
 }
 
-func GenerateOTP(otpLen int) string {
-	rand.Seed(time.Now().UnixNano())
-
+func GenerateOTP(otpLen int) (string, error) {
 	b := make([]byte, otpLen)
 	for i := range b {
-		b[i] = numberBytes[rand.Intn(len(numberBytes))]
+		num, err := rand.Int(rand.Reader, big.NewInt(int64(len(numberBytes))))
+		if err != nil {
+			return "", err
+		}
+		b[i] = numberBytes[num.Int64()]
 	}
-
-	otp := string(b)
-
-	return otp
+	return string(b), nil
 }
 
-func CreateAuditLog(userId string, activity string, timestamp time.Time) (log map[string]interface{}) {
-	log = make(map[string]interface{})
-	log["userId"] = userId
-	log["activity"] = fmt.Sprintf(activity)
-	log["timestamp"] = timestamp.Format(time.RFC3339)
+func CreateAuditLog(userId string, activity string, timestamp time.Time, action string) (r proto.Message) {
+	r = &audit.Audit{
+		User:      userId,
+		Activity:  activity,
+		Action:    action,
+		Timestamp: timestamppb.New(timestamp),
+	}
 
 	return
 }
