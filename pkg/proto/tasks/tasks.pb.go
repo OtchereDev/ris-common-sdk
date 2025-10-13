@@ -22,7 +22,459 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// TaskNotification represents a notification about a task
+// Task represents a reporting task for a completed appointment
+type Task struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"` // UUID
+	AppointmentId uint32                 `protobuf:"varint,2,opt,name=appointment_id,json=appointmentId,proto3" json:"appointment_id,omitempty"`
+	AssignedTo    uint32                 `protobuf:"varint,3,opt,name=assigned_to,json=assignedTo,proto3" json:"assigned_to,omitempty"`
+	AssignedBy    uint32                 `protobuf:"varint,4,opt,name=assigned_by,json=assignedBy,proto3" json:"assigned_by,omitempty"`
+	Stage         string                 `protobuf:"bytes,5,opt,name=stage,proto3" json:"stage,omitempty"`             // pending, in_progress, completed, archived
+	Priority      string                 `protobuf:"bytes,6,opt,name=priority,proto3" json:"priority,omitempty"`       // low, medium, high, urgent
+	Title         string                 `protobuf:"bytes,7,opt,name=title,proto3" json:"title,omitempty"`             // Encrypted
+	Description   string                 `protobuf:"bytes,8,opt,name=description,proto3" json:"description,omitempty"` // Encrypted
+	DueDate       *timestamp.Timestamp   `protobuf:"bytes,9,opt,name=due_date,json=dueDate,proto3" json:"due_date,omitempty"`
+	Deadline      *timestamp.Timestamp   `protobuf:"bytes,10,opt,name=deadline,proto3" json:"deadline,omitempty"`
+	CompletedAt   *timestamp.Timestamp   `protobuf:"bytes,11,opt,name=completed_at,json=completedAt,proto3" json:"completed_at,omitempty"`
+	ArchivedAt    *timestamp.Timestamp   `protobuf:"bytes,12,opt,name=archived_at,json=archivedAt,proto3" json:"archived_at,omitempty"`
+	IsArchived    bool                   `protobuf:"varint,13,opt,name=is_archived,json=isArchived,proto3" json:"is_archived,omitempty"`
+	CreatedAt     *timestamp.Timestamp   `protobuf:"bytes,14,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt     *timestamp.Timestamp   `protobuf:"bytes,15,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Task) Reset() {
+	*x = Task{}
+	mi := &file_pkg_proto_tasks_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Task) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Task) ProtoMessage() {}
+
+func (x *Task) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_proto_tasks_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Task.ProtoReflect.Descriptor instead.
+func (*Task) Descriptor() ([]byte, []int) {
+	return file_pkg_proto_tasks_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *Task) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *Task) GetAppointmentId() uint32 {
+	if x != nil {
+		return x.AppointmentId
+	}
+	return 0
+}
+
+func (x *Task) GetAssignedTo() uint32 {
+	if x != nil {
+		return x.AssignedTo
+	}
+	return 0
+}
+
+func (x *Task) GetAssignedBy() uint32 {
+	if x != nil {
+		return x.AssignedBy
+	}
+	return 0
+}
+
+func (x *Task) GetStage() string {
+	if x != nil {
+		return x.Stage
+	}
+	return ""
+}
+
+func (x *Task) GetPriority() string {
+	if x != nil {
+		return x.Priority
+	}
+	return ""
+}
+
+func (x *Task) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *Task) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *Task) GetDueDate() *timestamp.Timestamp {
+	if x != nil {
+		return x.DueDate
+	}
+	return nil
+}
+
+func (x *Task) GetDeadline() *timestamp.Timestamp {
+	if x != nil {
+		return x.Deadline
+	}
+	return nil
+}
+
+func (x *Task) GetCompletedAt() *timestamp.Timestamp {
+	if x != nil {
+		return x.CompletedAt
+	}
+	return nil
+}
+
+func (x *Task) GetArchivedAt() *timestamp.Timestamp {
+	if x != nil {
+		return x.ArchivedAt
+	}
+	return nil
+}
+
+func (x *Task) GetIsArchived() bool {
+	if x != nil {
+		return x.IsArchived
+	}
+	return false
+}
+
+func (x *Task) GetCreatedAt() *timestamp.Timestamp {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return nil
+}
+
+func (x *Task) GetUpdatedAt() *timestamp.Timestamp {
+	if x != nil {
+		return x.UpdatedAt
+	}
+	return nil
+}
+
+// TaskComment represents a comment on a task
+type TaskComment struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`                       // UUID
+	TaskId        string                 `protobuf:"bytes,2,opt,name=task_id,json=taskId,proto3" json:"task_id,omitempty"` // UUID
+	UserId        uint32                 `protobuf:"varint,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	CommentText   string                 `protobuf:"bytes,4,opt,name=comment_text,json=commentText,proto3" json:"comment_text,omitempty"` // Encrypted
+	CreatedAt     *timestamp.Timestamp   `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt     *timestamp.Timestamp   `protobuf:"bytes,6,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TaskComment) Reset() {
+	*x = TaskComment{}
+	mi := &file_pkg_proto_tasks_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TaskComment) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TaskComment) ProtoMessage() {}
+
+func (x *TaskComment) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_proto_tasks_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TaskComment.ProtoReflect.Descriptor instead.
+func (*TaskComment) Descriptor() ([]byte, []int) {
+	return file_pkg_proto_tasks_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *TaskComment) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *TaskComment) GetTaskId() string {
+	if x != nil {
+		return x.TaskId
+	}
+	return ""
+}
+
+func (x *TaskComment) GetUserId() uint32 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+func (x *TaskComment) GetCommentText() string {
+	if x != nil {
+		return x.CommentText
+	}
+	return ""
+}
+
+func (x *TaskComment) GetCreatedAt() *timestamp.Timestamp {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return nil
+}
+
+func (x *TaskComment) GetUpdatedAt() *timestamp.Timestamp {
+	if x != nil {
+		return x.UpdatedAt
+	}
+	return nil
+}
+
+// TaskAttachment represents a file attached to a task
+type TaskAttachment struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`                       // UUID
+	TaskId        string                 `protobuf:"bytes,2,opt,name=task_id,json=taskId,proto3" json:"task_id,omitempty"` // UUID
+	UploadedBy    uint32                 `protobuf:"varint,3,opt,name=uploaded_by,json=uploadedBy,proto3" json:"uploaded_by,omitempty"`
+	FileName      string                 `protobuf:"bytes,4,opt,name=file_name,json=fileName,proto3" json:"file_name,omitempty"`
+	FileKey       string                 `protobuf:"bytes,5,opt,name=file_key,json=fileKey,proto3" json:"file_key,omitempty"` // Encrypted S3 key
+	FileSize      int64                  `protobuf:"varint,6,opt,name=file_size,json=fileSize,proto3" json:"file_size,omitempty"`
+	MimeType      string                 `protobuf:"bytes,7,opt,name=mime_type,json=mimeType,proto3" json:"mime_type,omitempty"`
+	CreatedAt     *timestamp.Timestamp   `protobuf:"bytes,8,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TaskAttachment) Reset() {
+	*x = TaskAttachment{}
+	mi := &file_pkg_proto_tasks_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TaskAttachment) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TaskAttachment) ProtoMessage() {}
+
+func (x *TaskAttachment) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_proto_tasks_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TaskAttachment.ProtoReflect.Descriptor instead.
+func (*TaskAttachment) Descriptor() ([]byte, []int) {
+	return file_pkg_proto_tasks_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *TaskAttachment) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *TaskAttachment) GetTaskId() string {
+	if x != nil {
+		return x.TaskId
+	}
+	return ""
+}
+
+func (x *TaskAttachment) GetUploadedBy() uint32 {
+	if x != nil {
+		return x.UploadedBy
+	}
+	return 0
+}
+
+func (x *TaskAttachment) GetFileName() string {
+	if x != nil {
+		return x.FileName
+	}
+	return ""
+}
+
+func (x *TaskAttachment) GetFileKey() string {
+	if x != nil {
+		return x.FileKey
+	}
+	return ""
+}
+
+func (x *TaskAttachment) GetFileSize() int64 {
+	if x != nil {
+		return x.FileSize
+	}
+	return 0
+}
+
+func (x *TaskAttachment) GetMimeType() string {
+	if x != nil {
+		return x.MimeType
+	}
+	return ""
+}
+
+func (x *TaskAttachment) GetCreatedAt() *timestamp.Timestamp {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return nil
+}
+
+// TaskHistory represents an audit trail entry
+type TaskHistory struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`                       // UUID
+	TaskId        string                 `protobuf:"bytes,2,opt,name=task_id,json=taskId,proto3" json:"task_id,omitempty"` // UUID
+	ChangedBy     uint32                 `protobuf:"varint,3,opt,name=changed_by,json=changedBy,proto3" json:"changed_by,omitempty"`
+	Action        string                 `protobuf:"bytes,4,opt,name=action,proto3" json:"action,omitempty"`                                 // created, assigned, reassigned, stage_changed, completed, archived
+	FieldChanged  string                 `protobuf:"bytes,5,opt,name=field_changed,json=fieldChanged,proto3" json:"field_changed,omitempty"` // assigned_to, stage, due_date, etc.
+	OldValue      string                 `protobuf:"bytes,6,opt,name=old_value,json=oldValue,proto3" json:"old_value,omitempty"`
+	NewValue      string                 `protobuf:"bytes,7,opt,name=new_value,json=newValue,proto3" json:"new_value,omitempty"`
+	Reason        string                 `protobuf:"bytes,8,opt,name=reason,proto3" json:"reason,omitempty"`
+	CreatedAt     *timestamp.Timestamp   `protobuf:"bytes,9,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TaskHistory) Reset() {
+	*x = TaskHistory{}
+	mi := &file_pkg_proto_tasks_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TaskHistory) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TaskHistory) ProtoMessage() {}
+
+func (x *TaskHistory) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_proto_tasks_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TaskHistory.ProtoReflect.Descriptor instead.
+func (*TaskHistory) Descriptor() ([]byte, []int) {
+	return file_pkg_proto_tasks_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *TaskHistory) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *TaskHistory) GetTaskId() string {
+	if x != nil {
+		return x.TaskId
+	}
+	return ""
+}
+
+func (x *TaskHistory) GetChangedBy() uint32 {
+	if x != nil {
+		return x.ChangedBy
+	}
+	return 0
+}
+
+func (x *TaskHistory) GetAction() string {
+	if x != nil {
+		return x.Action
+	}
+	return ""
+}
+
+func (x *TaskHistory) GetFieldChanged() string {
+	if x != nil {
+		return x.FieldChanged
+	}
+	return ""
+}
+
+func (x *TaskHistory) GetOldValue() string {
+	if x != nil {
+		return x.OldValue
+	}
+	return ""
+}
+
+func (x *TaskHistory) GetNewValue() string {
+	if x != nil {
+		return x.NewValue
+	}
+	return ""
+}
+
+func (x *TaskHistory) GetReason() string {
+	if x != nil {
+		return x.Reason
+	}
+	return ""
+}
+
+func (x *TaskHistory) GetCreatedAt() *timestamp.Timestamp {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return nil
+}
+
+// TaskNotification - Emitted when a notification needs to be sent
 type TaskNotification struct {
 	state            protoimpl.MessageState `protogen:"open.v1"`
 	TaskId           string                 `protobuf:"bytes,1,opt,name=task_id,json=taskId,proto3" json:"task_id,omitempty"`
@@ -51,7 +503,7 @@ type TaskNotification struct {
 
 func (x *TaskNotification) Reset() {
 	*x = TaskNotification{}
-	mi := &file_pkg_proto_tasks_proto_msgTypes[0]
+	mi := &file_pkg_proto_tasks_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -63,7 +515,7 @@ func (x *TaskNotification) String() string {
 func (*TaskNotification) ProtoMessage() {}
 
 func (x *TaskNotification) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_proto_tasks_proto_msgTypes[0]
+	mi := &file_pkg_proto_tasks_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -76,7 +528,7 @@ func (x *TaskNotification) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TaskNotification.ProtoReflect.Descriptor instead.
 func (*TaskNotification) Descriptor() ([]byte, []int) {
-	return file_pkg_proto_tasks_proto_rawDescGZIP(), []int{0}
+	return file_pkg_proto_tasks_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *TaskNotification) GetTaskId() string {
@@ -198,157 +650,7 @@ func (x *TaskNotification) GetEmailAddress() string {
 	return ""
 }
 
-// TaskEscalation represents an escalation notification to admins
-type TaskEscalation struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	TaskId        string                 `protobuf:"bytes,1,opt,name=task_id,json=taskId,proto3" json:"task_id,omitempty"`
-	AdminId       uint32                 `protobuf:"varint,2,opt,name=admin_id,json=adminId,proto3" json:"admin_id,omitempty"`
-	AppointmentId uint32                 `protobuf:"varint,3,opt,name=appointment_id,json=appointmentId,proto3" json:"appointment_id,omitempty"`
-	PatientName   string                 `protobuf:"bytes,4,opt,name=patient_name,json=patientName,proto3" json:"patient_name,omitempty"`
-	Modality      string                 `protobuf:"bytes,5,opt,name=modality,proto3" json:"modality,omitempty"`
-	AssignedTo    string                 `protobuf:"bytes,6,opt,name=assigned_to,json=assignedTo,proto3" json:"assigned_to,omitempty"` // Name of person task is assigned to
-	DaysOverdue   int32                  `protobuf:"varint,7,opt,name=days_overdue,json=daysOverdue,proto3" json:"days_overdue,omitempty"`
-	Priority      string                 `protobuf:"bytes,8,opt,name=priority,proto3" json:"priority,omitempty"`
-	Deadline      *timestamp.Timestamp   `protobuf:"bytes,9,opt,name=deadline,proto3" json:"deadline,omitempty"`
-	Subject       string                 `protobuf:"bytes,10,opt,name=subject,proto3" json:"subject,omitempty"`
-	Message       string                 `protobuf:"bytes,11,opt,name=message,proto3" json:"message,omitempty"`
-	// Notification delivery preferences
-	SendEmail     bool   `protobuf:"varint,12,opt,name=send_email,json=sendEmail,proto3" json:"send_email,omitempty"`
-	SendInApp     bool   `protobuf:"varint,13,opt,name=send_in_app,json=sendInApp,proto3" json:"send_in_app,omitempty"`
-	EmailAddress  string `protobuf:"bytes,14,opt,name=email_address,json=emailAddress,proto3" json:"email_address,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *TaskEscalation) Reset() {
-	*x = TaskEscalation{}
-	mi := &file_pkg_proto_tasks_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *TaskEscalation) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*TaskEscalation) ProtoMessage() {}
-
-func (x *TaskEscalation) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_proto_tasks_proto_msgTypes[1]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use TaskEscalation.ProtoReflect.Descriptor instead.
-func (*TaskEscalation) Descriptor() ([]byte, []int) {
-	return file_pkg_proto_tasks_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *TaskEscalation) GetTaskId() string {
-	if x != nil {
-		return x.TaskId
-	}
-	return ""
-}
-
-func (x *TaskEscalation) GetAdminId() uint32 {
-	if x != nil {
-		return x.AdminId
-	}
-	return 0
-}
-
-func (x *TaskEscalation) GetAppointmentId() uint32 {
-	if x != nil {
-		return x.AppointmentId
-	}
-	return 0
-}
-
-func (x *TaskEscalation) GetPatientName() string {
-	if x != nil {
-		return x.PatientName
-	}
-	return ""
-}
-
-func (x *TaskEscalation) GetModality() string {
-	if x != nil {
-		return x.Modality
-	}
-	return ""
-}
-
-func (x *TaskEscalation) GetAssignedTo() string {
-	if x != nil {
-		return x.AssignedTo
-	}
-	return ""
-}
-
-func (x *TaskEscalation) GetDaysOverdue() int32 {
-	if x != nil {
-		return x.DaysOverdue
-	}
-	return 0
-}
-
-func (x *TaskEscalation) GetPriority() string {
-	if x != nil {
-		return x.Priority
-	}
-	return ""
-}
-
-func (x *TaskEscalation) GetDeadline() *timestamp.Timestamp {
-	if x != nil {
-		return x.Deadline
-	}
-	return nil
-}
-
-func (x *TaskEscalation) GetSubject() string {
-	if x != nil {
-		return x.Subject
-	}
-	return ""
-}
-
-func (x *TaskEscalation) GetMessage() string {
-	if x != nil {
-		return x.Message
-	}
-	return ""
-}
-
-func (x *TaskEscalation) GetSendEmail() bool {
-	if x != nil {
-		return x.SendEmail
-	}
-	return false
-}
-
-func (x *TaskEscalation) GetSendInApp() bool {
-	if x != nil {
-		return x.SendInApp
-	}
-	return false
-}
-
-func (x *TaskEscalation) GetEmailAddress() string {
-	if x != nil {
-		return x.EmailAddress
-	}
-	return ""
-}
-
-// DailySummary represents a daily morning summary notification
+// DailySummary - Emitted for daily morning summaries
 type DailySummary struct {
 	state           protoimpl.MessageState `protogen:"open.v1"`
 	UserId          uint32                 `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
@@ -373,7 +675,7 @@ type DailySummary struct {
 
 func (x *DailySummary) Reset() {
 	*x = DailySummary{}
-	mi := &file_pkg_proto_tasks_proto_msgTypes[2]
+	mi := &file_pkg_proto_tasks_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -385,7 +687,7 @@ func (x *DailySummary) String() string {
 func (*DailySummary) ProtoMessage() {}
 
 func (x *DailySummary) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_proto_tasks_proto_msgTypes[2]
+	mi := &file_pkg_proto_tasks_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -398,7 +700,7 @@ func (x *DailySummary) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DailySummary.ProtoReflect.Descriptor instead.
 func (*DailySummary) Descriptor() ([]byte, []int) {
-	return file_pkg_proto_tasks_proto_rawDescGZIP(), []int{2}
+	return file_pkg_proto_tasks_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *DailySummary) GetUserId() uint32 {
@@ -506,11 +808,417 @@ func (x *DailySummary) GetSummaryDate() *timestamp.Timestamp {
 	return nil
 }
 
+type TaskSummaryItem struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TaskId        string                 `protobuf:"bytes,1,opt,name=task_id,json=taskId,proto3" json:"task_id,omitempty"` // UUID
+	AppointmentId uint32                 `protobuf:"varint,2,opt,name=appointment_id,json=appointmentId,proto3" json:"appointment_id,omitempty"`
+	PatientName   string                 `protobuf:"bytes,3,opt,name=patient_name,json=patientName,proto3" json:"patient_name,omitempty"`
+	Modality      string                 `protobuf:"bytes,4,opt,name=modality,proto3" json:"modality,omitempty"`
+	Priority      string                 `protobuf:"bytes,5,opt,name=priority,proto3" json:"priority,omitempty"`
+	DueDate       *timestamp.Timestamp   `protobuf:"bytes,6,opt,name=due_date,json=dueDate,proto3" json:"due_date,omitempty"`
+	Stage         string                 `protobuf:"bytes,7,opt,name=stage,proto3" json:"stage,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TaskSummaryItem) Reset() {
+	*x = TaskSummaryItem{}
+	mi := &file_pkg_proto_tasks_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TaskSummaryItem) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TaskSummaryItem) ProtoMessage() {}
+
+func (x *TaskSummaryItem) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_proto_tasks_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TaskSummaryItem.ProtoReflect.Descriptor instead.
+func (*TaskSummaryItem) Descriptor() ([]byte, []int) {
+	return file_pkg_proto_tasks_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *TaskSummaryItem) GetTaskId() string {
+	if x != nil {
+		return x.TaskId
+	}
+	return ""
+}
+
+func (x *TaskSummaryItem) GetAppointmentId() uint32 {
+	if x != nil {
+		return x.AppointmentId
+	}
+	return 0
+}
+
+func (x *TaskSummaryItem) GetPatientName() string {
+	if x != nil {
+		return x.PatientName
+	}
+	return ""
+}
+
+func (x *TaskSummaryItem) GetModality() string {
+	if x != nil {
+		return x.Modality
+	}
+	return ""
+}
+
+func (x *TaskSummaryItem) GetPriority() string {
+	if x != nil {
+		return x.Priority
+	}
+	return ""
+}
+
+func (x *TaskSummaryItem) GetDueDate() *timestamp.Timestamp {
+	if x != nil {
+		return x.DueDate
+	}
+	return nil
+}
+
+func (x *TaskSummaryItem) GetStage() string {
+	if x != nil {
+		return x.Stage
+	}
+	return ""
+}
+
+// TaskEscalation - Emitted when task is 3+ days overdue
+type TaskEscalation struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TaskId        string                 `protobuf:"bytes,1,opt,name=task_id,json=taskId,proto3" json:"task_id,omitempty"`
+	AdminId       uint32                 `protobuf:"varint,2,opt,name=admin_id,json=adminId,proto3" json:"admin_id,omitempty"`
+	AppointmentId uint32                 `protobuf:"varint,3,opt,name=appointment_id,json=appointmentId,proto3" json:"appointment_id,omitempty"`
+	PatientName   string                 `protobuf:"bytes,4,opt,name=patient_name,json=patientName,proto3" json:"patient_name,omitempty"`
+	Modality      string                 `protobuf:"bytes,5,opt,name=modality,proto3" json:"modality,omitempty"`
+	AssignedTo    string                 `protobuf:"bytes,6,opt,name=assigned_to,json=assignedTo,proto3" json:"assigned_to,omitempty"` // Name of person task is assigned to
+	DaysOverdue   int32                  `protobuf:"varint,7,opt,name=days_overdue,json=daysOverdue,proto3" json:"days_overdue,omitempty"`
+	Priority      string                 `protobuf:"bytes,8,opt,name=priority,proto3" json:"priority,omitempty"`
+	Deadline      *timestamp.Timestamp   `protobuf:"bytes,9,opt,name=deadline,proto3" json:"deadline,omitempty"`
+	Subject       string                 `protobuf:"bytes,10,opt,name=subject,proto3" json:"subject,omitempty"`
+	Message       string                 `protobuf:"bytes,11,opt,name=message,proto3" json:"message,omitempty"`
+	// Notification delivery preferences
+	SendEmail     bool   `protobuf:"varint,12,opt,name=send_email,json=sendEmail,proto3" json:"send_email,omitempty"`
+	SendInApp     bool   `protobuf:"varint,13,opt,name=send_in_app,json=sendInApp,proto3" json:"send_in_app,omitempty"`
+	EmailAddress  string `protobuf:"bytes,14,opt,name=email_address,json=emailAddress,proto3" json:"email_address,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TaskEscalation) Reset() {
+	*x = TaskEscalation{}
+	mi := &file_pkg_proto_tasks_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TaskEscalation) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TaskEscalation) ProtoMessage() {}
+
+func (x *TaskEscalation) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_proto_tasks_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TaskEscalation.ProtoReflect.Descriptor instead.
+func (*TaskEscalation) Descriptor() ([]byte, []int) {
+	return file_pkg_proto_tasks_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *TaskEscalation) GetTaskId() string {
+	if x != nil {
+		return x.TaskId
+	}
+	return ""
+}
+
+func (x *TaskEscalation) GetAdminId() uint32 {
+	if x != nil {
+		return x.AdminId
+	}
+	return 0
+}
+
+func (x *TaskEscalation) GetAppointmentId() uint32 {
+	if x != nil {
+		return x.AppointmentId
+	}
+	return 0
+}
+
+func (x *TaskEscalation) GetPatientName() string {
+	if x != nil {
+		return x.PatientName
+	}
+	return ""
+}
+
+func (x *TaskEscalation) GetModality() string {
+	if x != nil {
+		return x.Modality
+	}
+	return ""
+}
+
+func (x *TaskEscalation) GetAssignedTo() string {
+	if x != nil {
+		return x.AssignedTo
+	}
+	return ""
+}
+
+func (x *TaskEscalation) GetDaysOverdue() int32 {
+	if x != nil {
+		return x.DaysOverdue
+	}
+	return 0
+}
+
+func (x *TaskEscalation) GetPriority() string {
+	if x != nil {
+		return x.Priority
+	}
+	return ""
+}
+
+func (x *TaskEscalation) GetDeadline() *timestamp.Timestamp {
+	if x != nil {
+		return x.Deadline
+	}
+	return nil
+}
+
+func (x *TaskEscalation) GetSubject() string {
+	if x != nil {
+		return x.Subject
+	}
+	return ""
+}
+
+func (x *TaskEscalation) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *TaskEscalation) GetSendEmail() bool {
+	if x != nil {
+		return x.SendEmail
+	}
+	return false
+}
+
+func (x *TaskEscalation) GetSendInApp() bool {
+	if x != nil {
+		return x.SendInApp
+	}
+	return false
+}
+
+func (x *TaskEscalation) GetEmailAddress() string {
+	if x != nil {
+		return x.EmailAddress
+	}
+	return ""
+}
+
+// InAppNotification - Structure for in-app notification inbox
+type InAppNotification struct {
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	Id               string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"` // UUID
+	UserId           uint32                 `protobuf:"varint,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	TaskId           string                 `protobuf:"bytes,3,opt,name=task_id,json=taskId,proto3" json:"task_id,omitempty"` // UUID (nullable)
+	NotificationType string                 `protobuf:"bytes,4,opt,name=notification_type,json=notificationType,proto3" json:"notification_type,omitempty"`
+	Title            string                 `protobuf:"bytes,5,opt,name=title,proto3" json:"title,omitempty"`
+	Message          string                 `protobuf:"bytes,6,opt,name=message,proto3" json:"message,omitempty"`
+	IsRead           bool                   `protobuf:"varint,7,opt,name=is_read,json=isRead,proto3" json:"is_read,omitempty"`
+	ReadAt           *timestamp.Timestamp   `protobuf:"bytes,8,opt,name=read_at,json=readAt,proto3" json:"read_at,omitempty"`
+	CreatedAt        *timestamp.Timestamp   `protobuf:"bytes,9,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *InAppNotification) Reset() {
+	*x = InAppNotification{}
+	mi := &file_pkg_proto_tasks_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *InAppNotification) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*InAppNotification) ProtoMessage() {}
+
+func (x *InAppNotification) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_proto_tasks_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use InAppNotification.ProtoReflect.Descriptor instead.
+func (*InAppNotification) Descriptor() ([]byte, []int) {
+	return file_pkg_proto_tasks_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *InAppNotification) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *InAppNotification) GetUserId() uint32 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+func (x *InAppNotification) GetTaskId() string {
+	if x != nil {
+		return x.TaskId
+	}
+	return ""
+}
+
+func (x *InAppNotification) GetNotificationType() string {
+	if x != nil {
+		return x.NotificationType
+	}
+	return ""
+}
+
+func (x *InAppNotification) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *InAppNotification) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *InAppNotification) GetIsRead() bool {
+	if x != nil {
+		return x.IsRead
+	}
+	return false
+}
+
+func (x *InAppNotification) GetReadAt() *timestamp.Timestamp {
+	if x != nil {
+		return x.ReadAt
+	}
+	return nil
+}
+
+func (x *InAppNotification) GetCreatedAt() *timestamp.Timestamp {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return nil
+}
+
 var File_pkg_proto_tasks_proto protoreflect.FileDescriptor
 
 const file_pkg_proto_tasks_proto_rawDesc = "" +
 	"\n" +
-	"\x15pkg/proto/tasks.proto\x12\x05tasks\x1a\x1fgoogle/protobuf/timestamp.proto\"\xe3\x04\n" +
+	"\x15pkg/proto/tasks.proto\x12\x05tasks\x1a\x1fgoogle/protobuf/timestamp.proto\"\xeb\x04\n" +
+	"\x04Task\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12%\n" +
+	"\x0eappointment_id\x18\x02 \x01(\rR\rappointmentId\x12\x1f\n" +
+	"\vassigned_to\x18\x03 \x01(\rR\n" +
+	"assignedTo\x12\x1f\n" +
+	"\vassigned_by\x18\x04 \x01(\rR\n" +
+	"assignedBy\x12\x14\n" +
+	"\x05stage\x18\x05 \x01(\tR\x05stage\x12\x1a\n" +
+	"\bpriority\x18\x06 \x01(\tR\bpriority\x12\x14\n" +
+	"\x05title\x18\a \x01(\tR\x05title\x12 \n" +
+	"\vdescription\x18\b \x01(\tR\vdescription\x125\n" +
+	"\bdue_date\x18\t \x01(\v2\x1a.google.protobuf.TimestampR\adueDate\x126\n" +
+	"\bdeadline\x18\n" +
+	" \x01(\v2\x1a.google.protobuf.TimestampR\bdeadline\x12=\n" +
+	"\fcompleted_at\x18\v \x01(\v2\x1a.google.protobuf.TimestampR\vcompletedAt\x12;\n" +
+	"\varchived_at\x18\f \x01(\v2\x1a.google.protobuf.TimestampR\n" +
+	"archivedAt\x12\x1f\n" +
+	"\vis_archived\x18\r \x01(\bR\n" +
+	"isArchived\x129\n" +
+	"\n" +
+	"created_at\x18\x0e \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
+	"\n" +
+	"updated_at\x18\x0f \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"\xe8\x01\n" +
+	"\vTaskComment\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
+	"\atask_id\x18\x02 \x01(\tR\x06taskId\x12\x17\n" +
+	"\auser_id\x18\x03 \x01(\rR\x06userId\x12!\n" +
+	"\fcomment_text\x18\x04 \x01(\tR\vcommentText\x129\n" +
+	"\n" +
+	"created_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
+	"\n" +
+	"updated_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"\x87\x02\n" +
+	"\x0eTaskAttachment\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
+	"\atask_id\x18\x02 \x01(\tR\x06taskId\x12\x1f\n" +
+	"\vuploaded_by\x18\x03 \x01(\rR\n" +
+	"uploadedBy\x12\x1b\n" +
+	"\tfile_name\x18\x04 \x01(\tR\bfileName\x12\x19\n" +
+	"\bfile_key\x18\x05 \x01(\tR\afileKey\x12\x1b\n" +
+	"\tfile_size\x18\x06 \x01(\x03R\bfileSize\x12\x1b\n" +
+	"\tmime_type\x18\a \x01(\tR\bmimeType\x129\n" +
+	"\n" +
+	"created_at\x18\b \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\"\x9f\x02\n" +
+	"\vTaskHistory\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
+	"\atask_id\x18\x02 \x01(\tR\x06taskId\x12\x1d\n" +
+	"\n" +
+	"changed_by\x18\x03 \x01(\rR\tchangedBy\x12\x16\n" +
+	"\x06action\x18\x04 \x01(\tR\x06action\x12#\n" +
+	"\rfield_changed\x18\x05 \x01(\tR\ffieldChanged\x12\x1b\n" +
+	"\told_value\x18\x06 \x01(\tR\boldValue\x12\x1b\n" +
+	"\tnew_value\x18\a \x01(\tR\bnewValue\x12\x16\n" +
+	"\x06reason\x18\b \x01(\tR\x06reason\x129\n" +
+	"\n" +
+	"created_at\x18\t \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\"\xe3\x04\n" +
 	"\x10TaskNotification\x12\x17\n" +
 	"\atask_id\x18\x01 \x01(\tR\x06taskId\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\rR\x06userId\x12+\n" +
@@ -530,25 +1238,7 @@ const file_pkg_proto_tasks_proto_rawDesc = "" +
 	"\n" +
 	"send_email\x18\x0f \x01(\bR\tsendEmail\x12\x1e\n" +
 	"\vsend_in_app\x18\x10 \x01(\bR\tsendInApp\x12#\n" +
-	"\remail_address\x18\x11 \x01(\tR\femailAddress\"\xda\x03\n" +
-	"\x0eTaskEscalation\x12\x17\n" +
-	"\atask_id\x18\x01 \x01(\tR\x06taskId\x12\x19\n" +
-	"\badmin_id\x18\x02 \x01(\rR\aadminId\x12%\n" +
-	"\x0eappointment_id\x18\x03 \x01(\rR\rappointmentId\x12!\n" +
-	"\fpatient_name\x18\x04 \x01(\tR\vpatientName\x12\x1a\n" +
-	"\bmodality\x18\x05 \x01(\tR\bmodality\x12\x1f\n" +
-	"\vassigned_to\x18\x06 \x01(\tR\n" +
-	"assignedTo\x12!\n" +
-	"\fdays_overdue\x18\a \x01(\x05R\vdaysOverdue\x12\x1a\n" +
-	"\bpriority\x18\b \x01(\tR\bpriority\x126\n" +
-	"\bdeadline\x18\t \x01(\v2\x1a.google.protobuf.TimestampR\bdeadline\x12\x18\n" +
-	"\asubject\x18\n" +
-	" \x01(\tR\asubject\x12\x18\n" +
-	"\amessage\x18\v \x01(\tR\amessage\x12\x1d\n" +
-	"\n" +
-	"send_email\x18\f \x01(\bR\tsendEmail\x12\x1e\n" +
-	"\vsend_in_app\x18\r \x01(\bR\tsendInApp\x12#\n" +
-	"\remail_address\x18\x0e \x01(\tR\femailAddress\"\x96\x04\n" +
+	"\remail_address\x18\x11 \x01(\tR\femailAddress\"\x96\x04\n" +
 	"\fDailySummary\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\rR\x06userId\x12)\n" +
 	"\x10total_incomplete\x18\x02 \x01(\x05R\x0ftotalIncomplete\x12!\n" +
@@ -567,7 +1257,44 @@ const file_pkg_proto_tasks_proto_rawDesc = "" +
 	"send_email\x18\f \x01(\bR\tsendEmail\x12\x1e\n" +
 	"\vsend_in_app\x18\r \x01(\bR\tsendInApp\x12#\n" +
 	"\remail_address\x18\x0e \x01(\tR\femailAddress\x12=\n" +
-	"\fsummary_date\x18\x0f \x01(\v2\x1a.google.protobuf.TimestampR\vsummaryDateB\x11Z\x0fpkg/proto/tasksb\x06proto3"
+	"\fsummary_date\x18\x0f \x01(\v2\x1a.google.protobuf.TimestampR\vsummaryDate\"\xf9\x01\n" +
+	"\x0fTaskSummaryItem\x12\x17\n" +
+	"\atask_id\x18\x01 \x01(\tR\x06taskId\x12%\n" +
+	"\x0eappointment_id\x18\x02 \x01(\rR\rappointmentId\x12!\n" +
+	"\fpatient_name\x18\x03 \x01(\tR\vpatientName\x12\x1a\n" +
+	"\bmodality\x18\x04 \x01(\tR\bmodality\x12\x1a\n" +
+	"\bpriority\x18\x05 \x01(\tR\bpriority\x125\n" +
+	"\bdue_date\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\adueDate\x12\x14\n" +
+	"\x05stage\x18\a \x01(\tR\x05stage\"\xda\x03\n" +
+	"\x0eTaskEscalation\x12\x17\n" +
+	"\atask_id\x18\x01 \x01(\tR\x06taskId\x12\x19\n" +
+	"\badmin_id\x18\x02 \x01(\rR\aadminId\x12%\n" +
+	"\x0eappointment_id\x18\x03 \x01(\rR\rappointmentId\x12!\n" +
+	"\fpatient_name\x18\x04 \x01(\tR\vpatientName\x12\x1a\n" +
+	"\bmodality\x18\x05 \x01(\tR\bmodality\x12\x1f\n" +
+	"\vassigned_to\x18\x06 \x01(\tR\n" +
+	"assignedTo\x12!\n" +
+	"\fdays_overdue\x18\a \x01(\x05R\vdaysOverdue\x12\x1a\n" +
+	"\bpriority\x18\b \x01(\tR\bpriority\x126\n" +
+	"\bdeadline\x18\t \x01(\v2\x1a.google.protobuf.TimestampR\bdeadline\x12\x18\n" +
+	"\asubject\x18\n" +
+	" \x01(\tR\asubject\x12\x18\n" +
+	"\amessage\x18\v \x01(\tR\amessage\x12\x1d\n" +
+	"\n" +
+	"send_email\x18\f \x01(\bR\tsendEmail\x12\x1e\n" +
+	"\vsend_in_app\x18\r \x01(\bR\tsendInApp\x12#\n" +
+	"\remail_address\x18\x0e \x01(\tR\femailAddress\"\xbb\x02\n" +
+	"\x11InAppNotification\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
+	"\auser_id\x18\x02 \x01(\rR\x06userId\x12\x17\n" +
+	"\atask_id\x18\x03 \x01(\tR\x06taskId\x12+\n" +
+	"\x11notification_type\x18\x04 \x01(\tR\x10notificationType\x12\x14\n" +
+	"\x05title\x18\x05 \x01(\tR\x05title\x12\x18\n" +
+	"\amessage\x18\x06 \x01(\tR\amessage\x12\x17\n" +
+	"\ais_read\x18\a \x01(\bR\x06isRead\x123\n" +
+	"\aread_at\x18\b \x01(\v2\x1a.google.protobuf.TimestampR\x06readAt\x129\n" +
+	"\n" +
+	"created_at\x18\t \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAtB\x11Z\x0fpkg/proto/tasksb\x06proto3"
 
 var (
 	file_pkg_proto_tasks_proto_rawDescOnce sync.Once
@@ -581,23 +1308,42 @@ func file_pkg_proto_tasks_proto_rawDescGZIP() []byte {
 	return file_pkg_proto_tasks_proto_rawDescData
 }
 
-var file_pkg_proto_tasks_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_pkg_proto_tasks_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_pkg_proto_tasks_proto_goTypes = []any{
-	(*TaskNotification)(nil),    // 0: tasks.TaskNotification
-	(*TaskEscalation)(nil),      // 1: tasks.TaskEscalation
-	(*DailySummary)(nil),        // 2: tasks.DailySummary
-	(*timestamp.Timestamp)(nil), // 3: google.protobuf.Timestamp
+	(*Task)(nil),                // 0: tasks.Task
+	(*TaskComment)(nil),         // 1: tasks.TaskComment
+	(*TaskAttachment)(nil),      // 2: tasks.TaskAttachment
+	(*TaskHistory)(nil),         // 3: tasks.TaskHistory
+	(*TaskNotification)(nil),    // 4: tasks.TaskNotification
+	(*DailySummary)(nil),        // 5: tasks.DailySummary
+	(*TaskSummaryItem)(nil),     // 6: tasks.TaskSummaryItem
+	(*TaskEscalation)(nil),      // 7: tasks.TaskEscalation
+	(*InAppNotification)(nil),   // 8: tasks.InAppNotification
+	(*timestamp.Timestamp)(nil), // 9: google.protobuf.Timestamp
 }
 var file_pkg_proto_tasks_proto_depIdxs = []int32{
-	3, // 0: tasks.TaskNotification.due_date:type_name -> google.protobuf.Timestamp
-	3, // 1: tasks.TaskNotification.deadline:type_name -> google.protobuf.Timestamp
-	3, // 2: tasks.TaskEscalation.deadline:type_name -> google.protobuf.Timestamp
-	3, // 3: tasks.DailySummary.summary_date:type_name -> google.protobuf.Timestamp
-	4, // [4:4] is the sub-list for method output_type
-	4, // [4:4] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	9,  // 0: tasks.Task.due_date:type_name -> google.protobuf.Timestamp
+	9,  // 1: tasks.Task.deadline:type_name -> google.protobuf.Timestamp
+	9,  // 2: tasks.Task.completed_at:type_name -> google.protobuf.Timestamp
+	9,  // 3: tasks.Task.archived_at:type_name -> google.protobuf.Timestamp
+	9,  // 4: tasks.Task.created_at:type_name -> google.protobuf.Timestamp
+	9,  // 5: tasks.Task.updated_at:type_name -> google.protobuf.Timestamp
+	9,  // 6: tasks.TaskComment.created_at:type_name -> google.protobuf.Timestamp
+	9,  // 7: tasks.TaskComment.updated_at:type_name -> google.protobuf.Timestamp
+	9,  // 8: tasks.TaskAttachment.created_at:type_name -> google.protobuf.Timestamp
+	9,  // 9: tasks.TaskHistory.created_at:type_name -> google.protobuf.Timestamp
+	9,  // 10: tasks.TaskNotification.due_date:type_name -> google.protobuf.Timestamp
+	9,  // 11: tasks.TaskNotification.deadline:type_name -> google.protobuf.Timestamp
+	9,  // 12: tasks.DailySummary.summary_date:type_name -> google.protobuf.Timestamp
+	9,  // 13: tasks.TaskSummaryItem.due_date:type_name -> google.protobuf.Timestamp
+	9,  // 14: tasks.TaskEscalation.deadline:type_name -> google.protobuf.Timestamp
+	9,  // 15: tasks.InAppNotification.read_at:type_name -> google.protobuf.Timestamp
+	9,  // 16: tasks.InAppNotification.created_at:type_name -> google.protobuf.Timestamp
+	17, // [17:17] is the sub-list for method output_type
+	17, // [17:17] is the sub-list for method input_type
+	17, // [17:17] is the sub-list for extension type_name
+	17, // [17:17] is the sub-list for extension extendee
+	0,  // [0:17] is the sub-list for field type_name
 }
 
 func init() { file_pkg_proto_tasks_proto_init() }
@@ -611,7 +1357,7 @@ func file_pkg_proto_tasks_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_pkg_proto_tasks_proto_rawDesc), len(file_pkg_proto_tasks_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
