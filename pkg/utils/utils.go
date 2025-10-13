@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/go-playground/validator/v10"
@@ -78,4 +79,14 @@ func Contains(s []string, str string) bool {
 	}
 
 	return false
+}
+
+// ParseUint parses a string to uint safely.
+// Returns an error if the string is not a valid unsigned integer.
+func ParseUint(s string) (uint, error) {
+	val, err := strconv.ParseUint(s, 10, 64)
+	if err != nil {
+		return 0, err
+	}
+	return uint(val), nil
 }
