@@ -1,0 +1,140 @@
+syntax = "proto3";
+package tasks;
+
+option go_package = "pkg/proto/tasks";
+
+import "google/protobuf/timestamp.proto";
+
+// Task represents a reporting task for a completed appointment
+message Task {
+    string id = 1; // UUID
+    uint32 appointment_id = 2;
+    uint32 assigned_to = 3;
+    uint32 assigned_by = 4;
+    string stage = 5; // pending, in_progress, completed, archived
+    string priority = 6; // low, medium, high, urgent
+    string title = 7; // Encrypted
+    string description = 8; // Encrypted
+    google.protobuf.Timestamp due_date = 9;
+    google.protobuf.Timestamp deadline = 10;
+    google.protobuf.Timestamp completed_at = 11;
+    google.protobuf.Timestamp archived_at = 12;
+    bool is_archived = 13;
+    google.protobuf.Timestamp created_at = 14;
+    google.protobuf.Timestamp updated_at = 15;
+}
+
+// TaskComment represents a comment on a task
+message TaskComment {
+    string id = 1; // UUID
+    string task_id = 2; // UUID
+    uint32 user_id = 3;
+    string comment_text = 4; // Encrypted
+    google.protobuf.Timestamp created_at = 5;
+    google.protobuf.Timestamp updated_at = 6;
+}
+
+// TaskAttachment represents a file attached to a task
+message TaskAttachment {
+    string id = 1; // UUID
+    string task_id = 2; // UUID
+    uint32 uploaded_by = 3;
+    string file_name = 4;
+    string file_key = 5; // Encrypted S3 key
+    int64 file_size = 6;
+    string mime_type = 7;
+    google.protobuf.Timestamp created_at = 8;
+}
+
+// TaskHistory represents an audit trail entry
+message TaskHistory {
+    string id = 1; // UUID
+    string task_id = 2; // UUID
+    uint32 changed_by = 3;
+    string action = 4; // created, assigned, reassigned, stage_changed, completed, archived
+    string field_changed = 5; // assigned_to, stage, due_date, etc.
+    string old_value = 6;
+    string new_value = 7;
+    string reason = 8;
+    google.protobuf.Timestamp created_at = 9;
+}
+
+// Notification events
+
+// TaskNotification - Emitted when a notification needs to be sent
+message TaskNotification {
+    string task_id = 1; // UUID
+    uint32 user_id = 2; // Recipient
+    string notification_type = 3; // task_assigned, deadline_approaching, etc.
+    string subject = 4;
+    string message = 5;
+    
+    // Task context
+    uint32 appointment_id = 6;
+    string patient_name = 7;
+    string modality = 8;
+    string procedure = 9;
+    google.protobuf.Timestamp due_date = 10;
+    int32 days_overdue = 11;
+    string priority = 12;
+    
+    // Delivery preferences
+    bool send_email = 13;
+    bool send_in_app = 14;
+    string email_address = 15;
+}
+
+// DailySummary - Emitted for daily morning summaries
+message DailySummary {
+    uint32 user_id = 1;
+    string user_name = 2;
+    string email_address = 3;
+    
+    int32 total_pending = 4;
+    int32 total_in_progress = 5;
+    int32 urgent_count = 6;
+    int32 due_today_count = 7;
+    int32 overdue_count = 8;
+    
+    repeated TaskSummaryItem tasks = 9;
+    
+    // Delivery preferences
+    bool send_email = 10;
+    bool send_in_app = 11;
+}
+
+message TaskSummaryItem {
+    string task_id = 1; // UUID
+    uint32 appointment_id = 2;
+    string patient_name = 3;
+    string modality = 4;
+    string priority = 5;
+    google.protobuf.Timestamp due_date = 6;
+    string stage = 7;
+}
+
+// TaskEscalation - Emitted when task is 3+ days overdue
+message TaskEscalation {
+    string task_id = 1; // UUID
+    uint32 appointment_id = 2;
+    string patient_name = 3;
+    string modality = 4;
+    uint32 assigned_to = 5;
+    string assigned_to_name = 6;
+    int32 days_overdue = 7;
+    google.protobuf.Timestamp due_date = 8;
+    string priority = 9;
+}
+
+// InAppNotification - Structure for in-app notification inbox
+message InAppNotification {
+    string id = 1; // UUID
+    uint32 user_id = 2;
+    string task_id = 3; // UUID (nullable)
+    string notification_type = 4;
+    string title = 5;
+    string message = 6;
+    bool is_read = 7;
+    google.protobuf.Timestamp read_at = 8;
+    google.protobuf.Timestamp created_at = 9;
+}
