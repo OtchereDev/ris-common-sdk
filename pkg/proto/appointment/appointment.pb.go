@@ -47,6 +47,8 @@ type Appointment struct {
 	ModifiedBy            uint32                 `protobuf:"varint,22,opt,name=modified_by,json=modifiedBy,proto3" json:"modified_by,omitempty"`
 	ModificationReason    string                 `protobuf:"bytes,23,opt,name=modification_reason,json=modificationReason,proto3" json:"modification_reason,omitempty"`
 	ModifiedAt            *timestamp.Timestamp   `protobuf:"bytes,24,opt,name=modified_at,json=modifiedAt,proto3" json:"modified_at,omitempty"`
+	IsLocked              bool                   `protobuf:"varint,25,opt,name=is_locked,json=isLocked,proto3" json:"is_locked,omitempty"`
+	ReasonForLocking      string                 `protobuf:"bytes,26,opt,name=reason_for_locking,json=reasonForLocking,proto3" json:"reason_for_locking,omitempty"`
 	unknownFields         protoimpl.UnknownFields
 	sizeCache             protoimpl.SizeCache
 }
@@ -240,6 +242,20 @@ func (x *Appointment) GetModifiedAt() *timestamp.Timestamp {
 		return x.ModifiedAt
 	}
 	return nil
+}
+
+func (x *Appointment) GetIsLocked() bool {
+	if x != nil {
+		return x.IsLocked
+	}
+	return false
+}
+
+func (x *Appointment) GetReasonForLocking() string {
+	if x != nil {
+		return x.ReasonForLocking
+	}
+	return ""
 }
 
 type ReportVersion struct {
@@ -650,7 +666,7 @@ var File_pkg_proto_appointment_proto protoreflect.FileDescriptor
 
 const file_pkg_proto_appointment_proto_rawDesc = "" +
 	"\n" +
-	"\x1bpkg/proto/appointment.proto\x12\x05proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xaf\a\n" +
+	"\x1bpkg/proto/appointment.proto\x12\x05proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xfa\a\n" +
 	"\vAppointment\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\rR\x02id\x12\x1d\n" +
 	"\n" +
@@ -681,7 +697,9 @@ const file_pkg_proto_appointment_proto_rawDesc = "" +
 	"modifiedBy\x12/\n" +
 	"\x13modification_reason\x18\x17 \x01(\tR\x12modificationReason\x12;\n" +
 	"\vmodified_at\x18\x18 \x01(\v2\x1a.google.protobuf.TimestampR\n" +
-	"modifiedAt\"\xd9\x02\n" +
+	"modifiedAt\x12\x1b\n" +
+	"\tis_locked\x18\x19 \x01(\bR\bisLocked\x12,\n" +
+	"\x12reason_for_locking\x18\x1a \x01(\tR\x10reasonForLocking\"\xd9\x02\n" +
 	"\rReportVersion\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\rR\x02id\x12\x1b\n" +
 	"\treport_id\x18\x02 \x01(\rR\breportId\x12%\n" +

@@ -30,6 +30,8 @@ message Appointment {
   uint32 modified_by = 22;            
   string modification_reason = 23;              
   google.protobuf.Timestamp modified_at = 24;
+  bool is_locked = 25;
+  string reason_for_locking = 26;
 }
 
 message ReportVersion {
