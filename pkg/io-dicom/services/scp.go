@@ -170,12 +170,40 @@ func (s *scp) handleConnection(conn net.Conn) {
 				slog.Error("slog.ErrorhandleConnection, C-Move failed to write response", "ERROR", err.Error())
 				return
 			}
+		// case dicomcommand.CEchoRequest:
+		// 	if dimsec.CEchoReadRQ(dco) {
+		// 		if err := dimsec.CEchoWriteRSP(pdu, dco); err != nil {
+		// 			slog.Error("handleConnection, C-Echo failed to write response!")
+		// 			return
+		// 		}
+		// 	}
+
 		case dicomcommand.CEchoRequest:
-			if dimsec.CEchoReadRQ(dco) {
-				if err := dimsec.CEchoWriteRSP(pdu, dco); err != nil {
-					slog.Error("handleConnection, C-Echo failed to write response!")
+			slog.Info("=== C-ECHO REQUEST RECEIVED ===")
+			slog.Info("C-ECHO: Command object received", "dco", dco != nil)
+
+			// Log the incoming command details
+			if dco != nil {
+				commandField := dco.GetUShort(tags.CommandField)
+				messageID := dco.GetUShort(tags.MessageID)
+				slog.Info("C-ECHO: Request details",
+					"CommandField", commandField,
+					"MessageID", messageID)
+			}
+
+			readSuccess := dimsec.CEchoReadRQ(dco)
+			slog.Info("C-ECHO: Read request", "success", readSuccess)
+
+			if readSuccess {
+				slog.Info("C-ECHO: Writing response...")
+				err := dimsec.CEchoWriteRSP(pdu, dco)
+				if err != nil {
+					slog.Error("C-ECHO: Failed to write response", "ERROR", err)
 					return
 				}
+				slog.Info("C-ECHO: Response sent successfully")
+			} else {
+				slog.Error("C-ECHO: Failed to read request - CEchoReadRQ returned false")
 			}
 		default:
 			slog.Error("handleConnection, service not implemented", "COMMAND", command)
