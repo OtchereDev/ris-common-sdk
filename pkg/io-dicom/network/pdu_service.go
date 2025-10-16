@@ -393,6 +393,71 @@ func (pdu *pduService) interogateAAssociateAC() bool {
 	return false
 }
 
+// func (pdu *pduService) interogateAAssociateRQ(rw *bufio.ReadWriter) error {
+// 	if pdu.OnAssociationRequest == nil || !pdu.OnAssociationRequest(pdu.AssocRQ) {
+// 		pdu.AssocRJ.Set(1, 7)
+// 		return pdu.AssocRJ.Write(rw)
+// 	}
+
+// 	pdu.AssocAC.SetCalledAE(pdu.AssocRQ.GetCalledAE())
+// 	pdu.AssocAC.SetCallingAE(pdu.AssocRQ.GetCallingAE())
+// 	pdu.AssocAC.SetAppContext(pdu.AssocRQ.GetAppContext())
+// 	pdu.AssocAC.SetUserInformation(pdu.AssocRQ.GetUserInformation())
+
+// 	slog.Info("ASSOC-RQ:", "CallingAE", pdu.AssocRQ.GetCallingAE(), "CalledAE", pdu.AssocRQ.GetCalledAE())
+// 	slog.Info("ASSOC-RQ:", "ImpClass", pdu.AssocRQ.GetUserInformation().GetImpClass().GetUID())
+// 	slog.Info("ASSOC-RQ:", "ImpVersion", pdu.AssocRQ.GetUserInformation().GetImpVersion().GetUID())
+// 	slog.Info("ASSOC-RQ:", "MaxPDULength", pdu.AssocRQ.GetUserInformation().GetMaxSubLength().GetMaximumLength())
+// 	slog.Info("ASSOC-RQ:", "MaxOpsInvoked", pdu.AssocRQ.GetUserInformation().GetAsyncOperationWindow().GetMaxNumberOperationsInvoked(), "MaxOpsPerformed", pdu.AssocRQ.GetUserInformation().GetAsyncOperationWindow().GetMaxNumberOperationsPerformed())
+
+// 	for presIndex, PresContext := range pdu.AssocRQ.GetPresContexts() {
+// 		slog.Info("ASSOC-RQ: PresentationContext", "Index", presIndex)
+
+// 		sopClass := sopclass.GetSOPClassFromUID(PresContext.GetAbstractSyntax().GetUID())
+// 		slog.Info("ASSOC-RQ: \tAbstractContext", "UID", sopClass.UID, "Description", sopClass.Description)
+// 		for _, TransferSyn := range PresContext.GetTransferSyntaxes() {
+// 			tsName := ""
+// 			transferSyntax := transfersyntax.GetTransferSyntaxFromUID(TransferSyn.GetUID())
+// 			if transferSyntax != nil {
+// 				tsName = transferSyntax.Description
+// 			}
+// 			slog.Info("ASSOC-RQ: \tTransferSynxtax:", "UID", TransferSyn.GetUID(), "Description", tsName)
+// 		}
+
+// 		PresContextAccept := NewPresentationContextAccept()
+// 		PresContextAccept.SetResult(4)
+// 		PresContextAccept.SetAbstractSyntax(PresContext.GetAbstractSyntax().GetUID())
+// 		TS := ""
+// 		for _, TrnSyntax := range PresContext.GetTransferSyntaxes() {
+// 			TS = TrnSyntax.GetUID()
+// 		}
+// 		if TS == "" {
+// 			TS = transfersyntax.ImplicitVRLittleEndian.UID
+// 		}
+
+// 		PresContextAccept.SetResult(0)
+// 		PresContextAccept.SetTransferSyntax(TS)
+// 		PresContextAccept.SetPresentationContextID(PresContext.GetPresentationContextID())
+// 		pdu.AcceptedPresentationContexts = append(pdu.AcceptedPresentationContexts, PresContextAccept)
+// 		pdu.AssocAC.AddPresContextAccept(PresContextAccept)
+// 	}
+
+// 	if len(pdu.AcceptedPresentationContexts) > 0 {
+// 		MaxSubLength := NewMaximumSubLength()
+// 		UserInfo := NewUserInformation()
+
+// 		MaxSubLength.SetMaximumLength(maxPduLength)
+// 		UserInfo.SetImpClassUID(imp.GetImpClassUID())
+// 		UserInfo.SetImpVersionName(imp.GetImpVersion())
+// 		UserInfo.SetMaxSubLength(MaxSubLength)
+// 		pdu.AssocAC.SetUserInformation(UserInfo)
+// 		return pdu.AssocAC.Write(rw)
+// 	}
+
+// 	slog.Info("pduservice::InterogateAAssociateRQ - No valid AcceptedPresentationContexts")
+// 	return pdu.AssocRJ.Write(rw)
+// }
+
 func (pdu *pduService) interogateAAssociateRQ(rw *bufio.ReadWriter) error {
 	if pdu.OnAssociationRequest == nil || !pdu.OnAssociationRequest(pdu.AssocRQ) {
 		pdu.AssocRJ.Set(1, 7)
@@ -427,12 +492,29 @@ func (pdu *pduService) interogateAAssociateRQ(rw *bufio.ReadWriter) error {
 		PresContextAccept := NewPresentationContextAccept()
 		PresContextAccept.SetResult(4)
 		PresContextAccept.SetAbstractSyntax(PresContext.GetAbstractSyntax().GetUID())
+
+		// FIX: Select the first acceptable transfer syntax, preferring Little Endian
 		TS := ""
 		for _, TrnSyntax := range PresContext.GetTransferSyntaxes() {
-			TS = TrnSyntax.GetUID()
+			tsUID := TrnSyntax.GetUID()
+
+			// Prefer Little Endian transfer syntaxes
+			if tsUID == transfersyntax.ImplicitVRLittleEndian.UID ||
+				tsUID == transfersyntax.ExplicitVRLittleEndian.UID {
+				TS = tsUID
+				slog.Info("ASSOC-RQ: \tSelected Transfer Syntax:", "UID", TS, "Type", "Little Endian")
+				break // Stop at first Little Endian match
+			}
+
+			// Fallback: accept first offered syntax if no Little Endian found
+			if TS == "" {
+				TS = tsUID
+			}
 		}
+
 		if TS == "" {
 			TS = transfersyntax.ImplicitVRLittleEndian.UID
+			slog.Info("ASSOC-RQ: \tDefaulting to Implicit VR Little Endian")
 		}
 
 		PresContextAccept.SetResult(0)
@@ -451,13 +533,35 @@ func (pdu *pduService) interogateAAssociateRQ(rw *bufio.ReadWriter) error {
 		UserInfo.SetImpVersionName(imp.GetImpVersion())
 		UserInfo.SetMaxSubLength(MaxSubLength)
 		pdu.AssocAC.SetUserInformation(UserInfo)
+
+		slog.Info("ASSOC-AC:", "CallingAE", pdu.AssocAC.GetCallingAE(), "CalledAE", pdu.AssocAC.GetCalledAE())
+		slog.Info("ASSOC-AC:", "ImpClass", imp.GetImpClassUID())
+		slog.Info("ASSOC-AC:", "ImpVersion", imp.GetImpVersion())
+		slog.Info("ASSOC-AC:", "MaxPDULength", maxPduLength)
+		slog.Info("ASSOC-AC:", "MaxOpsInvoked", 0, "MaxOpsPerformed", 0)
+		for _, pca := range pdu.AcceptedPresentationContexts {
+			abstractSyntaxUID := ""
+			if pca.GetAbstractSyntax() != nil {
+				abstractSyntaxUID = pca.GetAbstractSyntax().GetUID()
+			}
+			sopClass := sopclass.GetSOPClassFromUID(abstractSyntaxUID)
+
+			transferSyntaxUID := ""
+			if pca.GetTrnSyntax() != nil {
+				transferSyntaxUID = pca.GetTrnSyntax().GetUID()
+			}
+			transferSyntax := transfersyntax.GetTransferSyntaxFromUID(transferSyntaxUID)
+
+			slog.Info("ASSOC-AC: \tAccepted AbstractContext:", "UID", sopClass.UID, "Description", sopClass.Description)
+			slog.Info("ASSOC-AC: \tAccepted TransferSynxtax:", "UID", transferSyntax.UID, "Description", transferSyntax.Description)
+		}
+
 		return pdu.AssocAC.Write(rw)
 	}
 
 	slog.Info("pduservice::InterogateAAssociateRQ - No valid AcceptedPresentationContexts")
 	return pdu.AssocRJ.Write(rw)
 }
-
 func (pdu *pduService) parseDCMIntoRaw(DCO media.DcmObj) bool {
 	pdu.Pdata.Buffer.WriteObj(DCO)
 	return true
