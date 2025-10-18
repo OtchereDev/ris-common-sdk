@@ -5,7 +5,7 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
-	"mime/multipart"
+	"io"
 	"strings"
 	"time"
 
@@ -54,7 +54,7 @@ func (s *S3) UploadFileToS3(ctx context.Context, fileName, base64File, contentTy
 	return fileName, nil
 }
 
-func (s *S3) UploadApptFileToS3(ctx context.Context, filename string, file multipart.File, contentType string) (string, error) {
+func (s *S3) UploadApptFileToS3(ctx context.Context, filename string, file io.Reader, contentType string) (string, error) {
 	uploader := manager.NewUploader(s.Client)
 	_, err := uploader.Upload(ctx, &s3.PutObjectInput{
 		Bucket:      aws.String(s.BucketName),
