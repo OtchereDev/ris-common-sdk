@@ -1,6 +1,6 @@
 module github.com/OtchereDev/ris-common-sdk
 
-go 1.23.2
+go 1.25.3
 
 require (
 	firebase.google.com/go/v4 v4.17.0

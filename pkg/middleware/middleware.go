@@ -39,6 +39,7 @@ var ReportingTeamMiddleware = RoleMiddleware([]string{
 
 var DoctorMiddleware = RoleMiddleware([]string{"Doctor"})
 var PatientMiddleware = RoleMiddleware([]string{"Patient"})
+var OrganizationMiddleware = RoleMiddleware([]string{"Staff"})
 var AuthMiddleware func(*fiber.Ctx) error
 var PermissionNotFulfilledError = &fiber.Map{
 	"status": fiber.StatusForbidden,
