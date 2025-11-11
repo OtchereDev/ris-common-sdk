@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+option go_package = "pkg/proto/notification";
+
+import "google/protobuf/timestamp.proto";
+
+message NotificationTemplate {
+  string id = 1;
+  string title = 2;
+  string message = 3;
+  string priority = 4;
+  string category = 5;
+  string action_url = 6;
+  string metadata = 7;
+  google.protobuf.Timestamp expires_at = 8;
+
+  bool is_broadcast = 9;
+  repeated string target_users = 10;
+  string user_type = 11;
+
+  string patient_id = 12;
+  string appointment_id = 13;
+  bool urgency = 14;
+
+  google.protobuf.Timestamp created_at = 15;
+  string created_by = 16;
+}
