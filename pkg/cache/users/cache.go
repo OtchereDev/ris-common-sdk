@@ -84,7 +84,7 @@ func (c *UserStatusCache) IsUnSafe(userID uint32, role string) bool {
 	id := strconv.Itoa(int(userID))
 	switch role {
 	case "Patient":
-		return true
+		return false
 	case "Doctor":
 		_, disabled := c.disabledDoctors[id]
 		_, deleted := c.deletedDoctors[id]

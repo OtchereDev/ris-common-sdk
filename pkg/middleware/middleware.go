@@ -3,7 +3,6 @@ package middleware
 import (
 	"errors"
 	"fmt"
-	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -68,68 +67,56 @@ func configDefault(config ...Config) Config {
 			authHeaders := c.Get("Authorization")
 
 			if authHeaders == "" {
-				log.Print("authorization Headers not provided")
 				return nil, errors.New("authorization Headers not provided")
 			}
 
 			token, err := jwt.Parse(strings.Split(authHeaders, " ")[1], func(t *jwt.Token) (interface{}, error) {
 
 				if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
-					log.Printf("unexpected signing error: %v", t.Header["alg"])
 					return nil, fmt.Errorf("unexpected signing error: %v", t.Header["alg"])
 				}
 				return []byte(cfg.Secret), nil
 			})
 
 			if err != nil {
-				log.Print("invalid Token")
 				return nil, errors.New("invalid Token")
 			}
 
 			claim, ok := token.Claims.(jwt.MapClaims)
 
 			if !(ok && token.Valid) {
-				log.Print("invalid Token")
-
 				return nil, errors.New("invalid Token")
 			}
 
 			if expireAt, ok := claim["exp"]; ok && int64(expireAt.(float64)) < time.Now().UTC().Unix() {
-				log.Printf("token is expired")
 				return nil, errors.New("token is expired")
 			}
 
 			if isRefresh, ok := claim["is_refresh"].(bool); ok && isRefresh {
-				log.Printf("invalid token, use the access token instead of the refresh token")
 				return nil, errors.New("invalid token, use the access token instead of the refresh token")
 			}
 
 			if cfg.Cache != nil {
 				userId, ok := claim["user_id"].(string)
 				if !ok {
-					log.Printf("invalid or missing user_id in token")
 					return nil, errors.New("invalid or missing user_id in token")
 				}
 
 				role, ok := claim["role"].(string)
 				if !ok {
-					log.Printf("invalid or missing role in token")
 					return nil, errors.New("invalid or missing role in token")
 				}
 
 				id, err := strconv.ParseUint(userId, 10, 32)
 				if err != nil {
-					log.Printf("invalid user_id format: %v", err)
 					return nil, fmt.Errorf("invalid user_id format: %w", err)
 				}
 
 				if cfg.Cache.IsUnSafe(uint32(id), role) {
-					log.Printf("this account has been disabled or deleted")
 					return nil, errors.New("this account has been disabled or deleted")
 				}
 			}
 
-			log.Print("Successful decode")
 			return &claim, nil
 
 		}
