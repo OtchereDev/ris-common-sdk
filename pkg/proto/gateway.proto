@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package = "pkg/proto/gateway";
+
+service StudyService {
+  rpc VerifyStudy(VerifyStudyRequest) returns (VerifyStudyResponse);
+}
+
+message VerifyStudyRequest {
+  string study_uid = 1;
+}
+
+message VerifyStudyResponse {
+  bool exists = 1;
+  string message = 2;
+  string study_uid = 3;
+}
