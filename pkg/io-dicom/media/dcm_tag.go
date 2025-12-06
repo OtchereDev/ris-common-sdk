@@ -3,7 +3,6 @@ package media
 import (
 	"bytes"
 	"encoding/binary"
-	"fmt"
 	"strconv"
 	"strings"
 )
@@ -127,30 +126,25 @@ func (tag *DcmTag) WriteSeq2(group uint16, element uint16, items []DcmObj) {
 	tag.Group = group
 	tag.Element = element
 	tag.VR = "SQ"
+	tag.BigEndian = false // MWL is usually Little Endian
 
-	for _, seq := range items {
-		// Write Item start (0xFFFE,0xE000)
-		itemTag := &DcmTag{
+	for _, item := range items {
+		// Item start
+		itemStart := &DcmTag{
 			Group:   0xFFFE,
 			Element: 0xE000,
 			VR:      "",
 			Length:  0xFFFFFFFF,
 		}
-		bufdata.WriteTag(itemTag, false)
+		bufdata.WriteTag(itemStart, false)
 
-		fmt.Printf("Writing DcmObj with TagCount=%d\n", seq.TagCount())
-		for i := 0; i < seq.TagCount(); i++ {
-			t := seq.GetTagAt(i)
-			fmt.Printf("Tag[%d]: (%04X,%04X) VR=%s Len=%d Value='%s'\n", i, t.Group, t.Element, t.VR, t.Length, t.GetString())
+		// All tags inside item
+		for i := 0; i < item.TagCount(); i++ {
+			t := item.GetTagAt(i)
+			bufdata.WriteTag(t, item.IsExplicitVR())
 		}
 
-		// Write all tags in this DcmObj
-		for i := 0; i < seq.TagCount(); i++ {
-			t := seq.GetTagAt(i)
-			bufdata.WriteTag(t, seq.IsExplicitVR())
-		}
-
-		// Write Item end (0xFFFE,0xE00D)
+		// Item end
 		itemEnd := &DcmTag{
 			Group:   0xFFFE,
 			Element: 0xE00D,
@@ -160,7 +154,7 @@ func (tag *DcmTag) WriteSeq2(group uint16, element uint16, items []DcmObj) {
 		bufdata.WriteTag(itemEnd, false)
 	}
 
-	// Write Sequence Delimitation Item (0xFFFE,0xE0DD)
+	// Sequence Delimitation
 	seqEnd := &DcmTag{
 		Group:   0xFFFE,
 		Element: 0xE0DD,
@@ -171,11 +165,11 @@ func (tag *DcmTag) WriteSeq2(group uint16, element uint16, items []DcmObj) {
 
 	tag.Length = uint32(bufdata.GetSize())
 	if tag.Length%2 == 1 {
-		tag.Length++
 		bufdata.MS.Write([]byte{0x00}, 1)
+		tag.Length++
 	}
 
-	bufdata.SetPosition(0)
+	bufdata.MS.SetPosition(0)
 	data, _ := bufdata.MS.Read(int(tag.Length))
 	tag.Data = data
 }
