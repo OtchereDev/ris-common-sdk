@@ -126,10 +126,10 @@ func (tag *DcmTag) WriteSeq2(group uint16, element uint16, items []DcmObj) {
 	tag.Group = group
 	tag.Element = element
 	tag.VR = "SQ"
-	tag.BigEndian = false // MWL is usually Little Endian
+	tag.BigEndian = false // Little Endian Explicit
 
 	for _, item := range items {
-		// Item start
+		// Item start: undefined length
 		itemStart := &DcmTag{
 			Group:   0xFFFE,
 			Element: 0xE000,
@@ -138,10 +138,13 @@ func (tag *DcmTag) WriteSeq2(group uint16, element uint16, items []DcmObj) {
 		}
 		bufdata.WriteTag(itemStart, false)
 
-		// All tags inside item
+		// Write all tags inside item
 		for i := 0; i < item.TagCount(); i++ {
 			t := item.GetTagAt(i)
-			bufdata.WriteTag(t, item.IsExplicitVR())
+			if t.VR == "" {
+				t.VR = GetDictionaryVR(t.Group, t.Element)
+			}
+			bufdata.WriteTag(t, true) // Explicit VR
 		}
 
 		// Item end
@@ -154,7 +157,7 @@ func (tag *DcmTag) WriteSeq2(group uint16, element uint16, items []DcmObj) {
 		bufdata.WriteTag(itemEnd, false)
 	}
 
-	// Sequence Delimitation
+	// Sequence Delimitation Item
 	seqEnd := &DcmTag{
 		Group:   0xFFFE,
 		Element: 0xE0DD,
