@@ -16,4 +16,5 @@ message VerifyStudyResponse {
   bool exists = 1;
   string message = 2;
   string study_uid = 3;
+  string accession_number = 4;
 }

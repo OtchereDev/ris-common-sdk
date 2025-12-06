@@ -66,12 +66,13 @@ func (x *VerifyStudyRequest) GetStudyUid() string {
 }
 
 type VerifyStudyResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Exists        bool                   `protobuf:"varint,1,opt,name=exists,proto3" json:"exists,omitempty"`
-	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
-	StudyUid      string                 `protobuf:"bytes,3,opt,name=study_uid,json=studyUid,proto3" json:"study_uid,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Exists          bool                   `protobuf:"varint,1,opt,name=exists,proto3" json:"exists,omitempty"`
+	Message         string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	StudyUid        string                 `protobuf:"bytes,3,opt,name=study_uid,json=studyUid,proto3" json:"study_uid,omitempty"`
+	AccessionNumber string                 `protobuf:"bytes,4,opt,name=accession_number,json=accessionNumber,proto3" json:"accession_number,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *VerifyStudyResponse) Reset() {
@@ -125,17 +126,25 @@ func (x *VerifyStudyResponse) GetStudyUid() string {
 	return ""
 }
 
+func (x *VerifyStudyResponse) GetAccessionNumber() string {
+	if x != nil {
+		return x.AccessionNumber
+	}
+	return ""
+}
+
 var File_pkg_proto_gateway_proto protoreflect.FileDescriptor
 
 const file_pkg_proto_gateway_proto_rawDesc = "" +
 	"\n" +
 	"\x17pkg/proto/gateway.proto\x12\x05proto\"1\n" +
 	"\x12VerifyStudyRequest\x12\x1b\n" +
-	"\tstudy_uid\x18\x01 \x01(\tR\bstudyUid\"d\n" +
+	"\tstudy_uid\x18\x01 \x01(\tR\bstudyUid\"\x8f\x01\n" +
 	"\x13VerifyStudyResponse\x12\x16\n" +
 	"\x06exists\x18\x01 \x01(\bR\x06exists\x12\x18\n" +
 	"\amessage\x18\x02 \x01(\tR\amessage\x12\x1b\n" +
-	"\tstudy_uid\x18\x03 \x01(\tR\bstudyUid2T\n" +
+	"\tstudy_uid\x18\x03 \x01(\tR\bstudyUid\x12)\n" +
+	"\x10accession_number\x18\x04 \x01(\tR\x0faccessionNumber2T\n" +
 	"\fStudyService\x12D\n" +
 	"\vVerifyStudy\x12\x19.proto.VerifyStudyRequest\x1a\x1a.proto.VerifyStudyResponseB\x13Z\x11pkg/proto/gatewayb\x06proto3"
 
