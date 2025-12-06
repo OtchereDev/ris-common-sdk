@@ -117,6 +117,61 @@ func (tag *DcmTag) WriteSeq(group uint16, element uint16, seq DcmObj) {
 	}
 }
 
+func (tag *DcmTag) WriteSeq2(group uint16, element uint16, items []DcmObj) {
+	bufdata := &bufData{
+		BigEndian: false,
+		MS:        NewEmptyMemoryStream(),
+	}
+
+	tag.Group = group
+	tag.Element = element
+	tag.VR = "SQ"
+
+	for _, seq := range items {
+		// Write Item start (0xFFFE,0xE000)
+		itemTag := &DcmTag{
+			Group:   0xFFFE,
+			Element: 0xE000,
+			VR:      "",
+			Length:  0xFFFFFFFF,
+		}
+		bufdata.WriteTag(itemTag, false)
+
+		// Write all tags in this DcmObj
+		for i := 0; i < seq.TagCount(); i++ {
+			bufdata.WriteTag(seq.GetTagAt(i), seq.IsExplicitVR())
+		}
+
+		// Write Item end (0xFFFE,0xE00D)
+		itemEnd := &DcmTag{
+			Group:   0xFFFE,
+			Element: 0xE00D,
+			VR:      "",
+			Length:  0,
+		}
+		bufdata.WriteTag(itemEnd, false)
+	}
+
+	// Write Sequence Delimitation Item (0xFFFE,0xE0DD)
+	seqEnd := &DcmTag{
+		Group:   0xFFFE,
+		Element: 0xE0DD,
+		VR:      "",
+		Length:  0,
+	}
+	bufdata.WriteTag(seqEnd, false)
+
+	tag.Length = uint32(bufdata.GetSize())
+	if tag.Length%2 == 1 {
+		tag.Length++
+		bufdata.MS.Write([]byte{0x00}, 1)
+	}
+
+	bufdata.SetPosition(0)
+	data, _ := bufdata.MS.Read(int(tag.Length))
+	tag.Data = data
+}
+
 // ReadSeq - reads a dicom sequence
 func (tag *DcmTag) ReadSeq(ExplicitVR bool) DcmObj {
 	seq := NewEmptyDCMObj()
