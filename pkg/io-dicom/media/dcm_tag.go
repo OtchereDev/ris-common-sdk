@@ -138,11 +138,16 @@ func (tag *DcmTag) WriteSeq2(group uint16, element uint16, items []DcmObj) {
 		}
 		bufdata.WriteTag(itemTag, false)
 
-		// Write all tags in this DcmObj
 		fmt.Printf("Writing DcmObj with TagCount=%d\n", seq.TagCount())
 		for i := 0; i < seq.TagCount(); i++ {
 			t := seq.GetTagAt(i)
 			fmt.Printf("Tag[%d]: (%04X,%04X) VR=%s Len=%d Value='%s'\n", i, t.Group, t.Element, t.VR, t.Length, t.GetString())
+		}
+
+		// Write all tags in this DcmObj
+		for i := 0; i < seq.TagCount(); i++ {
+			t := seq.GetTagAt(i)
+			bufdata.WriteTag(t, seq.IsExplicitVR())
 		}
 
 		// Write Item end (0xFFFE,0xE00D)
