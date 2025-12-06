@@ -10,6 +10,7 @@ service StudyService {
 
 message VerifyStudyRequest {
   string study_uid = 1;
+  string accession_number = 2;
 }
 
 message VerifyStudyResponse {

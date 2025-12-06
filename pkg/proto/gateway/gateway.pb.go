@@ -22,10 +22,11 @@ const (
 )
 
 type VerifyStudyRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	StudyUid      string                 `protobuf:"bytes,1,opt,name=study_uid,json=studyUid,proto3" json:"study_uid,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	StudyUid        string                 `protobuf:"bytes,1,opt,name=study_uid,json=studyUid,proto3" json:"study_uid,omitempty"`
+	AccessionNumber string                 `protobuf:"bytes,2,opt,name=accession_number,json=accessionNumber,proto3" json:"accession_number,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *VerifyStudyRequest) Reset() {
@@ -61,6 +62,13 @@ func (*VerifyStudyRequest) Descriptor() ([]byte, []int) {
 func (x *VerifyStudyRequest) GetStudyUid() string {
 	if x != nil {
 		return x.StudyUid
+	}
+	return ""
+}
+
+func (x *VerifyStudyRequest) GetAccessionNumber() string {
+	if x != nil {
+		return x.AccessionNumber
 	}
 	return ""
 }
@@ -137,9 +145,10 @@ var File_pkg_proto_gateway_proto protoreflect.FileDescriptor
 
 const file_pkg_proto_gateway_proto_rawDesc = "" +
 	"\n" +
-	"\x17pkg/proto/gateway.proto\x12\x05proto\"1\n" +
+	"\x17pkg/proto/gateway.proto\x12\x05proto\"\\\n" +
 	"\x12VerifyStudyRequest\x12\x1b\n" +
-	"\tstudy_uid\x18\x01 \x01(\tR\bstudyUid\"\x8f\x01\n" +
+	"\tstudy_uid\x18\x01 \x01(\tR\bstudyUid\x12)\n" +
+	"\x10accession_number\x18\x02 \x01(\tR\x0faccessionNumber\"\x8f\x01\n" +
 	"\x13VerifyStudyResponse\x12\x16\n" +
 	"\x06exists\x18\x01 \x01(\bR\x06exists\x12\x18\n" +
 	"\amessage\x18\x02 \x01(\tR\amessage\x12\x1b\n" +
