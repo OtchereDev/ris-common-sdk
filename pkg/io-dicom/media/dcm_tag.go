@@ -78,10 +78,33 @@ func (tag *DcmTag) WriteSeq(group uint16, element uint16, seq DcmObj) {
 	} else {
 		tag.VR = "SQ"
 	}
+
+	// Write Item Delimiter (0xFFFE, 0xE000)
+	itemDelimiter := &DcmTag{
+		Group:   0xFFFE,
+		Element: 0xE000,
+		VR:      "",
+		Length:  0xFFFFFFFF,
+		Data:    []byte{},
+	}
+	bufdata.WriteTag(itemDelimiter, false)
+
+	// Write sequence content
 	for i := 0; i < seq.TagCount(); i++ {
 		temptag := seq.GetTagAt(i)
 		bufdata.WriteTag(temptag, seq.IsExplicitVR())
 	}
+
+	// Write Item Delimiter End (0xFFFE, 0xE00D)
+	itemEnd := &DcmTag{
+		Group:   0xFFFE,
+		Element: 0xE00D,
+		VR:      "",
+		Length:  0,
+		Data:    []byte{},
+	}
+	bufdata.WriteTag(itemEnd, false)
+
 	tag.Length = uint32(bufdata.GetSize())
 	if tag.Length%2 == 1 {
 		tag.Length++
