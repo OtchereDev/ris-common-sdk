@@ -78,33 +78,10 @@ func (tag *DcmTag) WriteSeq(group uint16, element uint16, seq DcmObj) {
 	} else {
 		tag.VR = "SQ"
 	}
-
-	// Write Item Delimiter (0xFFFE, 0xE000)
-	itemDelimiter := &DcmTag{
-		Group:   0xFFFE,
-		Element: 0xE000,
-		VR:      "",
-		Length:  0xFFFFFFFF,
-		Data:    []byte{},
-	}
-	bufdata.WriteTag(itemDelimiter, false)
-
-	// Write sequence content
 	for i := 0; i < seq.TagCount(); i++ {
 		temptag := seq.GetTagAt(i)
 		bufdata.WriteTag(temptag, seq.IsExplicitVR())
 	}
-
-	// Write Item Delimiter End (0xFFFE, 0xE00D)
-	itemEnd := &DcmTag{
-		Group:   0xFFFE,
-		Element: 0xE00D,
-		VR:      "",
-		Length:  0,
-		Data:    []byte{},
-	}
-	bufdata.WriteTag(itemEnd, false)
-
 	tag.Length = uint32(bufdata.GetSize())
 	if tag.Length%2 == 1 {
 		tag.Length++
@@ -115,66 +92,6 @@ func (tag *DcmTag) WriteSeq(group uint16, element uint16, seq DcmObj) {
 		data, _ := bufdata.MS.Read(int(tag.Length))
 		tag.Data = data
 	}
-}
-
-func (tag *DcmTag) WriteSeq2(group uint16, element uint16, items []DcmObj) {
-	bufdata := &bufData{
-		BigEndian: false,
-		MS:        NewEmptyMemoryStream(),
-	}
-
-	tag.Group = group
-	tag.Element = element
-	tag.VR = "SQ"
-	tag.BigEndian = false // Little Endian Explicit
-
-	for _, item := range items {
-		// Item start: undefined length
-		itemStart := &DcmTag{
-			Group:   0xFFFE,
-			Element: 0xE000,
-			VR:      "",
-			Length:  0xFFFFFFFF,
-		}
-		bufdata.WriteTag(itemStart, false)
-
-		// Write all tags inside item
-		for i := 0; i < item.TagCount(); i++ {
-			t := item.GetTagAt(i)
-			if t.VR == "" {
-				t.VR = GetDictionaryVR(t.Group, t.Element)
-			}
-			bufdata.WriteTag(t, true) // Explicit VR
-		}
-
-		// Item end
-		itemEnd := &DcmTag{
-			Group:   0xFFFE,
-			Element: 0xE00D,
-			VR:      "",
-			Length:  0,
-		}
-		bufdata.WriteTag(itemEnd, false)
-	}
-
-	// Sequence Delimitation Item
-	seqEnd := &DcmTag{
-		Group:   0xFFFE,
-		Element: 0xE0DD,
-		VR:      "",
-		Length:  0,
-	}
-	bufdata.WriteTag(seqEnd, false)
-
-	tag.Length = uint32(bufdata.GetSize())
-	if tag.Length%2 == 1 {
-		bufdata.MS.Write([]byte{0x00}, 1)
-		tag.Length++
-	}
-
-	bufdata.MS.SetPosition(0)
-	data, _ := bufdata.MS.Read(int(tag.Length))
-	tag.Data = data
 }
 
 // ReadSeq - reads a dicom sequence
