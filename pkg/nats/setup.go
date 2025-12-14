@@ -1,152 +1,3 @@
-// package nats
-
-// import (
-// 	"errors"
-// 	"fmt"
-// 	"regexp"
-// 	"time"
-
-// 	"github.com/nats-io/nats.go"
-// 	"google.golang.org/protobuf/proto"
-// )
-
-// type Nat struct {
-// 	Client *nats.Conn
-// 	Jet    nats.JetStreamContext
-// }
-
-// type NatSubjects struct {
-// 	Subject string
-// 	Handler func(eventType string, m *nats.Msg)
-// }
-
-// type NatSetupOptions struct {
-// 	Queue    string
-// 	Subjects []string
-// }
-
-// func Connect(conn string) (n Nat, err error) {
-// 	nc, err := nats.Connect(conn)
-// 	if err != nil {
-// 		return
-// 	}
-
-// 	js, err := nc.JetStream()
-// 	if err != nil {
-// 		return
-// 	}
-
-// 	n = Nat{
-// 		Client: nc,
-// 		Jet:    js,
-// 	}
-
-// 	return
-// }
-
-// func Setup(conn string, options []NatSetupOptions) (n Nat, err error) {
-// 	nc, err := nats.Connect(conn)
-// 	if err != nil {
-// 		return
-// 	}
-
-// 	js, err := nc.JetStream()
-// 	if err != nil {
-// 		return
-// 	}
-
-// 	n = Nat{
-// 		Client: nc,
-// 		Jet:    js,
-// 	}
-
-// 	for _, o := range options {
-
-// 		streamInfo, e := js.StreamInfo(o.Queue)
-// 		if e != nil && e != nats.ErrStreamNotFound {
-// 			return n, e
-// 		}
-
-// 		if streamInfo != nil {
-// 			return n, e
-// 		} else {
-// 			// Add the stream if it doesn't exist
-// 			_, err = js.AddStream(&nats.StreamConfig{
-// 				Name:      o.Queue,
-// 				Subjects:  o.Subjects,
-// 				Retention: nats.LimitsPolicy,
-// 				Storage:   nats.FileStorage,
-// 				MaxAge:    time.Nanosecond * 2592000000000000,
-// 			})
-// 			if err != nil {
-// 				return
-// 			}
-// 		}
-// 	}
-
-// 	return
-// }
-
-// func sanitizeConsumerName(name string) string {
-// 	re := regexp.MustCompile(`[^a-zA-Z0-9-_]`)
-// 	sanitized := re.ReplaceAllString(name, "-")
-// 	return sanitized
-// }
-
-// func (n Nat) Subscribe(q string, subjects []NatSubjects) (err error) {
-
-// 	var subs []*nats.Subscription = []*nats.Subscription{}
-
-// 	for _, subject := range subjects {
-// 		s := subject.Subject
-// 		sub, err := n.Jet.QueueSubscribe(s, q, func(m *nats.Msg) {
-// 			subject.Handler(s, m)
-// 		},
-// 			nats.Durable(fmt.Sprintf("durable-%s", sanitizeConsumerName(s))),
-// 			nats.ManualAck(),
-// 			nats.DeliverAll(),
-// 			nats.MaxDeliver(5),
-// 			nats.AckWait(30*time.Second),
-// 		)
-
-// 		if err != nil {
-// 			// Clean up any subscriptions already created before returning error
-// 			for _, createdSub := range subs {
-// 				createdSub.Unsubscribe()
-// 			}
-// 			return fmt.Errorf("error subscribing to subject %s: %v", s, err)
-// 		}
-
-// 		subs = append(subs, sub)
-// 	}
-
-// 	defer func() {
-// 		for _, sub := range subs {
-// 			sub.Unsubscribe()
-// 		}
-// 	}()
-
-// 	select {}
-// }
-
-// func (n Nat) Publish(subject string, protoMsg proto.Message) (err error) {
-// 	if protoMsg == nil {
-// 		return errors.New("proto message cannot be nil")
-// 	}
-
-// 	message, err := proto.Marshal(protoMsg)
-// 	if err != nil {
-// 		return
-// 	}
-
-// 	_, err = n.Jet.Publish(subject, message)
-// 	if err != nil {
-// 		return
-// 	}
-
-// 	return
-// }
-
 package nats
 
 import (
@@ -289,7 +140,7 @@ func (n *Nat) Subscribe(options SubscribeOptions) error {
 		options.AckWait = 30 * time.Second
 	}
 	if options.DeliverPolicy == 0 {
-		options.DeliverPolicy = nats.DeliverAllPolicy
+		options.DeliverPolicy = nats.DeliverNewPolicy // Changed: default to DeliverNew
 	}
 
 	// Group subjects by stream
@@ -312,21 +163,33 @@ func (n *Nat) Subscribe(options SubscribeOptions) error {
 	return nil
 }
 
-// Add this enhanced version of subscribeToStream to your nats package
-
 func (n *Nat) subscribeToStream(streamName, serviceName string, subjects []NatSubjects, options SubscribeOptions) error {
 	consumerName := fmt.Sprintf("%s-%s-consumer", serviceName, streamName)
 	queueGroup := serviceName
 
-	log.Printf("[INFO] Creating consumer %s for stream %s with %d subjects", consumerName, streamName, len(subjects))
+	log.Printf("[INFO] Starting subscription for stream %s with %d subjects", streamName, len(subjects))
 
 	var subs []*nats.Subscription
 
 	for idx, subject := range subjects {
 		durableName := consumerName + "-" + sanitizeConsumerName(subject.Subject)
 
-		log.Printf("[INFO] [%d/%d] Subscribing to subject: %s (durable: %s)",
+		log.Printf("[INFO] [%d/%d] Processing subject: %s (durable: %s)",
 			idx+1, len(subjects), subject.Subject, durableName)
+
+		// Check if consumer already exists
+		existingConsumer, err := n.Jet.ConsumerInfo(streamName, durableName)
+		isNewConsumer := err == nats.ErrConsumerNotFound || existingConsumer == nil
+
+		if err != nil && err != nats.ErrConsumerNotFound {
+			log.Printf("[ERROR] Failed to check consumer existence for %s: %v", durableName, err)
+			return fmt.Errorf("error checking consumer info: %w", err)
+		}
+
+		if !isNewConsumer && existingConsumer != nil {
+			log.Printf("[INFO] Consumer %s already exists, will resume from last acked message (Ack Floor: %d)",
+				durableName, existingConsumer.AckFloor.Consumer)
+		}
 
 		// Build subscription options
 		subOpts := []nats.SubOpt{
@@ -336,25 +199,32 @@ func (n *Nat) subscribeToStream(streamName, serviceName string, subjects []NatSu
 			nats.AckWait(options.AckWait),
 		}
 
-		// Add deliver policy option
-		switch options.DeliverPolicy {
-		case nats.DeliverAllPolicy:
-			subOpts = append(subOpts, nats.DeliverAll())
-		case nats.DeliverLastPolicy:
-			subOpts = append(subOpts, nats.DeliverLast())
-		case nats.DeliverNewPolicy:
-			subOpts = append(subOpts, nats.DeliverNew())
-		case nats.DeliverLastPerSubjectPolicy:
-			subOpts = append(subOpts, nats.DeliverLastPerSubject())
-		default:
-			subOpts = append(subOpts, nats.DeliverAll())
+		// Only set DeliverPolicy if this is a NEW consumer
+		// If consumer already exists, JetStream will use its saved state
+		if isNewConsumer {
+			log.Printf("[INFO] Creating new consumer, setting DeliverPolicy: %v", options.DeliverPolicy)
+			switch options.DeliverPolicy {
+			case nats.DeliverAllPolicy:
+				subOpts = append(subOpts, nats.DeliverAll())
+			case nats.DeliverLastPolicy:
+				subOpts = append(subOpts, nats.DeliverLast())
+			case nats.DeliverNewPolicy:
+				subOpts = append(subOpts, nats.DeliverNew())
+			case nats.DeliverLastPerSubjectPolicy:
+				subOpts = append(subOpts, nats.DeliverLastPerSubject())
+			default:
+				subOpts = append(subOpts, nats.DeliverNew())
+			}
+		} else {
+			log.Printf("[INFO] Existing consumer detected - NOT setting DeliverPolicy to preserve consumer state")
 		}
 
 		// Wrap the handler with logging
 		wrappedHandler := func(subj string, handler func(string, *nats.Msg)) func(*nats.Msg) {
 			return func(m *nats.Msg) {
-				log.Printf("[DEBUG] Message received - Subject: %s, Size: %d bytes, Reply: %s",
-					m.Subject, len(m.Data), m.Reply)
+				meta, _ := m.Metadata()
+				log.Printf("[DEBUG] Message received - Subject: %s, Size: %d bytes, Stream Seq: %d, Consumer Seq: %d, Redeliveries: %d",
+					m.Subject, len(m.Data), meta.Sequence.Stream, meta.Sequence.Consumer, meta.NumDelivered-1)
 
 				// Call the original handler
 				handler(subj, m)
@@ -485,6 +355,9 @@ func (n *Nat) Close() error {
 
 	// Wait for all goroutines to finish
 	n.wg.Wait()
+
+	// Give subscriptions time to flush pending acks
+	time.Sleep(500 * time.Millisecond)
 
 	if n.Client != nil {
 		n.Client.Close()
