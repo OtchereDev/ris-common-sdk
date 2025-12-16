@@ -227,3 +227,16 @@ func FinanceMiddleware() fiber.Handler {
 
 	}
 }
+
+func OrgAdminMiddleware() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		user, _ := SerializeRequestUser(c)
+
+		if user == nil || user.OrganizationID == 0 || user.OrganizationRole != "ADMIN" {
+			return c.Status(fiber.StatusForbidden).JSON(PermissionNotFulfilledError)
+
+		}
+
+		return c.Next()
+	}
+}
