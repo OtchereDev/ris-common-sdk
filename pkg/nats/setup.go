@@ -177,7 +177,6 @@ func (n *Nat) subscribeToStream(streamName, serviceName string, subjects []NatSu
 		log.Printf("[INFO] [%d/%d] Processing subject: %s (durable: %s)",
 			idx+1, len(subjects), subject.Subject, durableName)
 
-		// Check if consumer already exists
 		existingConsumer, err := n.Jet.ConsumerInfo(streamName, durableName)
 		isNewConsumer := err == nats.ErrConsumerNotFound || existingConsumer == nil
 
@@ -191,7 +190,6 @@ func (n *Nat) subscribeToStream(streamName, serviceName string, subjects []NatSu
 				durableName, existingConsumer.AckFloor.Consumer)
 		}
 
-		// Build subscription options
 		subOpts := []nats.SubOpt{
 			nats.Durable(durableName),
 			nats.ManualAck(),
@@ -199,8 +197,6 @@ func (n *Nat) subscribeToStream(streamName, serviceName string, subjects []NatSu
 			nats.AckWait(options.AckWait),
 		}
 
-		// Only set DeliverPolicy if this is a NEW consumer
-		// If consumer already exists, JetStream will use its saved state
 		if isNewConsumer {
 			log.Printf("[INFO] Creating new consumer, setting DeliverPolicy: %v", options.DeliverPolicy)
 			switch options.DeliverPolicy {
@@ -219,14 +215,12 @@ func (n *Nat) subscribeToStream(streamName, serviceName string, subjects []NatSu
 			log.Printf("[INFO] Existing consumer detected - NOT setting DeliverPolicy to preserve consumer state")
 		}
 
-		// Wrap the handler with logging
 		wrappedHandler := func(subj string, handler func(string, *nats.Msg)) func(*nats.Msg) {
 			return func(m *nats.Msg) {
 				meta, _ := m.Metadata()
 				log.Printf("[DEBUG] Message received - Subject: %s, Size: %d bytes, Stream Seq: %d, Consumer Seq: %d, Redeliveries: %d",
 					m.Subject, len(m.Data), meta.Sequence.Stream, meta.Sequence.Consumer, meta.NumDelivered-1)
 
-				// Call the original handler
 				handler(subj, m)
 			}
 		}(subject.Subject, subject.Handler)
@@ -240,7 +234,6 @@ func (n *Nat) subscribeToStream(streamName, serviceName string, subjects []NatSu
 
 		if err != nil {
 			log.Printf("[ERROR] Failed to subscribe to %s: %v", subject.Subject, err)
-			// Clean up any subscriptions already created
 			for _, createdSub := range subs {
 				if unsubErr := createdSub.Unsubscribe(); unsubErr != nil {
 					log.Printf("[ERROR] Failed to unsubscribe during cleanup: %v", unsubErr)
@@ -255,12 +248,10 @@ func (n *Nat) subscribeToStream(streamName, serviceName string, subjects []NatSu
 
 	log.Printf("[INFO] Successfully created %d subscriptions for stream %s", len(subs), streamName)
 
-	// Keep subscriptions alive until context is cancelled
 	<-n.ctx.Done()
 
 	log.Printf("[INFO] Shutting down subscriptions for stream %s", streamName)
 
-	// Clean up subscriptions
 	for _, sub := range subs {
 		if err := sub.Unsubscribe(); err != nil {
 			log.Printf("[ERROR] Error unsubscribing: %v", err)
