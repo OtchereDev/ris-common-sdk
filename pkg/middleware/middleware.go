@@ -252,7 +252,7 @@ func AdminOrgAdminMiddleware() fiber.Handler {
 		}
 
 		// Global admin → allow
-		if user.UserType == UserTypes.Admin && user.IsAdmin {
+		if user.UserType == UserTypes.Admin || user.IsAdmin {
 			return c.Next()
 		}
 
