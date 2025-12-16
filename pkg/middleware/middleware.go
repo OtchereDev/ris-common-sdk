@@ -228,6 +228,7 @@ func FinanceMiddleware() fiber.Handler {
 	}
 }
 
+// OrgAdminMiddleware allow only admin for organization
 func OrgAdminMiddleware() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		user, _ := SerializeRequestUser(c)
@@ -235,6 +236,19 @@ func OrgAdminMiddleware() fiber.Handler {
 		if user == nil || user.OrganizationID == 0 || user.OrganizationRole != "ADMIN" {
 			return c.Status(fiber.StatusForbidden).JSON(PermissionNotFulfilledError)
 
+		}
+
+		return c.Next()
+	}
+}
+
+// AdminOrgAdminMiddleware this allow either spectra admin or organization admin to go through
+func AdminOrgAdminMiddleware() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		user, _ := SerializeRequestUser(c)
+
+		if user == nil || user.OrganizationID == 0 || user.OrganizationRole != "ADMIN" || user.UserType != UserTypes.Admin {
+			return c.Status(fiber.StatusForbidden).JSON(PermissionNotFulfilledError)
 		}
 
 		return c.Next()
