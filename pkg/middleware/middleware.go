@@ -3,6 +3,7 @@ package middleware
 import (
 	"errors"
 	"fmt"
+	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -247,20 +248,25 @@ func AdminOrgAdminMiddleware() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		user, _ := SerializeRequestUser(c)
 
+		log.Printf("%+v", user)
 		if user == nil {
+			log.Printf("1")
 			return c.Status(fiber.StatusForbidden).JSON(PermissionNotFulfilledError)
 		}
 
 		// Global admin → allow
 		if user.UserType == UserTypes.Admin || user.IsAdmin {
+			log.Printf("11")
 			return c.Next()
 		}
 
 		// Org admin → allow
 		if user.OrganizationID != 0 && user.OrganizationRole == "ADMIN" {
+			log.Printf("11")
 			return c.Next()
 		}
 
+		log.Printf("%+v", user)
 		return c.Status(fiber.StatusForbidden).JSON(PermissionNotFulfilledError)
 	}
 }
