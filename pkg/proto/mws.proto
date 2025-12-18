@@ -19,6 +19,7 @@ message CreateWorklistEntry {
   string status = 12;
   string priority = 13;
   string contrast_agent = 14;
+  string accession_number = 15;
 }
 
 message CreateModality {

@@ -1,1 +1,3 @@
 protoc --go_out=. --go_opt=paths=import pkg/proto/mws.proto 
+protoc --python_out=. pkg/proto/mws.proto
+
