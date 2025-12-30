@@ -77,3 +77,11 @@ message ReportDeliveryStatus {
   string recipient = 6;
   google.protobuf.Timestamp timestamp = 7;
 }
+
+message AppointmentRequest {
+  uint32 id = 1;
+}
+
+service AppointmentService {
+  rpc GetAppointment (AppointmentRequest) returns (Appointment) {}
+}
