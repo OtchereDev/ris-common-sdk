@@ -82,6 +82,72 @@ message AppointmentRequest {
   uint32 id = 1;
 }
 
+message GetRecipientCountRequest {
+    string recipient_type = 1; // "patient" or "referring_doctor"
+    string target_type = 2; // "all", "filtered", "specific"
+    FilterCriteria filter_criteria = 3;
+    repeated uint32 specific_ids = 4;
+}
+
+message RecipientCountResponse {
+    int32 total = 1;
+    RecipientBreakdown breakdown = 2;
+}
+
+message RecipientBreakdown {
+    int32 with_email = 1;
+    int32 with_phone = 2;
+    int32 with_push = 3;
+}
+
+message GetRecipientsRequest {
+    string recipient_type = 1;
+    string target_type = 2;
+    FilterCriteria filter_criteria = 3;
+    repeated uint32 specific_ids = 4;
+    int32 offset = 5;
+    int32 limit = 6;
+}
+
+message RecipientsResponse {
+    repeated Recipient recipients = 1;
+}
+
+message Recipient {
+    uint32 id = 1;
+    string email = 2;
+    string phone_number = 3;
+    string device_id = 4;
+    string first_name = 5;
+    string last_name = 6;
+    string recipient_type = 7;
+}
+
+message FilterCriteria {
+    // Patient filters
+    optional string gender = 1;
+    optional int32 age_min = 2;
+    optional int32 age_max = 3;
+    optional string created_after = 4; // ISO timestamp
+    optional string created_before = 5;
+    optional string last_appointment_from = 6;
+    optional string last_appointment_to = 7;
+    optional bool has_email = 8;
+    optional bool has_phone_number = 9;
+    optional bool allow_mobile_login = 10;
+    
+    // Referring Doctor filters
+    repeated uint32 referring_center_ids = 11;
+    optional string profession = 12;
+    optional bool has_access_request = 13;
+    optional bool is_disabled = 14;
+    optional string last_login_after = 15;
+}
+
 service AppointmentService {
   rpc GetAppointment (AppointmentRequest) returns (Appointment) {}
+
+  rpc GetRecipientCount(GetRecipientCountRequest) returns (RecipientCountResponse);
+    
+  rpc GetRecipients(GetRecipientsRequest) returns (RecipientsResponse);
 }

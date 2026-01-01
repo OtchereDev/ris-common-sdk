@@ -7,13 +7,12 @@
 package appointment
 
 import (
-	reflect "reflect"
-	sync "sync"
-	unsafe "unsafe"
-
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
+	reflect "reflect"
+	sync "sync"
+	unsafe "unsafe"
 )
 
 const (
@@ -707,6 +706,564 @@ func (x *AppointmentRequest) GetId() uint32 {
 	return 0
 }
 
+type GetRecipientCountRequest struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	RecipientType  string                 `protobuf:"bytes,1,opt,name=recipient_type,json=recipientType,proto3" json:"recipient_type,omitempty"` // "patient" or "referring_doctor"
+	TargetType     string                 `protobuf:"bytes,2,opt,name=target_type,json=targetType,proto3" json:"target_type,omitempty"`          // "all", "filtered", "specific"
+	FilterCriteria *FilterCriteria        `protobuf:"bytes,3,opt,name=filter_criteria,json=filterCriteria,proto3" json:"filter_criteria,omitempty"`
+	SpecificIds    []uint32               `protobuf:"varint,4,rep,packed,name=specific_ids,json=specificIds,proto3" json:"specific_ids,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *GetRecipientCountRequest) Reset() {
+	*x = GetRecipientCountRequest{}
+	mi := &file_pkg_proto_appointment_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetRecipientCountRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetRecipientCountRequest) ProtoMessage() {}
+
+func (x *GetRecipientCountRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_proto_appointment_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetRecipientCountRequest.ProtoReflect.Descriptor instead.
+func (*GetRecipientCountRequest) Descriptor() ([]byte, []int) {
+	return file_pkg_proto_appointment_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *GetRecipientCountRequest) GetRecipientType() string {
+	if x != nil {
+		return x.RecipientType
+	}
+	return ""
+}
+
+func (x *GetRecipientCountRequest) GetTargetType() string {
+	if x != nil {
+		return x.TargetType
+	}
+	return ""
+}
+
+func (x *GetRecipientCountRequest) GetFilterCriteria() *FilterCriteria {
+	if x != nil {
+		return x.FilterCriteria
+	}
+	return nil
+}
+
+func (x *GetRecipientCountRequest) GetSpecificIds() []uint32 {
+	if x != nil {
+		return x.SpecificIds
+	}
+	return nil
+}
+
+type RecipientCountResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Total         int32                  `protobuf:"varint,1,opt,name=total,proto3" json:"total,omitempty"`
+	Breakdown     *RecipientBreakdown    `protobuf:"bytes,2,opt,name=breakdown,proto3" json:"breakdown,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RecipientCountResponse) Reset() {
+	*x = RecipientCountResponse{}
+	mi := &file_pkg_proto_appointment_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RecipientCountResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RecipientCountResponse) ProtoMessage() {}
+
+func (x *RecipientCountResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_proto_appointment_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RecipientCountResponse.ProtoReflect.Descriptor instead.
+func (*RecipientCountResponse) Descriptor() ([]byte, []int) {
+	return file_pkg_proto_appointment_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *RecipientCountResponse) GetTotal() int32 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
+func (x *RecipientCountResponse) GetBreakdown() *RecipientBreakdown {
+	if x != nil {
+		return x.Breakdown
+	}
+	return nil
+}
+
+type RecipientBreakdown struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	WithEmail     int32                  `protobuf:"varint,1,opt,name=with_email,json=withEmail,proto3" json:"with_email,omitempty"`
+	WithPhone     int32                  `protobuf:"varint,2,opt,name=with_phone,json=withPhone,proto3" json:"with_phone,omitempty"`
+	WithPush      int32                  `protobuf:"varint,3,opt,name=with_push,json=withPush,proto3" json:"with_push,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RecipientBreakdown) Reset() {
+	*x = RecipientBreakdown{}
+	mi := &file_pkg_proto_appointment_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RecipientBreakdown) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RecipientBreakdown) ProtoMessage() {}
+
+func (x *RecipientBreakdown) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_proto_appointment_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RecipientBreakdown.ProtoReflect.Descriptor instead.
+func (*RecipientBreakdown) Descriptor() ([]byte, []int) {
+	return file_pkg_proto_appointment_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *RecipientBreakdown) GetWithEmail() int32 {
+	if x != nil {
+		return x.WithEmail
+	}
+	return 0
+}
+
+func (x *RecipientBreakdown) GetWithPhone() int32 {
+	if x != nil {
+		return x.WithPhone
+	}
+	return 0
+}
+
+func (x *RecipientBreakdown) GetWithPush() int32 {
+	if x != nil {
+		return x.WithPush
+	}
+	return 0
+}
+
+type GetRecipientsRequest struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	RecipientType  string                 `protobuf:"bytes,1,opt,name=recipient_type,json=recipientType,proto3" json:"recipient_type,omitempty"`
+	TargetType     string                 `protobuf:"bytes,2,opt,name=target_type,json=targetType,proto3" json:"target_type,omitempty"`
+	FilterCriteria *FilterCriteria        `protobuf:"bytes,3,opt,name=filter_criteria,json=filterCriteria,proto3" json:"filter_criteria,omitempty"`
+	SpecificIds    []uint32               `protobuf:"varint,4,rep,packed,name=specific_ids,json=specificIds,proto3" json:"specific_ids,omitempty"`
+	Offset         int32                  `protobuf:"varint,5,opt,name=offset,proto3" json:"offset,omitempty"`
+	Limit          int32                  `protobuf:"varint,6,opt,name=limit,proto3" json:"limit,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *GetRecipientsRequest) Reset() {
+	*x = GetRecipientsRequest{}
+	mi := &file_pkg_proto_appointment_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetRecipientsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetRecipientsRequest) ProtoMessage() {}
+
+func (x *GetRecipientsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_proto_appointment_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetRecipientsRequest.ProtoReflect.Descriptor instead.
+func (*GetRecipientsRequest) Descriptor() ([]byte, []int) {
+	return file_pkg_proto_appointment_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *GetRecipientsRequest) GetRecipientType() string {
+	if x != nil {
+		return x.RecipientType
+	}
+	return ""
+}
+
+func (x *GetRecipientsRequest) GetTargetType() string {
+	if x != nil {
+		return x.TargetType
+	}
+	return ""
+}
+
+func (x *GetRecipientsRequest) GetFilterCriteria() *FilterCriteria {
+	if x != nil {
+		return x.FilterCriteria
+	}
+	return nil
+}
+
+func (x *GetRecipientsRequest) GetSpecificIds() []uint32 {
+	if x != nil {
+		return x.SpecificIds
+	}
+	return nil
+}
+
+func (x *GetRecipientsRequest) GetOffset() int32 {
+	if x != nil {
+		return x.Offset
+	}
+	return 0
+}
+
+func (x *GetRecipientsRequest) GetLimit() int32 {
+	if x != nil {
+		return x.Limit
+	}
+	return 0
+}
+
+type RecipientsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Recipients    []*Recipient           `protobuf:"bytes,1,rep,name=recipients,proto3" json:"recipients,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RecipientsResponse) Reset() {
+	*x = RecipientsResponse{}
+	mi := &file_pkg_proto_appointment_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RecipientsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RecipientsResponse) ProtoMessage() {}
+
+func (x *RecipientsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_proto_appointment_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RecipientsResponse.ProtoReflect.Descriptor instead.
+func (*RecipientsResponse) Descriptor() ([]byte, []int) {
+	return file_pkg_proto_appointment_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *RecipientsResponse) GetRecipients() []*Recipient {
+	if x != nil {
+		return x.Recipients
+	}
+	return nil
+}
+
+type Recipient struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            uint32                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Email         string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
+	PhoneNumber   string                 `protobuf:"bytes,3,opt,name=phone_number,json=phoneNumber,proto3" json:"phone_number,omitempty"`
+	DeviceId      string                 `protobuf:"bytes,4,opt,name=device_id,json=deviceId,proto3" json:"device_id,omitempty"`
+	FirstName     string                 `protobuf:"bytes,5,opt,name=first_name,json=firstName,proto3" json:"first_name,omitempty"`
+	LastName      string                 `protobuf:"bytes,6,opt,name=last_name,json=lastName,proto3" json:"last_name,omitempty"`
+	RecipientType string                 `protobuf:"bytes,7,opt,name=recipient_type,json=recipientType,proto3" json:"recipient_type,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Recipient) Reset() {
+	*x = Recipient{}
+	mi := &file_pkg_proto_appointment_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Recipient) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Recipient) ProtoMessage() {}
+
+func (x *Recipient) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_proto_appointment_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Recipient.ProtoReflect.Descriptor instead.
+func (*Recipient) Descriptor() ([]byte, []int) {
+	return file_pkg_proto_appointment_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *Recipient) GetId() uint32 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *Recipient) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+func (x *Recipient) GetPhoneNumber() string {
+	if x != nil {
+		return x.PhoneNumber
+	}
+	return ""
+}
+
+func (x *Recipient) GetDeviceId() string {
+	if x != nil {
+		return x.DeviceId
+	}
+	return ""
+}
+
+func (x *Recipient) GetFirstName() string {
+	if x != nil {
+		return x.FirstName
+	}
+	return ""
+}
+
+func (x *Recipient) GetLastName() string {
+	if x != nil {
+		return x.LastName
+	}
+	return ""
+}
+
+func (x *Recipient) GetRecipientType() string {
+	if x != nil {
+		return x.RecipientType
+	}
+	return ""
+}
+
+type FilterCriteria struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Patient filters
+	Gender              *string `protobuf:"bytes,1,opt,name=gender,proto3,oneof" json:"gender,omitempty"`
+	AgeMin              *int32  `protobuf:"varint,2,opt,name=age_min,json=ageMin,proto3,oneof" json:"age_min,omitempty"`
+	AgeMax              *int32  `protobuf:"varint,3,opt,name=age_max,json=ageMax,proto3,oneof" json:"age_max,omitempty"`
+	CreatedAfter        *string `protobuf:"bytes,4,opt,name=created_after,json=createdAfter,proto3,oneof" json:"created_after,omitempty"` // ISO timestamp
+	CreatedBefore       *string `protobuf:"bytes,5,opt,name=created_before,json=createdBefore,proto3,oneof" json:"created_before,omitempty"`
+	LastAppointmentFrom *string `protobuf:"bytes,6,opt,name=last_appointment_from,json=lastAppointmentFrom,proto3,oneof" json:"last_appointment_from,omitempty"`
+	LastAppointmentTo   *string `protobuf:"bytes,7,opt,name=last_appointment_to,json=lastAppointmentTo,proto3,oneof" json:"last_appointment_to,omitempty"`
+	HasEmail            *bool   `protobuf:"varint,8,opt,name=has_email,json=hasEmail,proto3,oneof" json:"has_email,omitempty"`
+	HasPhoneNumber      *bool   `protobuf:"varint,9,opt,name=has_phone_number,json=hasPhoneNumber,proto3,oneof" json:"has_phone_number,omitempty"`
+	AllowMobileLogin    *bool   `protobuf:"varint,10,opt,name=allow_mobile_login,json=allowMobileLogin,proto3,oneof" json:"allow_mobile_login,omitempty"`
+	// Referring Doctor filters
+	ReferringCenterIds []uint32 `protobuf:"varint,11,rep,packed,name=referring_center_ids,json=referringCenterIds,proto3" json:"referring_center_ids,omitempty"`
+	Profession         *string  `protobuf:"bytes,12,opt,name=profession,proto3,oneof" json:"profession,omitempty"`
+	HasAccessRequest   *bool    `protobuf:"varint,13,opt,name=has_access_request,json=hasAccessRequest,proto3,oneof" json:"has_access_request,omitempty"`
+	IsDisabled         *bool    `protobuf:"varint,14,opt,name=is_disabled,json=isDisabled,proto3,oneof" json:"is_disabled,omitempty"`
+	LastLoginAfter     *string  `protobuf:"bytes,15,opt,name=last_login_after,json=lastLoginAfter,proto3,oneof" json:"last_login_after,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *FilterCriteria) Reset() {
+	*x = FilterCriteria{}
+	mi := &file_pkg_proto_appointment_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FilterCriteria) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FilterCriteria) ProtoMessage() {}
+
+func (x *FilterCriteria) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_proto_appointment_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FilterCriteria.ProtoReflect.Descriptor instead.
+func (*FilterCriteria) Descriptor() ([]byte, []int) {
+	return file_pkg_proto_appointment_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *FilterCriteria) GetGender() string {
+	if x != nil && x.Gender != nil {
+		return *x.Gender
+	}
+	return ""
+}
+
+func (x *FilterCriteria) GetAgeMin() int32 {
+	if x != nil && x.AgeMin != nil {
+		return *x.AgeMin
+	}
+	return 0
+}
+
+func (x *FilterCriteria) GetAgeMax() int32 {
+	if x != nil && x.AgeMax != nil {
+		return *x.AgeMax
+	}
+	return 0
+}
+
+func (x *FilterCriteria) GetCreatedAfter() string {
+	if x != nil && x.CreatedAfter != nil {
+		return *x.CreatedAfter
+	}
+	return ""
+}
+
+func (x *FilterCriteria) GetCreatedBefore() string {
+	if x != nil && x.CreatedBefore != nil {
+		return *x.CreatedBefore
+	}
+	return ""
+}
+
+func (x *FilterCriteria) GetLastAppointmentFrom() string {
+	if x != nil && x.LastAppointmentFrom != nil {
+		return *x.LastAppointmentFrom
+	}
+	return ""
+}
+
+func (x *FilterCriteria) GetLastAppointmentTo() string {
+	if x != nil && x.LastAppointmentTo != nil {
+		return *x.LastAppointmentTo
+	}
+	return ""
+}
+
+func (x *FilterCriteria) GetHasEmail() bool {
+	if x != nil && x.HasEmail != nil {
+		return *x.HasEmail
+	}
+	return false
+}
+
+func (x *FilterCriteria) GetHasPhoneNumber() bool {
+	if x != nil && x.HasPhoneNumber != nil {
+		return *x.HasPhoneNumber
+	}
+	return false
+}
+
+func (x *FilterCriteria) GetAllowMobileLogin() bool {
+	if x != nil && x.AllowMobileLogin != nil {
+		return *x.AllowMobileLogin
+	}
+	return false
+}
+
+func (x *FilterCriteria) GetReferringCenterIds() []uint32 {
+	if x != nil {
+		return x.ReferringCenterIds
+	}
+	return nil
+}
+
+func (x *FilterCriteria) GetProfession() string {
+	if x != nil && x.Profession != nil {
+		return *x.Profession
+	}
+	return ""
+}
+
+func (x *FilterCriteria) GetHasAccessRequest() bool {
+	if x != nil && x.HasAccessRequest != nil {
+		return *x.HasAccessRequest
+	}
+	return false
+}
+
+func (x *FilterCriteria) GetIsDisabled() bool {
+	if x != nil && x.IsDisabled != nil {
+		return *x.IsDisabled
+	}
+	return false
+}
+
+func (x *FilterCriteria) GetLastLoginAfter() string {
+	if x != nil && x.LastLoginAfter != nil {
+		return *x.LastLoginAfter
+	}
+	return ""
+}
+
 var File_pkg_proto_appointment_proto protoreflect.FileDescriptor
 
 const file_pkg_proto_appointment_proto_rawDesc = "" +
@@ -782,9 +1339,85 @@ const file_pkg_proto_appointment_proto_rawDesc = "" +
 	"\trecipient\x18\x06 \x01(\tR\trecipient\x128\n" +
 	"\ttimestamp\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\ttimestamp\"$\n" +
 	"\x12AppointmentRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\rR\x02id2W\n" +
+	"\x02id\x18\x01 \x01(\rR\x02id\"\xc5\x01\n" +
+	"\x18GetRecipientCountRequest\x12%\n" +
+	"\x0erecipient_type\x18\x01 \x01(\tR\rrecipientType\x12\x1f\n" +
+	"\vtarget_type\x18\x02 \x01(\tR\n" +
+	"targetType\x12>\n" +
+	"\x0ffilter_criteria\x18\x03 \x01(\v2\x15.proto.FilterCriteriaR\x0efilterCriteria\x12!\n" +
+	"\fspecific_ids\x18\x04 \x03(\rR\vspecificIds\"g\n" +
+	"\x16RecipientCountResponse\x12\x14\n" +
+	"\x05total\x18\x01 \x01(\x05R\x05total\x127\n" +
+	"\tbreakdown\x18\x02 \x01(\v2\x19.proto.RecipientBreakdownR\tbreakdown\"o\n" +
+	"\x12RecipientBreakdown\x12\x1d\n" +
+	"\n" +
+	"with_email\x18\x01 \x01(\x05R\twithEmail\x12\x1d\n" +
+	"\n" +
+	"with_phone\x18\x02 \x01(\x05R\twithPhone\x12\x1b\n" +
+	"\twith_push\x18\x03 \x01(\x05R\bwithPush\"\xef\x01\n" +
+	"\x14GetRecipientsRequest\x12%\n" +
+	"\x0erecipient_type\x18\x01 \x01(\tR\rrecipientType\x12\x1f\n" +
+	"\vtarget_type\x18\x02 \x01(\tR\n" +
+	"targetType\x12>\n" +
+	"\x0ffilter_criteria\x18\x03 \x01(\v2\x15.proto.FilterCriteriaR\x0efilterCriteria\x12!\n" +
+	"\fspecific_ids\x18\x04 \x03(\rR\vspecificIds\x12\x16\n" +
+	"\x06offset\x18\x05 \x01(\x05R\x06offset\x12\x14\n" +
+	"\x05limit\x18\x06 \x01(\x05R\x05limit\"F\n" +
+	"\x12RecipientsResponse\x120\n" +
+	"\n" +
+	"recipients\x18\x01 \x03(\v2\x10.proto.RecipientR\n" +
+	"recipients\"\xd4\x01\n" +
+	"\tRecipient\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\rR\x02id\x12\x14\n" +
+	"\x05email\x18\x02 \x01(\tR\x05email\x12!\n" +
+	"\fphone_number\x18\x03 \x01(\tR\vphoneNumber\x12\x1b\n" +
+	"\tdevice_id\x18\x04 \x01(\tR\bdeviceId\x12\x1d\n" +
+	"\n" +
+	"first_name\x18\x05 \x01(\tR\tfirstName\x12\x1b\n" +
+	"\tlast_name\x18\x06 \x01(\tR\blastName\x12%\n" +
+	"\x0erecipient_type\x18\a \x01(\tR\rrecipientType\"\x8f\a\n" +
+	"\x0eFilterCriteria\x12\x1b\n" +
+	"\x06gender\x18\x01 \x01(\tH\x00R\x06gender\x88\x01\x01\x12\x1c\n" +
+	"\aage_min\x18\x02 \x01(\x05H\x01R\x06ageMin\x88\x01\x01\x12\x1c\n" +
+	"\aage_max\x18\x03 \x01(\x05H\x02R\x06ageMax\x88\x01\x01\x12(\n" +
+	"\rcreated_after\x18\x04 \x01(\tH\x03R\fcreatedAfter\x88\x01\x01\x12*\n" +
+	"\x0ecreated_before\x18\x05 \x01(\tH\x04R\rcreatedBefore\x88\x01\x01\x127\n" +
+	"\x15last_appointment_from\x18\x06 \x01(\tH\x05R\x13lastAppointmentFrom\x88\x01\x01\x123\n" +
+	"\x13last_appointment_to\x18\a \x01(\tH\x06R\x11lastAppointmentTo\x88\x01\x01\x12 \n" +
+	"\thas_email\x18\b \x01(\bH\aR\bhasEmail\x88\x01\x01\x12-\n" +
+	"\x10has_phone_number\x18\t \x01(\bH\bR\x0ehasPhoneNumber\x88\x01\x01\x121\n" +
+	"\x12allow_mobile_login\x18\n" +
+	" \x01(\bH\tR\x10allowMobileLogin\x88\x01\x01\x120\n" +
+	"\x14referring_center_ids\x18\v \x03(\rR\x12referringCenterIds\x12#\n" +
+	"\n" +
+	"profession\x18\f \x01(\tH\n" +
+	"R\n" +
+	"profession\x88\x01\x01\x121\n" +
+	"\x12has_access_request\x18\r \x01(\bH\vR\x10hasAccessRequest\x88\x01\x01\x12$\n" +
+	"\vis_disabled\x18\x0e \x01(\bH\fR\n" +
+	"isDisabled\x88\x01\x01\x12-\n" +
+	"\x10last_login_after\x18\x0f \x01(\tH\rR\x0elastLoginAfter\x88\x01\x01B\t\n" +
+	"\a_genderB\n" +
+	"\n" +
+	"\b_age_minB\n" +
+	"\n" +
+	"\b_age_maxB\x10\n" +
+	"\x0e_created_afterB\x11\n" +
+	"\x0f_created_beforeB\x18\n" +
+	"\x16_last_appointment_fromB\x16\n" +
+	"\x14_last_appointment_toB\f\n" +
+	"\n" +
+	"_has_emailB\x13\n" +
+	"\x11_has_phone_numberB\x15\n" +
+	"\x13_allow_mobile_loginB\r\n" +
+	"\v_professionB\x15\n" +
+	"\x13_has_access_requestB\x0e\n" +
+	"\f_is_disabledB\x13\n" +
+	"\x11_last_login_after2\xf5\x01\n" +
 	"\x12AppointmentService\x12A\n" +
-	"\x0eGetAppointment\x12\x19.proto.AppointmentRequest\x1a\x12.proto.Appointment\"\x00B\x17Z\x15pkg/proto/appointmentb\x06proto3"
+	"\x0eGetAppointment\x12\x19.proto.AppointmentRequest\x1a\x12.proto.Appointment\"\x00\x12S\n" +
+	"\x11GetRecipientCount\x12\x1f.proto.GetRecipientCountRequest\x1a\x1d.proto.RecipientCountResponse\x12G\n" +
+	"\rGetRecipients\x12\x1b.proto.GetRecipientsRequest\x1a\x19.proto.RecipientsResponseB\x17Z\x15pkg/proto/appointmentb\x06proto3"
 
 var (
 	file_pkg_proto_appointment_proto_rawDescOnce sync.Once
@@ -798,34 +1431,49 @@ func file_pkg_proto_appointment_proto_rawDescGZIP() []byte {
 	return file_pkg_proto_appointment_proto_rawDescData
 }
 
-var file_pkg_proto_appointment_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_pkg_proto_appointment_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
 var file_pkg_proto_appointment_proto_goTypes = []any{
-	(*Appointment)(nil),           // 0: proto.Appointment
-	(*ReportVersion)(nil),         // 1: proto.ReportVersion
-	(*Report)(nil),                // 2: proto.Report
-	(*RequestForm)(nil),           // 3: proto.RequestForm
-	(*ModifyProcedure)(nil),       // 4: proto.ModifyProcedure
-	(*ReportDeliveryStatus)(nil),  // 5: proto.ReportDeliveryStatus
-	(*AppointmentRequest)(nil),    // 6: proto.AppointmentRequest
-	(*timestamppb.Timestamp)(nil), // 7: google.protobuf.Timestamp
+	(*Appointment)(nil),              // 0: proto.Appointment
+	(*ReportVersion)(nil),            // 1: proto.ReportVersion
+	(*Report)(nil),                   // 2: proto.Report
+	(*RequestForm)(nil),              // 3: proto.RequestForm
+	(*ModifyProcedure)(nil),          // 4: proto.ModifyProcedure
+	(*ReportDeliveryStatus)(nil),     // 5: proto.ReportDeliveryStatus
+	(*AppointmentRequest)(nil),       // 6: proto.AppointmentRequest
+	(*GetRecipientCountRequest)(nil), // 7: proto.GetRecipientCountRequest
+	(*RecipientCountResponse)(nil),   // 8: proto.RecipientCountResponse
+	(*RecipientBreakdown)(nil),       // 9: proto.RecipientBreakdown
+	(*GetRecipientsRequest)(nil),     // 10: proto.GetRecipientsRequest
+	(*RecipientsResponse)(nil),       // 11: proto.RecipientsResponse
+	(*Recipient)(nil),                // 12: proto.Recipient
+	(*FilterCriteria)(nil),           // 13: proto.FilterCriteria
+	(*timestamppb.Timestamp)(nil),    // 14: google.protobuf.Timestamp
 }
 var file_pkg_proto_appointment_proto_depIdxs = []int32{
-	7,  // 0: proto.Appointment.appointment_time:type_name -> google.protobuf.Timestamp
+	14, // 0: proto.Appointment.appointment_time:type_name -> google.protobuf.Timestamp
 	3,  // 1: proto.Appointment.request_form:type_name -> proto.RequestForm
-	7,  // 2: proto.Appointment.created_at:type_name -> google.protobuf.Timestamp
-	7,  // 3: proto.Appointment.modified_at:type_name -> google.protobuf.Timestamp
-	7,  // 4: proto.ReportVersion.confirmed_at:type_name -> google.protobuf.Timestamp
+	14, // 2: proto.Appointment.created_at:type_name -> google.protobuf.Timestamp
+	14, // 3: proto.Appointment.modified_at:type_name -> google.protobuf.Timestamp
+	14, // 4: proto.ReportVersion.confirmed_at:type_name -> google.protobuf.Timestamp
 	1,  // 5: proto.Report.versions:type_name -> proto.ReportVersion
 	0,  // 6: proto.ModifyProcedure.old_version:type_name -> proto.Appointment
 	0,  // 7: proto.ModifyProcedure.new_version:type_name -> proto.Appointment
-	7,  // 8: proto.ReportDeliveryStatus.timestamp:type_name -> google.protobuf.Timestamp
-	6,  // 9: proto.AppointmentService.GetAppointment:input_type -> proto.AppointmentRequest
-	0,  // 10: proto.AppointmentService.GetAppointment:output_type -> proto.Appointment
-	10, // [10:11] is the sub-list for method output_type
-	9,  // [9:10] is the sub-list for method input_type
-	9,  // [9:9] is the sub-list for extension type_name
-	9,  // [9:9] is the sub-list for extension extendee
-	0,  // [0:9] is the sub-list for field type_name
+	14, // 8: proto.ReportDeliveryStatus.timestamp:type_name -> google.protobuf.Timestamp
+	13, // 9: proto.GetRecipientCountRequest.filter_criteria:type_name -> proto.FilterCriteria
+	9,  // 10: proto.RecipientCountResponse.breakdown:type_name -> proto.RecipientBreakdown
+	13, // 11: proto.GetRecipientsRequest.filter_criteria:type_name -> proto.FilterCriteria
+	12, // 12: proto.RecipientsResponse.recipients:type_name -> proto.Recipient
+	6,  // 13: proto.AppointmentService.GetAppointment:input_type -> proto.AppointmentRequest
+	7,  // 14: proto.AppointmentService.GetRecipientCount:input_type -> proto.GetRecipientCountRequest
+	10, // 15: proto.AppointmentService.GetRecipients:input_type -> proto.GetRecipientsRequest
+	0,  // 16: proto.AppointmentService.GetAppointment:output_type -> proto.Appointment
+	8,  // 17: proto.AppointmentService.GetRecipientCount:output_type -> proto.RecipientCountResponse
+	11, // 18: proto.AppointmentService.GetRecipients:output_type -> proto.RecipientsResponse
+	16, // [16:19] is the sub-list for method output_type
+	13, // [13:16] is the sub-list for method input_type
+	13, // [13:13] is the sub-list for extension type_name
+	13, // [13:13] is the sub-list for extension extendee
+	0,  // [0:13] is the sub-list for field type_name
 }
 
 func init() { file_pkg_proto_appointment_proto_init() }
@@ -833,13 +1481,14 @@ func file_pkg_proto_appointment_proto_init() {
 	if File_pkg_proto_appointment_proto != nil {
 		return
 	}
+	file_pkg_proto_appointment_proto_msgTypes[13].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_pkg_proto_appointment_proto_rawDesc), len(file_pkg_proto_appointment_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   14,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

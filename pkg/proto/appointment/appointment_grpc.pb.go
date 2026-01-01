@@ -19,7 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	AppointmentService_GetAppointment_FullMethodName = "/proto.AppointmentService/GetAppointment"
+	AppointmentService_GetAppointment_FullMethodName    = "/proto.AppointmentService/GetAppointment"
+	AppointmentService_GetRecipientCount_FullMethodName = "/proto.AppointmentService/GetRecipientCount"
+	AppointmentService_GetRecipients_FullMethodName     = "/proto.AppointmentService/GetRecipients"
 )
 
 // AppointmentServiceClient is the client API for AppointmentService service.
@@ -27,6 +29,8 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AppointmentServiceClient interface {
 	GetAppointment(ctx context.Context, in *AppointmentRequest, opts ...grpc.CallOption) (*Appointment, error)
+	GetRecipientCount(ctx context.Context, in *GetRecipientCountRequest, opts ...grpc.CallOption) (*RecipientCountResponse, error)
+	GetRecipients(ctx context.Context, in *GetRecipientsRequest, opts ...grpc.CallOption) (*RecipientsResponse, error)
 }
 
 type appointmentServiceClient struct {
@@ -47,11 +51,33 @@ func (c *appointmentServiceClient) GetAppointment(ctx context.Context, in *Appoi
 	return out, nil
 }
 
+func (c *appointmentServiceClient) GetRecipientCount(ctx context.Context, in *GetRecipientCountRequest, opts ...grpc.CallOption) (*RecipientCountResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RecipientCountResponse)
+	err := c.cc.Invoke(ctx, AppointmentService_GetRecipientCount_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *appointmentServiceClient) GetRecipients(ctx context.Context, in *GetRecipientsRequest, opts ...grpc.CallOption) (*RecipientsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RecipientsResponse)
+	err := c.cc.Invoke(ctx, AppointmentService_GetRecipients_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AppointmentServiceServer is the server API for AppointmentService service.
 // All implementations must embed UnimplementedAppointmentServiceServer
 // for forward compatibility.
 type AppointmentServiceServer interface {
 	GetAppointment(context.Context, *AppointmentRequest) (*Appointment, error)
+	GetRecipientCount(context.Context, *GetRecipientCountRequest) (*RecipientCountResponse, error)
+	GetRecipients(context.Context, *GetRecipientsRequest) (*RecipientsResponse, error)
 	mustEmbedUnimplementedAppointmentServiceServer()
 }
 
@@ -64,6 +90,12 @@ type UnimplementedAppointmentServiceServer struct{}
 
 func (UnimplementedAppointmentServiceServer) GetAppointment(context.Context, *AppointmentRequest) (*Appointment, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetAppointment not implemented")
+}
+func (UnimplementedAppointmentServiceServer) GetRecipientCount(context.Context, *GetRecipientCountRequest) (*RecipientCountResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetRecipientCount not implemented")
+}
+func (UnimplementedAppointmentServiceServer) GetRecipients(context.Context, *GetRecipientsRequest) (*RecipientsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetRecipients not implemented")
 }
 func (UnimplementedAppointmentServiceServer) mustEmbedUnimplementedAppointmentServiceServer() {}
 func (UnimplementedAppointmentServiceServer) testEmbeddedByValue()                            {}
@@ -104,6 +136,42 @@ func _AppointmentService_GetAppointment_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AppointmentService_GetRecipientCount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetRecipientCountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AppointmentServiceServer).GetRecipientCount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AppointmentService_GetRecipientCount_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AppointmentServiceServer).GetRecipientCount(ctx, req.(*GetRecipientCountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AppointmentService_GetRecipients_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetRecipientsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AppointmentServiceServer).GetRecipients(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AppointmentService_GetRecipients_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AppointmentServiceServer).GetRecipients(ctx, req.(*GetRecipientsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AppointmentService_ServiceDesc is the grpc.ServiceDesc for AppointmentService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -114,6 +182,14 @@ var AppointmentService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetAppointment",
 			Handler:    _AppointmentService_GetAppointment_Handler,
+		},
+		{
+			MethodName: "GetRecipientCount",
+			Handler:    _AppointmentService_GetRecipientCount_Handler,
+		},
+		{
+			MethodName: "GetRecipients",
+			Handler:    _AppointmentService_GetRecipients_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
