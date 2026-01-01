@@ -128,10 +128,9 @@ message FilterCriteria {
     optional string gender = 1;
     optional int32 age_min = 2;
     optional int32 age_max = 3;
-    optional string created_after = 4; // ISO timestamp
-    optional string created_before = 5;
-    optional string last_appointment_from = 6;
-    optional string last_appointment_to = 7;
+    optional string created_after = 4;        // ISO timestamp
+    optional string created_before = 5;       // ISO timestamp
+    reserved 6, 7;                            // Removed: last_appointment_from/to
     optional bool has_email = 8;
     optional bool has_phone_number = 9;
     optional bool allow_mobile_login = 10;
@@ -141,7 +140,23 @@ message FilterCriteria {
     optional string profession = 12;
     optional bool has_access_request = 13;
     optional bool is_disabled = 14;
-    optional string last_login_after = 15;
+    optional string last_login_after = 15;   // ISO timestamp
+    
+    // NEW: Patient targeting filters
+    optional int32 birth_month = 16;          // 1-12 for birthday campaigns
+    repeated uint32 organization_ids = 17;    // Multi-tenant filtering
+    repeated uint32 modality_ids = 18;        // Target by scan type (MRI, CT, etc.)
+    repeated uint32 procedure_ids = 19;       // Target by procedures performed
+    
+    // NEW: Referring Doctor engagement filters
+    optional int32 days_since_last_referral = 20;  // Re-engage inactive doctors
+    optional int32 min_referrals = 21;             // High-volume doctors (>= N)
+    optional int32 max_referrals = 22;             // Low-volume doctors (<= N)
+    
+    // NEW: Referral trend analysis
+    optional string referral_trend = 23;           // "increasing", "decreasing", "stable"
+    optional int32 trend_period_days = 24;         // Compare last N days vs previous N (default: 30)
+    optional double trend_threshold_pct = 25;      // Percentage change threshold (default: 20.0)
 }
 
 service AppointmentService {

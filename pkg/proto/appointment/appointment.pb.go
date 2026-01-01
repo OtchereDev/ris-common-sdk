@@ -1109,24 +1109,35 @@ func (x *Recipient) GetRecipientType() string {
 type FilterCriteria struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Patient filters
-	Gender              *string `protobuf:"bytes,1,opt,name=gender,proto3,oneof" json:"gender,omitempty"`
-	AgeMin              *int32  `protobuf:"varint,2,opt,name=age_min,json=ageMin,proto3,oneof" json:"age_min,omitempty"`
-	AgeMax              *int32  `protobuf:"varint,3,opt,name=age_max,json=ageMax,proto3,oneof" json:"age_max,omitempty"`
-	CreatedAfter        *string `protobuf:"bytes,4,opt,name=created_after,json=createdAfter,proto3,oneof" json:"created_after,omitempty"` // ISO timestamp
-	CreatedBefore       *string `protobuf:"bytes,5,opt,name=created_before,json=createdBefore,proto3,oneof" json:"created_before,omitempty"`
-	LastAppointmentFrom *string `protobuf:"bytes,6,opt,name=last_appointment_from,json=lastAppointmentFrom,proto3,oneof" json:"last_appointment_from,omitempty"`
-	LastAppointmentTo   *string `protobuf:"bytes,7,opt,name=last_appointment_to,json=lastAppointmentTo,proto3,oneof" json:"last_appointment_to,omitempty"`
-	HasEmail            *bool   `protobuf:"varint,8,opt,name=has_email,json=hasEmail,proto3,oneof" json:"has_email,omitempty"`
-	HasPhoneNumber      *bool   `protobuf:"varint,9,opt,name=has_phone_number,json=hasPhoneNumber,proto3,oneof" json:"has_phone_number,omitempty"`
-	AllowMobileLogin    *bool   `protobuf:"varint,10,opt,name=allow_mobile_login,json=allowMobileLogin,proto3,oneof" json:"allow_mobile_login,omitempty"`
+	Gender           *string `protobuf:"bytes,1,opt,name=gender,proto3,oneof" json:"gender,omitempty"`
+	AgeMin           *int32  `protobuf:"varint,2,opt,name=age_min,json=ageMin,proto3,oneof" json:"age_min,omitempty"`
+	AgeMax           *int32  `protobuf:"varint,3,opt,name=age_max,json=ageMax,proto3,oneof" json:"age_max,omitempty"`
+	CreatedAfter     *string `protobuf:"bytes,4,opt,name=created_after,json=createdAfter,proto3,oneof" json:"created_after,omitempty"`    // ISO timestamp
+	CreatedBefore    *string `protobuf:"bytes,5,opt,name=created_before,json=createdBefore,proto3,oneof" json:"created_before,omitempty"` // ISO timestamp
+	HasEmail         *bool   `protobuf:"varint,8,opt,name=has_email,json=hasEmail,proto3,oneof" json:"has_email,omitempty"`
+	HasPhoneNumber   *bool   `protobuf:"varint,9,opt,name=has_phone_number,json=hasPhoneNumber,proto3,oneof" json:"has_phone_number,omitempty"`
+	AllowMobileLogin *bool   `protobuf:"varint,10,opt,name=allow_mobile_login,json=allowMobileLogin,proto3,oneof" json:"allow_mobile_login,omitempty"`
 	// Referring Doctor filters
 	ReferringCenterIds []uint32 `protobuf:"varint,11,rep,packed,name=referring_center_ids,json=referringCenterIds,proto3" json:"referring_center_ids,omitempty"`
 	Profession         *string  `protobuf:"bytes,12,opt,name=profession,proto3,oneof" json:"profession,omitempty"`
 	HasAccessRequest   *bool    `protobuf:"varint,13,opt,name=has_access_request,json=hasAccessRequest,proto3,oneof" json:"has_access_request,omitempty"`
 	IsDisabled         *bool    `protobuf:"varint,14,opt,name=is_disabled,json=isDisabled,proto3,oneof" json:"is_disabled,omitempty"`
-	LastLoginAfter     *string  `protobuf:"bytes,15,opt,name=last_login_after,json=lastLoginAfter,proto3,oneof" json:"last_login_after,omitempty"`
-	unknownFields      protoimpl.UnknownFields
-	sizeCache          protoimpl.SizeCache
+	LastLoginAfter     *string  `protobuf:"bytes,15,opt,name=last_login_after,json=lastLoginAfter,proto3,oneof" json:"last_login_after,omitempty"` // ISO timestamp
+	// NEW: Patient targeting filters
+	BirthMonth      *int32   `protobuf:"varint,16,opt,name=birth_month,json=birthMonth,proto3,oneof" json:"birth_month,omitempty"`                 // 1-12 for birthday campaigns
+	OrganizationIds []uint32 `protobuf:"varint,17,rep,packed,name=organization_ids,json=organizationIds,proto3" json:"organization_ids,omitempty"` // Multi-tenant filtering
+	ModalityIds     []uint32 `protobuf:"varint,18,rep,packed,name=modality_ids,json=modalityIds,proto3" json:"modality_ids,omitempty"`             // Target by scan type (MRI, CT, etc.)
+	ProcedureIds    []uint32 `protobuf:"varint,19,rep,packed,name=procedure_ids,json=procedureIds,proto3" json:"procedure_ids,omitempty"`          // Target by procedures performed
+	// NEW: Referring Doctor engagement filters
+	DaysSinceLastReferral *int32 `protobuf:"varint,20,opt,name=days_since_last_referral,json=daysSinceLastReferral,proto3,oneof" json:"days_since_last_referral,omitempty"` // Re-engage inactive doctors
+	MinReferrals          *int32 `protobuf:"varint,21,opt,name=min_referrals,json=minReferrals,proto3,oneof" json:"min_referrals,omitempty"`                                // High-volume doctors (>= N)
+	MaxReferrals          *int32 `protobuf:"varint,22,opt,name=max_referrals,json=maxReferrals,proto3,oneof" json:"max_referrals,omitempty"`                                // Low-volume doctors (<= N)
+	// NEW: Referral trend analysis
+	ReferralTrend     *string  `protobuf:"bytes,23,opt,name=referral_trend,json=referralTrend,proto3,oneof" json:"referral_trend,omitempty"`                 // "increasing", "decreasing", "stable"
+	TrendPeriodDays   *int32   `protobuf:"varint,24,opt,name=trend_period_days,json=trendPeriodDays,proto3,oneof" json:"trend_period_days,omitempty"`        // Compare last N days vs previous N (default: 30)
+	TrendThresholdPct *float64 `protobuf:"fixed64,25,opt,name=trend_threshold_pct,json=trendThresholdPct,proto3,oneof" json:"trend_threshold_pct,omitempty"` // Percentage change threshold (default: 20.0)
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
 }
 
 func (x *FilterCriteria) Reset() {
@@ -1194,20 +1205,6 @@ func (x *FilterCriteria) GetCreatedBefore() string {
 	return ""
 }
 
-func (x *FilterCriteria) GetLastAppointmentFrom() string {
-	if x != nil && x.LastAppointmentFrom != nil {
-		return *x.LastAppointmentFrom
-	}
-	return ""
-}
-
-func (x *FilterCriteria) GetLastAppointmentTo() string {
-	if x != nil && x.LastAppointmentTo != nil {
-		return *x.LastAppointmentTo
-	}
-	return ""
-}
-
 func (x *FilterCriteria) GetHasEmail() bool {
 	if x != nil && x.HasEmail != nil {
 		return *x.HasEmail
@@ -1262,6 +1259,76 @@ func (x *FilterCriteria) GetLastLoginAfter() string {
 		return *x.LastLoginAfter
 	}
 	return ""
+}
+
+func (x *FilterCriteria) GetBirthMonth() int32 {
+	if x != nil && x.BirthMonth != nil {
+		return *x.BirthMonth
+	}
+	return 0
+}
+
+func (x *FilterCriteria) GetOrganizationIds() []uint32 {
+	if x != nil {
+		return x.OrganizationIds
+	}
+	return nil
+}
+
+func (x *FilterCriteria) GetModalityIds() []uint32 {
+	if x != nil {
+		return x.ModalityIds
+	}
+	return nil
+}
+
+func (x *FilterCriteria) GetProcedureIds() []uint32 {
+	if x != nil {
+		return x.ProcedureIds
+	}
+	return nil
+}
+
+func (x *FilterCriteria) GetDaysSinceLastReferral() int32 {
+	if x != nil && x.DaysSinceLastReferral != nil {
+		return *x.DaysSinceLastReferral
+	}
+	return 0
+}
+
+func (x *FilterCriteria) GetMinReferrals() int32 {
+	if x != nil && x.MinReferrals != nil {
+		return *x.MinReferrals
+	}
+	return 0
+}
+
+func (x *FilterCriteria) GetMaxReferrals() int32 {
+	if x != nil && x.MaxReferrals != nil {
+		return *x.MaxReferrals
+	}
+	return 0
+}
+
+func (x *FilterCriteria) GetReferralTrend() string {
+	if x != nil && x.ReferralTrend != nil {
+		return *x.ReferralTrend
+	}
+	return ""
+}
+
+func (x *FilterCriteria) GetTrendPeriodDays() int32 {
+	if x != nil && x.TrendPeriodDays != nil {
+		return *x.TrendPeriodDays
+	}
+	return 0
+}
+
+func (x *FilterCriteria) GetTrendThresholdPct() float64 {
+	if x != nil && x.TrendThresholdPct != nil {
+		return *x.TrendThresholdPct
+	}
+	return 0
 }
 
 var File_pkg_proto_appointment_proto protoreflect.FileDescriptor
@@ -1375,37 +1442,45 @@ const file_pkg_proto_appointment_proto_rawDesc = "" +
 	"\n" +
 	"first_name\x18\x05 \x01(\tR\tfirstName\x12\x1b\n" +
 	"\tlast_name\x18\x06 \x01(\tR\blastName\x12%\n" +
-	"\x0erecipient_type\x18\a \x01(\tR\rrecipientType\"\x8f\a\n" +
+	"\x0erecipient_type\x18\a \x01(\tR\rrecipientType\"\xca\n" +
+	"\n" +
 	"\x0eFilterCriteria\x12\x1b\n" +
 	"\x06gender\x18\x01 \x01(\tH\x00R\x06gender\x88\x01\x01\x12\x1c\n" +
 	"\aage_min\x18\x02 \x01(\x05H\x01R\x06ageMin\x88\x01\x01\x12\x1c\n" +
 	"\aage_max\x18\x03 \x01(\x05H\x02R\x06ageMax\x88\x01\x01\x12(\n" +
 	"\rcreated_after\x18\x04 \x01(\tH\x03R\fcreatedAfter\x88\x01\x01\x12*\n" +
-	"\x0ecreated_before\x18\x05 \x01(\tH\x04R\rcreatedBefore\x88\x01\x01\x127\n" +
-	"\x15last_appointment_from\x18\x06 \x01(\tH\x05R\x13lastAppointmentFrom\x88\x01\x01\x123\n" +
-	"\x13last_appointment_to\x18\a \x01(\tH\x06R\x11lastAppointmentTo\x88\x01\x01\x12 \n" +
-	"\thas_email\x18\b \x01(\bH\aR\bhasEmail\x88\x01\x01\x12-\n" +
-	"\x10has_phone_number\x18\t \x01(\bH\bR\x0ehasPhoneNumber\x88\x01\x01\x121\n" +
+	"\x0ecreated_before\x18\x05 \x01(\tH\x04R\rcreatedBefore\x88\x01\x01\x12 \n" +
+	"\thas_email\x18\b \x01(\bH\x05R\bhasEmail\x88\x01\x01\x12-\n" +
+	"\x10has_phone_number\x18\t \x01(\bH\x06R\x0ehasPhoneNumber\x88\x01\x01\x121\n" +
 	"\x12allow_mobile_login\x18\n" +
-	" \x01(\bH\tR\x10allowMobileLogin\x88\x01\x01\x120\n" +
+	" \x01(\bH\aR\x10allowMobileLogin\x88\x01\x01\x120\n" +
 	"\x14referring_center_ids\x18\v \x03(\rR\x12referringCenterIds\x12#\n" +
 	"\n" +
-	"profession\x18\f \x01(\tH\n" +
-	"R\n" +
+	"profession\x18\f \x01(\tH\bR\n" +
 	"profession\x88\x01\x01\x121\n" +
-	"\x12has_access_request\x18\r \x01(\bH\vR\x10hasAccessRequest\x88\x01\x01\x12$\n" +
-	"\vis_disabled\x18\x0e \x01(\bH\fR\n" +
+	"\x12has_access_request\x18\r \x01(\bH\tR\x10hasAccessRequest\x88\x01\x01\x12$\n" +
+	"\vis_disabled\x18\x0e \x01(\bH\n" +
+	"R\n" +
 	"isDisabled\x88\x01\x01\x12-\n" +
-	"\x10last_login_after\x18\x0f \x01(\tH\rR\x0elastLoginAfter\x88\x01\x01B\t\n" +
+	"\x10last_login_after\x18\x0f \x01(\tH\vR\x0elastLoginAfter\x88\x01\x01\x12$\n" +
+	"\vbirth_month\x18\x10 \x01(\x05H\fR\n" +
+	"birthMonth\x88\x01\x01\x12)\n" +
+	"\x10organization_ids\x18\x11 \x03(\rR\x0forganizationIds\x12!\n" +
+	"\fmodality_ids\x18\x12 \x03(\rR\vmodalityIds\x12#\n" +
+	"\rprocedure_ids\x18\x13 \x03(\rR\fprocedureIds\x12<\n" +
+	"\x18days_since_last_referral\x18\x14 \x01(\x05H\rR\x15daysSinceLastReferral\x88\x01\x01\x12(\n" +
+	"\rmin_referrals\x18\x15 \x01(\x05H\x0eR\fminReferrals\x88\x01\x01\x12(\n" +
+	"\rmax_referrals\x18\x16 \x01(\x05H\x0fR\fmaxReferrals\x88\x01\x01\x12*\n" +
+	"\x0ereferral_trend\x18\x17 \x01(\tH\x10R\rreferralTrend\x88\x01\x01\x12/\n" +
+	"\x11trend_period_days\x18\x18 \x01(\x05H\x11R\x0ftrendPeriodDays\x88\x01\x01\x123\n" +
+	"\x13trend_threshold_pct\x18\x19 \x01(\x01H\x12R\x11trendThresholdPct\x88\x01\x01B\t\n" +
 	"\a_genderB\n" +
 	"\n" +
 	"\b_age_minB\n" +
 	"\n" +
 	"\b_age_maxB\x10\n" +
 	"\x0e_created_afterB\x11\n" +
-	"\x0f_created_beforeB\x18\n" +
-	"\x16_last_appointment_fromB\x16\n" +
-	"\x14_last_appointment_toB\f\n" +
+	"\x0f_created_beforeB\f\n" +
 	"\n" +
 	"_has_emailB\x13\n" +
 	"\x11_has_phone_numberB\x15\n" +
@@ -1413,7 +1488,14 @@ const file_pkg_proto_appointment_proto_rawDesc = "" +
 	"\v_professionB\x15\n" +
 	"\x13_has_access_requestB\x0e\n" +
 	"\f_is_disabledB\x13\n" +
-	"\x11_last_login_after2\xf5\x01\n" +
+	"\x11_last_login_afterB\x0e\n" +
+	"\f_birth_monthB\x1b\n" +
+	"\x19_days_since_last_referralB\x10\n" +
+	"\x0e_min_referralsB\x10\n" +
+	"\x0e_max_referralsB\x11\n" +
+	"\x0f_referral_trendB\x14\n" +
+	"\x12_trend_period_daysB\x16\n" +
+	"\x14_trend_threshold_pctJ\x04\b\x06\x10\aJ\x04\b\a\x10\b2\xf5\x01\n" +
 	"\x12AppointmentService\x12A\n" +
 	"\x0eGetAppointment\x12\x19.proto.AppointmentRequest\x1a\x12.proto.Appointment\"\x00\x12S\n" +
 	"\x11GetRecipientCount\x12\x1f.proto.GetRecipientCountRequest\x1a\x1d.proto.RecipientCountResponse\x12G\n" +
