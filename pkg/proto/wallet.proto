@@ -11,3 +11,11 @@ message Wallet {
   int32 doctor_id = 3;         // Doctor ID
   google.protobuf.Timestamp created_at = 4;  // Created timestamp
 }
+
+message GetWalletRequest {
+    int32 doctor_id = 1;
+}
+
+service FinanceService {
+  rpc GetWallet (GetWalletRequest) returns (Wallet) {}    
+}
