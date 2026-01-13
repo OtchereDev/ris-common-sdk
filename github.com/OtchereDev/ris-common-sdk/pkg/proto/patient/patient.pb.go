@@ -250,7 +250,7 @@ const file_patient_proto_rawDesc = "" +
 	"updated_at\x18\x0e \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"C\n" +
 	"\x15UpdatePatientDeviceId\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\rR\x02id\x12\x1a\n" +
-	"\bdeviceId\x18\x02 \x01(\tR\bdeviceIdB\x13Z\x11pkg/proto/patientb\x06proto3"
+	"\bdeviceId\x18\x02 \x01(\tR\bdeviceIdB8Z6github.com/OtchereDev/ris-common-sdk/pkg/proto/patientb\x06proto3"
 
 var (
 	file_patient_proto_rawDescOnce sync.Once

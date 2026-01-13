@@ -4,7 +4,7 @@ package proto;
 
 import "google/protobuf/timestamp.proto";
 
-option go_package = "pkg/proto/patient";
+option go_package = "github.com/OtchereDev/ris-common-sdk/pkg/proto/patient";
 
 message Patient {
   uint32 id = 1; // Use uint32 for ID since protobuf doesn't support uint directly

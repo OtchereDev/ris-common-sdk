@@ -4,7 +4,7 @@ package proto;
 
 import "google/protobuf/timestamp.proto";
 
-option go_package = "pkg/proto/referral";
+option go_package = "github.com/OtchereDev/ris-common-sdk/pkg/proto/referral";
 
 message ReferringCenter {
   uint32 id = 1; // Use uint32 for ID as Proto doesn't support uint

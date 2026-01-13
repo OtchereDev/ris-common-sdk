@@ -660,7 +660,7 @@ const file_referral_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\x16 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
 	"\n" +
-	"updated_at\x18\x17 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAtB\x14Z\x12pkg/proto/referralb\x06proto3"
+	"updated_at\x18\x17 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAtB9Z7github.com/OtchereDev/ris-common-sdk/pkg/proto/referralb\x06proto3"
 
 var (
 	file_referral_proto_rawDescOnce sync.Once

@@ -3,6 +3,9 @@ syntax = "proto3";
 package proto;
 
 import "google/protobuf/timestamp.proto";
+import "referral.proto";
+import "patient.proto";
+
 
 option go_package = "pkg/proto/appointment";
 
@@ -159,10 +162,23 @@ message FilterCriteria {
     optional double trend_threshold_pct = 25;      // Percentage change threshold (default: 20.0)
 }
 
+
+message GetPatientRequest {
+  uint32 patient_id = 1;
+}
+
+message GetReferringDoctorRequest {
+  uint32 doctor_id = 1;
+}
+
+
 service AppointmentService {
   rpc GetAppointment (AppointmentRequest) returns (Appointment) {}
 
   rpc GetRecipientCount(GetRecipientCountRequest) returns (RecipientCountResponse);
     
   rpc GetRecipients(GetRecipientsRequest) returns (RecipientsResponse);
+
+  rpc GetPatient(GetPatientRequest) returns (Patient);
+  rpc GetReferringDoctor(GetReferringDoctorRequest) returns (ReferringDoctor);
 }
