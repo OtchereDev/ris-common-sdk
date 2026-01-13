@@ -165,10 +165,12 @@ message FilterCriteria {
 
 message GetPatientRequest {
   uint32 patient_id = 1;
+  string phone_number = 2;
 }
 
 message GetReferringDoctorRequest {
   uint32 doctor_id = 1;
+  string email = 2;
 }
 
 

@@ -1336,6 +1336,7 @@ func (x *FilterCriteria) GetTrendThresholdPct() float64 {
 type GetPatientRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	PatientId     uint32                 `protobuf:"varint,1,opt,name=patient_id,json=patientId,proto3" json:"patient_id,omitempty"`
+	PhoneNumber   string                 `protobuf:"bytes,2,opt,name=phone_number,json=phoneNumber,proto3" json:"phone_number,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1377,9 +1378,17 @@ func (x *GetPatientRequest) GetPatientId() uint32 {
 	return 0
 }
 
+func (x *GetPatientRequest) GetPhoneNumber() string {
+	if x != nil {
+		return x.PhoneNumber
+	}
+	return ""
+}
+
 type GetReferringDoctorRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	DoctorId      uint32                 `protobuf:"varint,1,opt,name=doctor_id,json=doctorId,proto3" json:"doctor_id,omitempty"`
+	Email         string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1419,6 +1428,13 @@ func (x *GetReferringDoctorRequest) GetDoctorId() uint32 {
 		return x.DoctorId
 	}
 	return 0
+}
+
+func (x *GetReferringDoctorRequest) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
 }
 
 var File_appointment_proto protoreflect.FileDescriptor
@@ -1585,12 +1601,14 @@ const file_appointment_proto_rawDesc = "" +
 	"\x0e_max_referralsB\x11\n" +
 	"\x0f_referral_trendB\x14\n" +
 	"\x12_trend_period_daysB\x16\n" +
-	"\x14_trend_threshold_pctJ\x04\b\x06\x10\aJ\x04\b\a\x10\b\"2\n" +
+	"\x14_trend_threshold_pctJ\x04\b\x06\x10\aJ\x04\b\a\x10\b\"U\n" +
 	"\x11GetPatientRequest\x12\x1d\n" +
 	"\n" +
-	"patient_id\x18\x01 \x01(\rR\tpatientId\"8\n" +
+	"patient_id\x18\x01 \x01(\rR\tpatientId\x12!\n" +
+	"\fphone_number\x18\x02 \x01(\tR\vphoneNumber\"N\n" +
 	"\x19GetReferringDoctorRequest\x12\x1b\n" +
-	"\tdoctor_id\x18\x01 \x01(\rR\bdoctorId2\xfd\x02\n" +
+	"\tdoctor_id\x18\x01 \x01(\rR\bdoctorId\x12\x14\n" +
+	"\x05email\x18\x02 \x01(\tR\x05email2\xfd\x02\n" +
 	"\x12AppointmentService\x12A\n" +
 	"\x0eGetAppointment\x12\x19.proto.AppointmentRequest\x1a\x12.proto.Appointment\"\x00\x12S\n" +
 	"\x11GetRecipientCount\x12\x1f.proto.GetRecipientCountRequest\x1a\x1d.proto.RecipientCountResponse\x12G\n" +
