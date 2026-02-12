@@ -62,6 +62,7 @@ message ReportData {
   string approverTitle = 17;
   bool withHeader = 18;
   string recommendations = 20;
+  string Type = 21;
 }
 
 message PdfEvent {

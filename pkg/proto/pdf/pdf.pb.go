@@ -375,6 +375,7 @@ type ReportData struct {
 	ApproverTitle     string                 `protobuf:"bytes,17,opt,name=approverTitle,proto3" json:"approverTitle,omitempty"`
 	WithHeader        bool                   `protobuf:"varint,18,opt,name=withHeader,proto3" json:"withHeader,omitempty"`
 	Recommendations   string                 `protobuf:"bytes,20,opt,name=recommendations,proto3" json:"recommendations,omitempty"`
+	Type              string                 `protobuf:"bytes,21,opt,name=Type,proto3" json:"Type,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
@@ -545,6 +546,13 @@ func (x *ReportData) GetWithHeader() bool {
 func (x *ReportData) GetRecommendations() string {
 	if x != nil {
 		return x.Recommendations
+	}
+	return ""
+}
+
+func (x *ReportData) GetType() string {
+	if x != nil {
+		return x.Type
 	}
 	return ""
 }
@@ -736,7 +744,7 @@ const file_pkg_proto_pdf_proto_rawDesc = "" +
 	"\vexamination\x18\t \x01(\tR\vexamination\x12\x14\n" +
 	"\x05query\x18\n" +
 	" \x01(\tR\x05query\x12\x1a\n" +
-	"\bfileName\x18\v \x01(\tR\bfileName\"\xfc\x04\n" +
+	"\bfileName\x18\v \x01(\tR\bfileName\"\x90\x05\n" +
 	"\n" +
 	"ReportData\x12\x0e\n" +
 	"\x02id\x18\x13 \x01(\rR\x02id\x12\x12\n" +
@@ -765,7 +773,8 @@ const file_pkg_proto_pdf_proto_rawDesc = "" +
 	"\n" +
 	"withHeader\x18\x12 \x01(\bR\n" +
 	"withHeader\x12(\n" +
-	"\x0frecommendations\x18\x14 \x01(\tR\x0frecommendations\"\xac\x01\n" +
+	"\x0frecommendations\x18\x14 \x01(\tR\x0frecommendations\x12\x12\n" +
+	"\x04Type\x18\x15 \x01(\tR\x04Type\"\xac\x01\n" +
 	"\bPdfEvent\x12.\n" +
 	"\areceipt\x18\x01 \x01(\v2\x12.proto.ReceiptDataH\x00R\areceipt\x12:\n" +
 	"\vrequestForm\x18\x02 \x01(\v2\x16.proto.RequestFormDataH\x00R\vrequestForm\x12+\n" +
