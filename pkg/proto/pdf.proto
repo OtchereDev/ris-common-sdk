@@ -63,6 +63,9 @@ message ReportData {
   bool withHeader = 18;
   string recommendations = 20;
   string Type = 21;
+  string Weight = 22;
+  string Height = 23;
+  string BloodPressure = 24;
 }
 
 message PdfEvent {

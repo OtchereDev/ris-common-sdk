@@ -376,6 +376,9 @@ type ReportData struct {
 	WithHeader        bool                   `protobuf:"varint,18,opt,name=withHeader,proto3" json:"withHeader,omitempty"`
 	Recommendations   string                 `protobuf:"bytes,20,opt,name=recommendations,proto3" json:"recommendations,omitempty"`
 	Type              string                 `protobuf:"bytes,21,opt,name=Type,proto3" json:"Type,omitempty"`
+	Weight            string                 `protobuf:"bytes,22,opt,name=Weight,proto3" json:"Weight,omitempty"`
+	Height            string                 `protobuf:"bytes,23,opt,name=Height,proto3" json:"Height,omitempty"`
+	BloodPressure     string                 `protobuf:"bytes,24,opt,name=BloodPressure,proto3" json:"BloodPressure,omitempty"`
 	unknownFields     protoimpl.UnknownFields
 	sizeCache         protoimpl.SizeCache
 }
@@ -553,6 +556,27 @@ func (x *ReportData) GetRecommendations() string {
 func (x *ReportData) GetType() string {
 	if x != nil {
 		return x.Type
+	}
+	return ""
+}
+
+func (x *ReportData) GetWeight() string {
+	if x != nil {
+		return x.Weight
+	}
+	return ""
+}
+
+func (x *ReportData) GetHeight() string {
+	if x != nil {
+		return x.Height
+	}
+	return ""
+}
+
+func (x *ReportData) GetBloodPressure() string {
+	if x != nil {
+		return x.BloodPressure
 	}
 	return ""
 }
@@ -744,7 +768,7 @@ const file_pkg_proto_pdf_proto_rawDesc = "" +
 	"\vexamination\x18\t \x01(\tR\vexamination\x12\x14\n" +
 	"\x05query\x18\n" +
 	" \x01(\tR\x05query\x12\x1a\n" +
-	"\bfileName\x18\v \x01(\tR\bfileName\"\x90\x05\n" +
+	"\bfileName\x18\v \x01(\tR\bfileName\"\xe6\x05\n" +
 	"\n" +
 	"ReportData\x12\x0e\n" +
 	"\x02id\x18\x13 \x01(\rR\x02id\x12\x12\n" +
@@ -774,7 +798,10 @@ const file_pkg_proto_pdf_proto_rawDesc = "" +
 	"withHeader\x18\x12 \x01(\bR\n" +
 	"withHeader\x12(\n" +
 	"\x0frecommendations\x18\x14 \x01(\tR\x0frecommendations\x12\x12\n" +
-	"\x04Type\x18\x15 \x01(\tR\x04Type\"\xac\x01\n" +
+	"\x04Type\x18\x15 \x01(\tR\x04Type\x12\x16\n" +
+	"\x06Weight\x18\x16 \x01(\tR\x06Weight\x12\x16\n" +
+	"\x06Height\x18\x17 \x01(\tR\x06Height\x12$\n" +
+	"\rBloodPressure\x18\x18 \x01(\tR\rBloodPressure\"\xac\x01\n" +
 	"\bPdfEvent\x12.\n" +
 	"\areceipt\x18\x01 \x01(\v2\x12.proto.ReceiptDataH\x00R\areceipt\x12:\n" +
 	"\vrequestForm\x18\x02 \x01(\v2\x16.proto.RequestFormDataH\x00R\vrequestForm\x12+\n" +
