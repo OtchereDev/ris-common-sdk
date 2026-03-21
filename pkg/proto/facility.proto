@@ -16,4 +16,5 @@ message Procedure {
     string name = 2;
     uint32 modalityId = 3;
     double price = 4;
+    double flat_commision = 5;
 }
