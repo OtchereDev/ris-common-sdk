@@ -233,7 +233,7 @@ func OrgAdminMiddleware() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		user, _ := SerializeRequestUser(c)
 
-		if user == nil || user.OrganizationID == 0 || user.OrganizationRole != "ADMIN" {
+		if user == nil || user.OrganizationID == 0 || strings.ToUpper(user.OrganizationRole) != "ADMIN" {
 			return c.Status(fiber.StatusForbidden).JSON(PermissionNotFulfilledError)
 
 		}
@@ -252,12 +252,12 @@ func AdminOrgAdminMiddleware() fiber.Handler {
 		}
 
 		// Global admin → allow
-		if user.UserType == UserTypes.Admin || user.IsAdmin {
+		if strings.ToUpper(user.UserType) == UserTypes.Admin || user.IsAdmin {
 			return c.Next()
 		}
 
 		// Org admin → allow
-		if user.OrganizationID != 0 && user.OrganizationRole == "ADMIN" {
+		if user.OrganizationID != 0 && strings.ToUpper(user.OrganizationRole) == "ADMIN" {
 			return c.Next()
 		}
 
