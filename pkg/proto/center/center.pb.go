@@ -93,6 +93,7 @@ type ModalityCenterChange struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Action        string                 `protobuf:"bytes,1,opt,name=action,proto3" json:"action,omitempty"` // add or removed
 	Centers       []uint32               `protobuf:"varint,2,rep,packed,name=centers,proto3" json:"centers,omitempty"`
+	Modality      uint32                 `protobuf:"varint,3,opt,name=modality,proto3" json:"modality,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -141,6 +142,13 @@ func (x *ModalityCenterChange) GetCenters() []uint32 {
 	return nil
 }
 
+func (x *ModalityCenterChange) GetModality() uint32 {
+	if x != nil {
+		return x.Modality
+	}
+	return 0
+}
+
 var File_pkg_proto_center_proto protoreflect.FileDescriptor
 
 const file_pkg_proto_center_proto_rawDesc = "" +
@@ -151,10 +159,11 @@ const file_pkg_proto_center_proto_rawDesc = "" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1d\n" +
 	"\n" +
 	"is_deleted\x18\x03 \x01(\bR\tisDeleted\x12\x17\n" +
-	"\ais_main\x18\x04 \x01(\bR\x06isMain\"H\n" +
+	"\ais_main\x18\x04 \x01(\bR\x06isMain\"d\n" +
 	"\x14ModalityCenterChange\x12\x16\n" +
 	"\x06action\x18\x01 \x01(\tR\x06action\x12\x18\n" +
-	"\acenters\x18\x02 \x03(\rR\acentersB\x12Z\x10pkg/proto/centerb\x06proto3"
+	"\acenters\x18\x02 \x03(\rR\acenters\x12\x1a\n" +
+	"\bmodality\x18\x03 \x01(\rR\bmodalityB\x12Z\x10pkg/proto/centerb\x06proto3"
 
 var (
 	file_pkg_proto_center_proto_rawDescOnce sync.Once
