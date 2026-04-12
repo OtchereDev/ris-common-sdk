@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package = "pkg/proto/center";
+
+message Center {
+    uint32 id = 1; 
+    string name = 2;
+    bool is_deleted = 3;
+}
+
+message ModalityCenterChange{
+    string action = 1; // add or removed
+    repeated string centers = 2;
+}
