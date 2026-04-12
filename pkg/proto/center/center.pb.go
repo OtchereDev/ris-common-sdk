@@ -26,6 +26,7 @@ type Center struct {
 	Id            uint32                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	IsDeleted     bool                   `protobuf:"varint,3,opt,name=is_deleted,json=isDeleted,proto3" json:"is_deleted,omitempty"`
+	IsMain        bool                   `protobuf:"varint,4,opt,name=is_main,json=isMain,proto3" json:"is_main,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -77,6 +78,13 @@ func (x *Center) GetName() string {
 func (x *Center) GetIsDeleted() bool {
 	if x != nil {
 		return x.IsDeleted
+	}
+	return false
+}
+
+func (x *Center) GetIsMain() bool {
+	if x != nil {
+		return x.IsMain
 	}
 	return false
 }
@@ -137,12 +145,13 @@ var File_pkg_proto_center_proto protoreflect.FileDescriptor
 
 const file_pkg_proto_center_proto_rawDesc = "" +
 	"\n" +
-	"\x16pkg/proto/center.proto\x12\x05proto\"K\n" +
+	"\x16pkg/proto/center.proto\x12\x05proto\"d\n" +
 	"\x06Center\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\rR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1d\n" +
 	"\n" +
-	"is_deleted\x18\x03 \x01(\bR\tisDeleted\"H\n" +
+	"is_deleted\x18\x03 \x01(\bR\tisDeleted\x12\x17\n" +
+	"\ais_main\x18\x04 \x01(\bR\x06isMain\"H\n" +
 	"\x14ModalityCenterChange\x12\x16\n" +
 	"\x06action\x18\x01 \x01(\tR\x06action\x12\x18\n" +
 	"\acenters\x18\x02 \x03(\rR\acentersB\x12Z\x10pkg/proto/centerb\x06proto3"

@@ -8,6 +8,7 @@ message Center {
     uint32 id = 1; 
     string name = 2;
     bool is_deleted = 3;
+    bool is_main = 4;
 }
 
 message ModalityCenterChange{
