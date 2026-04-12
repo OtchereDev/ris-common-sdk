@@ -12,5 +12,5 @@ message Center {
 
 message ModalityCenterChange{
     string action = 1; // add or removed
-    repeated string centers = 2;
+    repeated uint32 centers = 2;
 }

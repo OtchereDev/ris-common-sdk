@@ -84,7 +84,7 @@ func (x *Center) GetIsDeleted() bool {
 type ModalityCenterChange struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Action        string                 `protobuf:"bytes,1,opt,name=action,proto3" json:"action,omitempty"` // add or removed
-	Centers       []string               `protobuf:"bytes,2,rep,name=centers,proto3" json:"centers,omitempty"`
+	Centers       []uint32               `protobuf:"varint,2,rep,packed,name=centers,proto3" json:"centers,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -126,7 +126,7 @@ func (x *ModalityCenterChange) GetAction() string {
 	return ""
 }
 
-func (x *ModalityCenterChange) GetCenters() []string {
+func (x *ModalityCenterChange) GetCenters() []uint32 {
 	if x != nil {
 		return x.Centers
 	}
@@ -145,7 +145,7 @@ const file_pkg_proto_center_proto_rawDesc = "" +
 	"is_deleted\x18\x03 \x01(\bR\tisDeleted\"H\n" +
 	"\x14ModalityCenterChange\x12\x16\n" +
 	"\x06action\x18\x01 \x01(\tR\x06action\x12\x18\n" +
-	"\acenters\x18\x02 \x03(\tR\acentersB\x12Z\x10pkg/proto/centerb\x06proto3"
+	"\acenters\x18\x02 \x03(\rR\acentersB\x12Z\x10pkg/proto/centerb\x06proto3"
 
 var (
 	file_pkg_proto_center_proto_rawDescOnce sync.Once
