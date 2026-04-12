@@ -25,4 +25,5 @@ message User {
   string password = 16;
   string phone_number = 17;
   bool use_email_otp = 18;
+  uint32 center_id = 19;
 }
