@@ -23,6 +23,7 @@ type JwtPayload struct {
 	OrganizationID   uint   `json:"organization_id"`
 	DeviceID         string `json:"device_id,omitempty"`
 	OrganizationRole string `json:"org_role"`
+	CenterID *uint `json:"center_id"`
 }
 
 func SerializeRequestUser(c *fiber.Ctx) (*JwtPayload, error) {
