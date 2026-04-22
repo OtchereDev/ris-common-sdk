@@ -5,9 +5,10 @@ package proto;
 import "google/protobuf/timestamp.proto";
 import "referral.proto";
 import "patient.proto";
+import "portals.proto";
 
 
-option go_package = "pkg/proto/appointment";
+option go_package = "github.com/OtchereDev/ris-common-sdk/pkg/proto/appointment";
 
 message Appointment {
   uint32 id = 1;
@@ -174,13 +175,19 @@ message GetReferringDoctorRequest {
 }
 
 
+message GetStaffRequest {
+  string email = 1;
+  uint32 organization_id = 2;
+}
+
 service AppointmentService {
   rpc GetAppointment (AppointmentRequest) returns (Appointment) {}
 
   rpc GetRecipientCount(GetRecipientCountRequest) returns (RecipientCountResponse);
-    
+
   rpc GetRecipients(GetRecipientsRequest) returns (RecipientsResponse);
 
   rpc GetPatient(GetPatientRequest) returns (Patient);
   rpc GetReferringDoctor(GetReferringDoctorRequest) returns (ReferringDoctor);
+  rpc GetStaff(GetStaffRequest) returns (Staff);
 }
