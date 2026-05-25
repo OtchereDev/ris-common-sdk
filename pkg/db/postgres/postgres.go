@@ -14,6 +14,7 @@ import (
 // PgDB wraps the GORM database client
 type PgDB struct {
 	Client *gorm.DB
+	dsn    string // retained so Migrate can open its own connection
 }
 
 // PgConnectionParam holds all database connection parameters
@@ -44,9 +45,28 @@ func (d *PgDB) Ping(ctx context.Context) error {
 	return nil
 }
 
-// Migrate runs GORM auto-migration for the given models
+// Migrate runs GORM auto-migration for the given models.
+// Opens a short-lived dedicated connection with PreferSimpleProtocol so that
+// GORM's HasTable checks work correctly behind a connection pooler (e.g.
+// PgBouncer in transaction mode) without affecting the main connection pool.
 func (d *PgDB) Migrate(dst ...interface{}) error {
-	if err := d.Client.AutoMigrate(dst...); err != nil {
+	migClient, err := gorm.Open(postgres.New(postgres.Config{
+		DSN:                  d.dsn,
+		PreferSimpleProtocol: true,
+	}), &gorm.Config{
+		DisableForeignKeyConstraintWhenMigrating: false,
+	})
+	if err != nil {
+		return fmt.Errorf("failed to open migration connection: %w", err)
+	}
+
+	migDB, err := migClient.DB()
+	if err != nil {
+		return fmt.Errorf("failed to get migration sql.DB: %w", err)
+	}
+	defer migDB.Close()
+
+	if err := migClient.AutoMigrate(dst...); err != nil {
 		return fmt.Errorf("failed to run migrations: %w", err)
 	}
 	return nil
@@ -94,6 +114,7 @@ func Connect(ctx context.Context, p PgConnectionParam) (*PgDB, error) {
 	}
 
 	d.Client = client
+	d.dsn = dsn
 
 	// Get underlying sql.DB to configure connection pool
 	sqlDB, err := d.Client.DB()
