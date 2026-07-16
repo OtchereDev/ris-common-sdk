@@ -28,6 +28,7 @@ const (
 	AppointmentService_GetPatient_FullMethodName         = "/proto.AppointmentService/GetPatient"
 	AppointmentService_GetReferringDoctor_FullMethodName = "/proto.AppointmentService/GetReferringDoctor"
 	AppointmentService_GetStaff_FullMethodName           = "/proto.AppointmentService/GetStaff"
+	AppointmentService_GetPatientPriors_FullMethodName   = "/proto.AppointmentService/GetPatientPriors"
 )
 
 // AppointmentServiceClient is the client API for AppointmentService service.
@@ -40,6 +41,7 @@ type AppointmentServiceClient interface {
 	GetPatient(ctx context.Context, in *GetPatientRequest, opts ...grpc.CallOption) (*patient.Patient, error)
 	GetReferringDoctor(ctx context.Context, in *GetReferringDoctorRequest, opts ...grpc.CallOption) (*referral.ReferringDoctor, error)
 	GetStaff(ctx context.Context, in *GetStaffRequest, opts ...grpc.CallOption) (*portals.Staff, error)
+	GetPatientPriors(ctx context.Context, in *GetPatientPriorsRequest, opts ...grpc.CallOption) (*GetPatientPriorsResponse, error)
 }
 
 type appointmentServiceClient struct {
@@ -110,6 +112,16 @@ func (c *appointmentServiceClient) GetStaff(ctx context.Context, in *GetStaffReq
 	return out, nil
 }
 
+func (c *appointmentServiceClient) GetPatientPriors(ctx context.Context, in *GetPatientPriorsRequest, opts ...grpc.CallOption) (*GetPatientPriorsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetPatientPriorsResponse)
+	err := c.cc.Invoke(ctx, AppointmentService_GetPatientPriors_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AppointmentServiceServer is the server API for AppointmentService service.
 // All implementations must embed UnimplementedAppointmentServiceServer
 // for forward compatibility.
@@ -120,6 +132,7 @@ type AppointmentServiceServer interface {
 	GetPatient(context.Context, *GetPatientRequest) (*patient.Patient, error)
 	GetReferringDoctor(context.Context, *GetReferringDoctorRequest) (*referral.ReferringDoctor, error)
 	GetStaff(context.Context, *GetStaffRequest) (*portals.Staff, error)
+	GetPatientPriors(context.Context, *GetPatientPriorsRequest) (*GetPatientPriorsResponse, error)
 	mustEmbedUnimplementedAppointmentServiceServer()
 }
 
@@ -147,6 +160,9 @@ func (UnimplementedAppointmentServiceServer) GetReferringDoctor(context.Context,
 }
 func (UnimplementedAppointmentServiceServer) GetStaff(context.Context, *GetStaffRequest) (*portals.Staff, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetStaff not implemented")
+}
+func (UnimplementedAppointmentServiceServer) GetPatientPriors(context.Context, *GetPatientPriorsRequest) (*GetPatientPriorsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetPatientPriors not implemented")
 }
 func (UnimplementedAppointmentServiceServer) mustEmbedUnimplementedAppointmentServiceServer() {}
 func (UnimplementedAppointmentServiceServer) testEmbeddedByValue()                            {}
@@ -277,6 +293,24 @@ func _AppointmentService_GetStaff_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AppointmentService_GetPatientPriors_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetPatientPriorsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AppointmentServiceServer).GetPatientPriors(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AppointmentService_GetPatientPriors_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AppointmentServiceServer).GetPatientPriors(ctx, req.(*GetPatientPriorsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AppointmentService_ServiceDesc is the grpc.ServiceDesc for AppointmentService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -307,6 +341,10 @@ var AppointmentService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetStaff",
 			Handler:    _AppointmentService_GetStaff_Handler,
+		},
+		{
+			MethodName: "GetPatientPriors",
+			Handler:    _AppointmentService_GetPatientPriors_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

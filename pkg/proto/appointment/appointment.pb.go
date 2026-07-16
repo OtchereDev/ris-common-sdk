@@ -1334,6 +1334,208 @@ func (x *FilterCriteria) GetTrendThresholdPct() float64 {
 	return 0
 }
 
+// A previous study for a patient, for interval comparison in the report editor.
+// Bodies are only populated when a specific prior is requested, so the picker
+// listing does not drag every historical report across the wire.
+type PriorStudy struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            uint32                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	StudyDate     *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=study_date,json=studyDate,proto3" json:"study_date,omitempty"`
+	Modality      string                 `protobuf:"bytes,3,opt,name=modality,proto3" json:"modality,omitempty"`
+	Procedure     string                 `protobuf:"bytes,4,opt,name=procedure,proto3" json:"procedure,omitempty"`
+	Findings      string                 `protobuf:"bytes,5,opt,name=findings,proto3" json:"findings,omitempty"`
+	Impressions   string                 `protobuf:"bytes,6,opt,name=impressions,proto3" json:"impressions,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PriorStudy) Reset() {
+	*x = PriorStudy{}
+	mi := &file_appointment_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PriorStudy) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PriorStudy) ProtoMessage() {}
+
+func (x *PriorStudy) ProtoReflect() protoreflect.Message {
+	mi := &file_appointment_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PriorStudy.ProtoReflect.Descriptor instead.
+func (*PriorStudy) Descriptor() ([]byte, []int) {
+	return file_appointment_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *PriorStudy) GetId() uint32 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *PriorStudy) GetStudyDate() *timestamppb.Timestamp {
+	if x != nil {
+		return x.StudyDate
+	}
+	return nil
+}
+
+func (x *PriorStudy) GetModality() string {
+	if x != nil {
+		return x.Modality
+	}
+	return ""
+}
+
+func (x *PriorStudy) GetProcedure() string {
+	if x != nil {
+		return x.Procedure
+	}
+	return ""
+}
+
+func (x *PriorStudy) GetFindings() string {
+	if x != nil {
+		return x.Findings
+	}
+	return ""
+}
+
+func (x *PriorStudy) GetImpressions() string {
+	if x != nil {
+		return x.Impressions
+	}
+	return ""
+}
+
+type GetPatientPriorsRequest struct {
+	state     protoimpl.MessageState `protogen:"open.v1"`
+	PatientId uint32                 `protobuf:"varint,1,opt,name=patient_id,json=patientId,proto3" json:"patient_id,omitempty"`
+	// Exclude the study being reported on, so a report is never its own prior.
+	ExcludeAppointmentId uint32 `protobuf:"varint,2,opt,name=exclude_appointment_id,json=excludeAppointmentId,proto3" json:"exclude_appointment_id,omitempty"`
+	// Populate findings/impressions for this prior only. Zero returns a listing
+	// with bodies omitted.
+	PriorId       uint32 `protobuf:"varint,3,opt,name=prior_id,json=priorId,proto3" json:"prior_id,omitempty"`
+	Limit         uint32 `protobuf:"varint,4,opt,name=limit,proto3" json:"limit,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetPatientPriorsRequest) Reset() {
+	*x = GetPatientPriorsRequest{}
+	mi := &file_appointment_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetPatientPriorsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetPatientPriorsRequest) ProtoMessage() {}
+
+func (x *GetPatientPriorsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_appointment_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetPatientPriorsRequest.ProtoReflect.Descriptor instead.
+func (*GetPatientPriorsRequest) Descriptor() ([]byte, []int) {
+	return file_appointment_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *GetPatientPriorsRequest) GetPatientId() uint32 {
+	if x != nil {
+		return x.PatientId
+	}
+	return 0
+}
+
+func (x *GetPatientPriorsRequest) GetExcludeAppointmentId() uint32 {
+	if x != nil {
+		return x.ExcludeAppointmentId
+	}
+	return 0
+}
+
+func (x *GetPatientPriorsRequest) GetPriorId() uint32 {
+	if x != nil {
+		return x.PriorId
+	}
+	return 0
+}
+
+func (x *GetPatientPriorsRequest) GetLimit() uint32 {
+	if x != nil {
+		return x.Limit
+	}
+	return 0
+}
+
+type GetPatientPriorsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Priors        []*PriorStudy          `protobuf:"bytes,1,rep,name=priors,proto3" json:"priors,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetPatientPriorsResponse) Reset() {
+	*x = GetPatientPriorsResponse{}
+	mi := &file_appointment_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetPatientPriorsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetPatientPriorsResponse) ProtoMessage() {}
+
+func (x *GetPatientPriorsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_appointment_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetPatientPriorsResponse.ProtoReflect.Descriptor instead.
+func (*GetPatientPriorsResponse) Descriptor() ([]byte, []int) {
+	return file_appointment_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *GetPatientPriorsResponse) GetPriors() []*PriorStudy {
+	if x != nil {
+		return x.Priors
+	}
+	return nil
+}
+
 type GetPatientRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	PatientId     uint32                 `protobuf:"varint,1,opt,name=patient_id,json=patientId,proto3" json:"patient_id,omitempty"`
@@ -1344,7 +1546,7 @@ type GetPatientRequest struct {
 
 func (x *GetPatientRequest) Reset() {
 	*x = GetPatientRequest{}
-	mi := &file_appointment_proto_msgTypes[14]
+	mi := &file_appointment_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1356,7 +1558,7 @@ func (x *GetPatientRequest) String() string {
 func (*GetPatientRequest) ProtoMessage() {}
 
 func (x *GetPatientRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_appointment_proto_msgTypes[14]
+	mi := &file_appointment_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1369,7 +1571,7 @@ func (x *GetPatientRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetPatientRequest.ProtoReflect.Descriptor instead.
 func (*GetPatientRequest) Descriptor() ([]byte, []int) {
-	return file_appointment_proto_rawDescGZIP(), []int{14}
+	return file_appointment_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *GetPatientRequest) GetPatientId() uint32 {
@@ -1396,7 +1598,7 @@ type GetReferringDoctorRequest struct {
 
 func (x *GetReferringDoctorRequest) Reset() {
 	*x = GetReferringDoctorRequest{}
-	mi := &file_appointment_proto_msgTypes[15]
+	mi := &file_appointment_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1408,7 +1610,7 @@ func (x *GetReferringDoctorRequest) String() string {
 func (*GetReferringDoctorRequest) ProtoMessage() {}
 
 func (x *GetReferringDoctorRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_appointment_proto_msgTypes[15]
+	mi := &file_appointment_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1421,7 +1623,7 @@ func (x *GetReferringDoctorRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetReferringDoctorRequest.ProtoReflect.Descriptor instead.
 func (*GetReferringDoctorRequest) Descriptor() ([]byte, []int) {
-	return file_appointment_proto_rawDescGZIP(), []int{15}
+	return file_appointment_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *GetReferringDoctorRequest) GetDoctorId() uint32 {
@@ -1448,7 +1650,7 @@ type GetStaffRequest struct {
 
 func (x *GetStaffRequest) Reset() {
 	*x = GetStaffRequest{}
-	mi := &file_appointment_proto_msgTypes[16]
+	mi := &file_appointment_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1460,7 +1662,7 @@ func (x *GetStaffRequest) String() string {
 func (*GetStaffRequest) ProtoMessage() {}
 
 func (x *GetStaffRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_appointment_proto_msgTypes[16]
+	mi := &file_appointment_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1473,7 +1675,7 @@ func (x *GetStaffRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetStaffRequest.ProtoReflect.Descriptor instead.
 func (*GetStaffRequest) Descriptor() ([]byte, []int) {
-	return file_appointment_proto_rawDescGZIP(), []int{16}
+	return file_appointment_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *GetStaffRequest) GetEmail() string {
@@ -1654,7 +1856,24 @@ const file_appointment_proto_rawDesc = "" +
 	"\x0e_max_referralsB\x11\n" +
 	"\x0f_referral_trendB\x14\n" +
 	"\x12_trend_period_daysB\x16\n" +
-	"\x14_trend_threshold_pctJ\x04\b\x06\x10\aJ\x04\b\a\x10\b\"U\n" +
+	"\x14_trend_threshold_pctJ\x04\b\x06\x10\aJ\x04\b\a\x10\b\"\xcf\x01\n" +
+	"\n" +
+	"PriorStudy\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\rR\x02id\x129\n" +
+	"\n" +
+	"study_date\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\tstudyDate\x12\x1a\n" +
+	"\bmodality\x18\x03 \x01(\tR\bmodality\x12\x1c\n" +
+	"\tprocedure\x18\x04 \x01(\tR\tprocedure\x12\x1a\n" +
+	"\bfindings\x18\x05 \x01(\tR\bfindings\x12 \n" +
+	"\vimpressions\x18\x06 \x01(\tR\vimpressions\"\x9f\x01\n" +
+	"\x17GetPatientPriorsRequest\x12\x1d\n" +
+	"\n" +
+	"patient_id\x18\x01 \x01(\rR\tpatientId\x124\n" +
+	"\x16exclude_appointment_id\x18\x02 \x01(\rR\x14excludeAppointmentId\x12\x19\n" +
+	"\bprior_id\x18\x03 \x01(\rR\apriorId\x12\x14\n" +
+	"\x05limit\x18\x04 \x01(\rR\x05limit\"E\n" +
+	"\x18GetPatientPriorsResponse\x12)\n" +
+	"\x06priors\x18\x01 \x03(\v2\x11.proto.PriorStudyR\x06priors\"U\n" +
 	"\x11GetPatientRequest\x12\x1d\n" +
 	"\n" +
 	"patient_id\x18\x01 \x01(\rR\tpatientId\x12!\n" +
@@ -1664,7 +1883,7 @@ const file_appointment_proto_rawDesc = "" +
 	"\x05email\x18\x02 \x01(\tR\x05email\"P\n" +
 	"\x0fGetStaffRequest\x12\x14\n" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12'\n" +
-	"\x0forganization_id\x18\x02 \x01(\rR\x0eorganizationId2\xaf\x03\n" +
+	"\x0forganization_id\x18\x02 \x01(\rR\x0eorganizationId2\x84\x04\n" +
 	"\x12AppointmentService\x12A\n" +
 	"\x0eGetAppointment\x12\x19.proto.AppointmentRequest\x1a\x12.proto.Appointment\"\x00\x12S\n" +
 	"\x11GetRecipientCount\x12\x1f.proto.GetRecipientCountRequest\x1a\x1d.proto.RecipientCountResponse\x12G\n" +
@@ -1672,7 +1891,8 @@ const file_appointment_proto_rawDesc = "" +
 	"\n" +
 	"GetPatient\x12\x18.proto.GetPatientRequest\x1a\x0e.proto.Patient\x12N\n" +
 	"\x12GetReferringDoctor\x12 .proto.GetReferringDoctorRequest\x1a\x16.proto.ReferringDoctor\x120\n" +
-	"\bGetStaff\x12\x16.proto.GetStaffRequest\x1a\f.proto.StaffB<Z:github.com/OtchereDev/ris-common-sdk/pkg/proto/appointmentb\x06proto3"
+	"\bGetStaff\x12\x16.proto.GetStaffRequest\x1a\f.proto.Staff\x12S\n" +
+	"\x10GetPatientPriors\x12\x1e.proto.GetPatientPriorsRequest\x1a\x1f.proto.GetPatientPriorsResponseB<Z:github.com/OtchereDev/ris-common-sdk/pkg/proto/appointmentb\x06proto3"
 
 var (
 	file_appointment_proto_rawDescOnce sync.Once
@@ -1686,7 +1906,7 @@ func file_appointment_proto_rawDescGZIP() []byte {
 	return file_appointment_proto_rawDescData
 }
 
-var file_appointment_proto_msgTypes = make([]protoimpl.MessageInfo, 17)
+var file_appointment_proto_msgTypes = make([]protoimpl.MessageInfo, 20)
 var file_appointment_proto_goTypes = []any{
 	(*Appointment)(nil),               // 0: proto.Appointment
 	(*ReportVersion)(nil),             // 1: proto.ReportVersion
@@ -1702,45 +1922,52 @@ var file_appointment_proto_goTypes = []any{
 	(*RecipientsResponse)(nil),        // 11: proto.RecipientsResponse
 	(*Recipient)(nil),                 // 12: proto.Recipient
 	(*FilterCriteria)(nil),            // 13: proto.FilterCriteria
-	(*GetPatientRequest)(nil),         // 14: proto.GetPatientRequest
-	(*GetReferringDoctorRequest)(nil), // 15: proto.GetReferringDoctorRequest
-	(*GetStaffRequest)(nil),           // 16: proto.GetStaffRequest
-	(*timestamppb.Timestamp)(nil),     // 17: google.protobuf.Timestamp
-	(*patient.Patient)(nil),           // 18: proto.Patient
-	(*referral.ReferringDoctor)(nil),  // 19: proto.ReferringDoctor
-	(*portals.Staff)(nil),             // 20: proto.Staff
+	(*PriorStudy)(nil),                // 14: proto.PriorStudy
+	(*GetPatientPriorsRequest)(nil),   // 15: proto.GetPatientPriorsRequest
+	(*GetPatientPriorsResponse)(nil),  // 16: proto.GetPatientPriorsResponse
+	(*GetPatientRequest)(nil),         // 17: proto.GetPatientRequest
+	(*GetReferringDoctorRequest)(nil), // 18: proto.GetReferringDoctorRequest
+	(*GetStaffRequest)(nil),           // 19: proto.GetStaffRequest
+	(*timestamppb.Timestamp)(nil),     // 20: google.protobuf.Timestamp
+	(*patient.Patient)(nil),           // 21: proto.Patient
+	(*referral.ReferringDoctor)(nil),  // 22: proto.ReferringDoctor
+	(*portals.Staff)(nil),             // 23: proto.Staff
 }
 var file_appointment_proto_depIdxs = []int32{
-	17, // 0: proto.Appointment.appointment_time:type_name -> google.protobuf.Timestamp
+	20, // 0: proto.Appointment.appointment_time:type_name -> google.protobuf.Timestamp
 	3,  // 1: proto.Appointment.request_form:type_name -> proto.RequestForm
-	17, // 2: proto.Appointment.created_at:type_name -> google.protobuf.Timestamp
-	17, // 3: proto.Appointment.modified_at:type_name -> google.protobuf.Timestamp
-	17, // 4: proto.ReportVersion.confirmed_at:type_name -> google.protobuf.Timestamp
+	20, // 2: proto.Appointment.created_at:type_name -> google.protobuf.Timestamp
+	20, // 3: proto.Appointment.modified_at:type_name -> google.protobuf.Timestamp
+	20, // 4: proto.ReportVersion.confirmed_at:type_name -> google.protobuf.Timestamp
 	1,  // 5: proto.Report.versions:type_name -> proto.ReportVersion
 	0,  // 6: proto.ModifyProcedure.old_version:type_name -> proto.Appointment
 	0,  // 7: proto.ModifyProcedure.new_version:type_name -> proto.Appointment
-	17, // 8: proto.ReportDeliveryStatus.timestamp:type_name -> google.protobuf.Timestamp
+	20, // 8: proto.ReportDeliveryStatus.timestamp:type_name -> google.protobuf.Timestamp
 	13, // 9: proto.GetRecipientCountRequest.filter_criteria:type_name -> proto.FilterCriteria
 	9,  // 10: proto.RecipientCountResponse.breakdown:type_name -> proto.RecipientBreakdown
 	13, // 11: proto.GetRecipientsRequest.filter_criteria:type_name -> proto.FilterCriteria
 	12, // 12: proto.RecipientsResponse.recipients:type_name -> proto.Recipient
-	6,  // 13: proto.AppointmentService.GetAppointment:input_type -> proto.AppointmentRequest
-	7,  // 14: proto.AppointmentService.GetRecipientCount:input_type -> proto.GetRecipientCountRequest
-	10, // 15: proto.AppointmentService.GetRecipients:input_type -> proto.GetRecipientsRequest
-	14, // 16: proto.AppointmentService.GetPatient:input_type -> proto.GetPatientRequest
-	15, // 17: proto.AppointmentService.GetReferringDoctor:input_type -> proto.GetReferringDoctorRequest
-	16, // 18: proto.AppointmentService.GetStaff:input_type -> proto.GetStaffRequest
-	0,  // 19: proto.AppointmentService.GetAppointment:output_type -> proto.Appointment
-	8,  // 20: proto.AppointmentService.GetRecipientCount:output_type -> proto.RecipientCountResponse
-	11, // 21: proto.AppointmentService.GetRecipients:output_type -> proto.RecipientsResponse
-	18, // 22: proto.AppointmentService.GetPatient:output_type -> proto.Patient
-	19, // 23: proto.AppointmentService.GetReferringDoctor:output_type -> proto.ReferringDoctor
-	20, // 24: proto.AppointmentService.GetStaff:output_type -> proto.Staff
-	19, // [19:25] is the sub-list for method output_type
-	13, // [13:19] is the sub-list for method input_type
-	13, // [13:13] is the sub-list for extension type_name
-	13, // [13:13] is the sub-list for extension extendee
-	0,  // [0:13] is the sub-list for field type_name
+	20, // 13: proto.PriorStudy.study_date:type_name -> google.protobuf.Timestamp
+	14, // 14: proto.GetPatientPriorsResponse.priors:type_name -> proto.PriorStudy
+	6,  // 15: proto.AppointmentService.GetAppointment:input_type -> proto.AppointmentRequest
+	7,  // 16: proto.AppointmentService.GetRecipientCount:input_type -> proto.GetRecipientCountRequest
+	10, // 17: proto.AppointmentService.GetRecipients:input_type -> proto.GetRecipientsRequest
+	17, // 18: proto.AppointmentService.GetPatient:input_type -> proto.GetPatientRequest
+	18, // 19: proto.AppointmentService.GetReferringDoctor:input_type -> proto.GetReferringDoctorRequest
+	19, // 20: proto.AppointmentService.GetStaff:input_type -> proto.GetStaffRequest
+	15, // 21: proto.AppointmentService.GetPatientPriors:input_type -> proto.GetPatientPriorsRequest
+	0,  // 22: proto.AppointmentService.GetAppointment:output_type -> proto.Appointment
+	8,  // 23: proto.AppointmentService.GetRecipientCount:output_type -> proto.RecipientCountResponse
+	11, // 24: proto.AppointmentService.GetRecipients:output_type -> proto.RecipientsResponse
+	21, // 25: proto.AppointmentService.GetPatient:output_type -> proto.Patient
+	22, // 26: proto.AppointmentService.GetReferringDoctor:output_type -> proto.ReferringDoctor
+	23, // 27: proto.AppointmentService.GetStaff:output_type -> proto.Staff
+	16, // 28: proto.AppointmentService.GetPatientPriors:output_type -> proto.GetPatientPriorsResponse
+	22, // [22:29] is the sub-list for method output_type
+	15, // [15:22] is the sub-list for method input_type
+	15, // [15:15] is the sub-list for extension type_name
+	15, // [15:15] is the sub-list for extension extendee
+	0,  // [0:15] is the sub-list for field type_name
 }
 
 func init() { file_appointment_proto_init() }
@@ -1755,7 +1982,7 @@ func file_appointment_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_appointment_proto_rawDesc), len(file_appointment_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   17,
+			NumMessages:   20,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

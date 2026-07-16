@@ -164,6 +164,32 @@ message FilterCriteria {
 }
 
 
+// A previous study for a patient, for interval comparison in the report editor.
+// Bodies are only populated when a specific prior is requested, so the picker
+// listing does not drag every historical report across the wire.
+message PriorStudy {
+  uint32 id = 1;
+  google.protobuf.Timestamp study_date = 2;
+  string modality = 3;
+  string procedure = 4;
+  string findings = 5;
+  string impressions = 6;
+}
+
+message GetPatientPriorsRequest {
+  uint32 patient_id = 1;
+  // Exclude the study being reported on, so a report is never its own prior.
+  uint32 exclude_appointment_id = 2;
+  // Populate findings/impressions for this prior only. Zero returns a listing
+  // with bodies omitted.
+  uint32 prior_id = 3;
+  uint32 limit = 4;
+}
+
+message GetPatientPriorsResponse {
+  repeated PriorStudy priors = 1;
+}
+
 message GetPatientRequest {
   uint32 patient_id = 1;
   string phone_number = 2;
@@ -190,4 +216,5 @@ service AppointmentService {
   rpc GetPatient(GetPatientRequest) returns (Patient);
   rpc GetReferringDoctor(GetReferringDoctorRequest) returns (ReferringDoctor);
   rpc GetStaff(GetStaffRequest) returns (Staff);
+  rpc GetPatientPriors(GetPatientPriorsRequest) returns (GetPatientPriorsResponse);
 }
