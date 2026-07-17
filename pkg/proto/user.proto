@@ -26,4 +26,8 @@ message User {
   string phone_number = 17;
   bool use_email_otp = 18;
   uint32 center_id = 19;
+  // Allows adjusting the procedure on an appointment that has already been
+  // examined. Never reaches past report verification, which stays blocked for
+  // everyone because the referring doctor's commission is paid at that point.
+  bool can_edit_completed_appointment = 20;
 }

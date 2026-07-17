@@ -78,6 +78,11 @@ type UpdateUserPassword struct {
 	PhoneNumber        string    `json:"phone_number" validate:"required,e164"`
 	UseEmailOTP        bool      `json:"use_email_otp" gorm:"default:false"`
 	CenterID           *uint     `json:"center_id,omitempty" validate:"required"`
+
+	// CanEditCompletedAppointment lets the holder adjust the procedure on an
+	// appointment that has already been examined. It stops at report verification,
+	// which stays blocked for everyone.
+	CanEditCompletedAppointment bool `json:"can_edit_completed_appointment" gorm:"default:false"`
 }
 
 type AllUserParam struct {

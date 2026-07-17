@@ -43,8 +43,12 @@ type User struct {
 	PhoneNumber        string                 `protobuf:"bytes,17,opt,name=phone_number,json=phoneNumber,proto3" json:"phone_number,omitempty"`
 	UseEmailOtp        bool                   `protobuf:"varint,18,opt,name=use_email_otp,json=useEmailOtp,proto3" json:"use_email_otp,omitempty"`
 	CenterId           uint32                 `protobuf:"varint,19,opt,name=center_id,json=centerId,proto3" json:"center_id,omitempty"`
-	unknownFields      protoimpl.UnknownFields
-	sizeCache          protoimpl.SizeCache
+	// Allows adjusting the procedure on an appointment that has already been
+	// examined. Never reaches past report verification, which stays blocked for
+	// everyone because the referring doctor's commission is paid at that point.
+	CanEditCompletedAppointment bool `protobuf:"varint,20,opt,name=can_edit_completed_appointment,json=canEditCompletedAppointment,proto3" json:"can_edit_completed_appointment,omitempty"`
+	unknownFields               protoimpl.UnknownFields
+	sizeCache                   protoimpl.SizeCache
 }
 
 func (x *User) Reset() {
@@ -210,11 +214,18 @@ func (x *User) GetCenterId() uint32 {
 	return 0
 }
 
+func (x *User) GetCanEditCompletedAppointment() bool {
+	if x != nil {
+		return x.CanEditCompletedAppointment
+	}
+	return false
+}
+
 var File_pkg_proto_user_proto protoreflect.FileDescriptor
 
 const file_pkg_proto_user_proto_rawDesc = "" +
 	"\n" +
-	"\x14pkg/proto/user.proto\x12\x05proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x9b\x05\n" +
+	"\x14pkg/proto/user.proto\x12\x05proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xe0\x05\n" +
 	"\x04User\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\rR\x02id\x12\x1d\n" +
 	"\n" +
@@ -242,7 +253,8 @@ const file_pkg_proto_user_proto_rawDesc = "" +
 	"\bpassword\x18\x10 \x01(\tR\bpassword\x12!\n" +
 	"\fphone_number\x18\x11 \x01(\tR\vphoneNumber\x12\"\n" +
 	"\ruse_email_otp\x18\x12 \x01(\bR\vuseEmailOtp\x12\x1b\n" +
-	"\tcenter_id\x18\x13 \x01(\rR\bcenterIdB\x11Z\x0fpkg/proto/usersb\x06proto3"
+	"\tcenter_id\x18\x13 \x01(\rR\bcenterId\x12C\n" +
+	"\x1ecan_edit_completed_appointment\x18\x14 \x01(\bR\x1bcanEditCompletedAppointmentB\x11Z\x0fpkg/proto/usersb\x06proto3"
 
 var (
 	file_pkg_proto_user_proto_rawDescOnce sync.Once

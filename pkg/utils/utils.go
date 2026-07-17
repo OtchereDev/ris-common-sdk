@@ -23,7 +23,12 @@ type JwtPayload struct {
 	OrganizationID   uint   `json:"organization_id"`
 	DeviceID         string `json:"device_id,omitempty"`
 	OrganizationRole string `json:"org_role"`
-	CenterID *uint `json:"center_id"`
+	CenterID         *uint  `json:"center_id"`
+
+	// CanEditCompletedAppointment allows adjusting the procedure on an appointment
+	// that has already been examined. It never reaches past report verification —
+	// that stays blocked for everyone, because commission has been paid by then.
+	CanEditCompletedAppointment bool `json:"can_edit_completed_appointment"`
 }
 
 func SerializeRequestUser(c *fiber.Ctx) (*JwtPayload, error) {
