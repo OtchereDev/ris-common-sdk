@@ -66,6 +66,7 @@ message ReportData {
   string Weight = 22;
   string Height = 23;
   string BloodPressure = 24;
+  string appendix = 25;
 }
 
 message PdfEvent {
