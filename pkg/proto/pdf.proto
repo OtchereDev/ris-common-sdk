@@ -24,6 +24,8 @@ message ReceiptData {
   string total = 9;
   repeated PaymentItem paymentItems = 10;
   uint32 id = 11;
+  // Selects the header, footer and logo. Empty falls back to the default brand.
+  string brandKey = 12;
 }
 
 message RequestFormData {
@@ -39,6 +41,8 @@ message RequestFormData {
   string examination = 9;
   string query = 10;
   string fileName = 11;
+  // Selects the header, footer and logo. Empty falls back to the default brand.
+  string brandKey = 13;
 }
 
 message ReportData {
@@ -67,6 +71,80 @@ message ReportData {
   string Height = 23;
   string BloodPressure = 24;
   string appendix = 25;
+  // Selects the header, footer and logo. Empty falls back to the default brand.
+  string brandKey = 26;
+}
+
+// One row of a released lab report.
+message LabResultLine {
+  string investigation = 1;
+  string value = 2;
+  string unit = 3;
+  // The range that was applied when the result was entered, not a live lookup. May carry
+  // newlines where a test bands by sex or age ("Female: 53 - 120\nMale: 71 - 140").
+  string referenceInterval = 4;
+  // N, H, L, HH, LL or A. Drives the marker printed beside the value.
+  string flag = 5;
+  bool isCritical = 6;
+  string comment = 7;
+  string method = 8;
+}
+
+message LabKeyValue {
+  string label = 1;
+  string value = 2;
+}
+
+// A titled block of label/value rows. Used by examinations that report two blocks side by
+// side rather than one table, urine routine examination being the one everybody has seen:
+// macroscopic findings on the left, microscopic on the right.
+message LabSection {
+  string title = 1;
+  repeated LabKeyValue rows = 2;
+}
+
+// One panel, which is one page of the report.
+message LabReportPanel {
+  // Overrides the catalogue title when set.
+  string title = 1;
+  repeated LabResultLine lines = 2;
+  // Free HTML printed under the table. Overrides the catalogue's standing notes when set.
+  string interpretation = 3;
+  // Histopathology and cytology, which report prose rather than rows.
+  string narrative = 4;
+  // Catalogue key: KFT, LFT, LIPID, HBA1C, HBSAG, PSA, CARDIAC, TROPONIN_I, TROPONIN_T,
+  // URIC_ACID, URINE_RE, FBS. Selects the page layout and the standing reference material
+  // that belongs to the examination rather than to the patient.
+  string code = 5;
+  // Overrides the catalogue layout when set: numeric, qualitative, three_column, paired,
+  // marker or narrative.
+  string layout = 6;
+  repeated LabSection sections = 7;
+  // The specimen this examination actually ran on. The report-level specimen lists every
+  // specimen on the order, which is wrong on a page reporting one of them.
+  string specimen = 8;
+}
+
+message LabReportData {
+  uint32 id = 1;
+  string fileName = 2;
+  string pathNumber = 3;
+  string patientName = 4;
+  string patientId = 5;
+  string age = 6;
+  string sex = 7;
+  string specimen = 8;
+  string specimenDate = 9;
+  string reportNumber = 10;
+  // Set when the release covered only part of the order. Prints a banner saying so.
+  bool isInterim = 11;
+  string signedBy = 12;
+  string releasedAt = 13;
+  string referringDoctor = 14;
+  string referringFacility = 15;
+  repeated LabReportPanel panels = 16;
+  // Selects the header, footer and logo. Empty falls back to the default brand.
+  string brandKey = 17;
 }
 
 message PdfEvent {
@@ -74,6 +152,7 @@ message PdfEvent {
     ReceiptData receipt = 1;
     RequestFormData requestForm = 2;
     ReportData report = 3;
+    LabReportData labReport = 4;
   }
 }
 
