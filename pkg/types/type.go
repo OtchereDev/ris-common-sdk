@@ -16,6 +16,16 @@ type list struct {
 	Radiologist        Alias
 	Accountant         Alias
 	Admin              Alias
+
+	// Lab module roles. Module access is a separate axis from role, so these sit alongside
+	// the radiology set rather than replacing it: a user is granted radiology, lab, or
+	// both. Mirrors section 7 of the LMIS scope, and app/lib/permissons.ts in the web
+	// application, which reads the same value off the same token.
+	Phlebotomist  Alias
+	LabTechnician Alias
+	LabScientist  Alias
+	Pathologist   Alias
+	LabManager    Alias
 }
 
 type NotificationEvent struct {
@@ -32,7 +42,39 @@ var UserTypes = &list{
 	Radiologist:        "RADIOLOGIST",
 	Accountant:         "ACCOUNTANT",
 	Admin:              "ADMIN",
+
+	Phlebotomist:  "PHLEBOTOMIST",
+	LabTechnician: "LABTECHNICIAN",
+	LabScientist:  "LABSCIENTIST",
+	Pathologist:   "PATHOLOGIST",
+	LabManager:    "LABMANAGER",
 }
+
+// RadiologyUserTypes are the roles that staff the imaging side.
+var RadiologyUserTypes = []Alias{
+	UserTypes.FrontDesk,
+	UserTypes.Cashier,
+	UserTypes.Radiographer,
+	UserTypes.ReportingAssistant,
+	UserTypes.Radiologist,
+	UserTypes.Accountant,
+	UserTypes.Admin,
+}
+
+// LabUserTypes are the roles that staff the lab.
+var LabUserTypes = []Alias{
+	UserTypes.Phlebotomist,
+	UserTypes.LabTechnician,
+	UserTypes.LabScientist,
+	UserTypes.Pathologist,
+	UserTypes.LabManager,
+}
+
+// AssignableUserTypes is every role a staff user may hold. Services validating a role on
+// create or edit should check against this rather than against a list written out at the
+// call site, so a new role reaches every service at once instead of being accepted by one
+// and rejected by another.
+var AssignableUserTypes = append(append([]Alias{}, RadiologyUserTypes...), LabUserTypes...)
 
 type ApiPaginatedResponse struct {
 	StatusCode int               `json:"status_code"`
