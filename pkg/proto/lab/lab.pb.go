@@ -128,9 +128,9 @@ type LabOrder struct {
 	// is drawn before payment and flagged for finance to chase, so a cashier seeing an
 	// unpaid STAT order is looking at something already in progress, not something to hold.
 	Priority string `protobuf:"bytes,6,opt,name=priority,proto3" json:"priority,omitempty"`
-	// Who settles. An order against an organization, a referring centre or an insurer is
-	// invoiced monthly and must never appear on a counter's list of outstanding payments;
-	// one against a walk-in patient must.
+	// Who referred the patient. Carried for reporting and for the receipt, not for billing:
+	// every order is paid for through the application whoever referred it, so none of these
+	// changes whether payment is owed or whether the order appears on a cashier's list.
 	OrganizationId    uint32 `protobuf:"varint,7,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
 	ReferringCenterId uint32 `protobuf:"varint,8,opt,name=referring_center_id,json=referringCenterId,proto3" json:"referring_center_id,omitempty"`
 	InsuranceId       uint32 `protobuf:"varint,9,opt,name=insurance_id,json=insuranceId,proto3" json:"insurance_id,omitempty"`
@@ -273,6 +273,205 @@ func (x *LabOrder) GetIsActive() bool {
 	return false
 }
 
+// A released lab result, as the patient's EMR needs it.
+//
+// The EMR's lab view was a manual entry form before the lab module existed. This turns it
+// into a read projection: the lab owns the result, the EMR displays it, and nobody retypes
+// a number that has already been verified twice.
+//
+// Sent per result rather than per report because that is the grain the EMR lists at, and
+// because a report can be partially released — the renal panel today, histology next week.
+type ReleasedLabResult struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// ResultID is the lab's own id for the result. The EMR keys its projection on it so a
+	// redelivered message updates the row rather than adding a second copy of the same test.
+	ResultId    uint32 `protobuf:"varint,1,opt,name=result_id,json=resultId,proto3" json:"result_id,omitempty"`
+	PatientId   uint32 `protobuf:"varint,2,opt,name=patient_id,json=patientId,proto3" json:"patient_id,omitempty"`
+	OrderId     uint32 `protobuf:"varint,3,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
+	OrderNumber string `protobuf:"bytes,4,opt,name=order_number,json=orderNumber,proto3" json:"order_number,omitempty"`
+	TestName    string `protobuf:"bytes,5,opt,name=test_name,json=testName,proto3" json:"test_name,omitempty"`
+	TestCode    string `protobuf:"bytes,6,opt,name=test_code,json=testCode,proto3" json:"test_code,omitempty"`
+	// Value as it will be displayed. Already narrowed from whichever column the test reports
+	// in, because the EMR shows a string and should not have to know the difference.
+	Value string `protobuf:"bytes,7,opt,name=value,proto3" json:"value,omitempty"`
+	Unit  string `protobuf:"bytes,8,opt,name=unit,proto3" json:"unit,omitempty"`
+	// ReferenceRange is the range that applied when the result was entered, not a live
+	// lookup: a report reprinted next year must show what the value was judged against.
+	ReferenceRange string `protobuf:"bytes,9,opt,name=reference_range,json=referenceRange,proto3" json:"reference_range,omitempty"`
+	// Flag is the lab's own: N, H, L, HH, LL or A.
+	Flag       string `protobuf:"bytes,10,opt,name=flag,proto3" json:"flag,omitempty"`
+	IsAbnormal bool   `protobuf:"varint,11,opt,name=is_abnormal,json=isAbnormal,proto3" json:"is_abnormal,omitempty"`
+	IsCritical bool   `protobuf:"varint,12,opt,name=is_critical,json=isCritical,proto3" json:"is_critical,omitempty"`
+	// SpecimenCollectedAt is when the patient's clock started, which is the date a clinician
+	// reads the result against — not when the lab happened to finish it.
+	SpecimenCollectedAt string `protobuf:"bytes,13,opt,name=specimen_collected_at,json=specimenCollectedAt,proto3" json:"specimen_collected_at,omitempty"`
+	ReleasedAt          string `protobuf:"bytes,14,opt,name=released_at,json=releasedAt,proto3" json:"released_at,omitempty"`
+	PerformedBy         string `protobuf:"bytes,15,opt,name=performed_by,json=performedBy,proto3" json:"performed_by,omitempty"`
+	VerifiedBy          string `protobuf:"bytes,16,opt,name=verified_by,json=verifiedBy,proto3" json:"verified_by,omitempty"`
+	Comment             string `protobuf:"bytes,17,opt,name=comment,proto3" json:"comment,omitempty"`
+	// IsActive goes false if the result is later retracted, so the EMR can withdraw it
+	// rather than leave a wrong value on a chart.
+	IsActive      bool `protobuf:"varint,18,opt,name=is_active,json=isActive,proto3" json:"is_active,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ReleasedLabResult) Reset() {
+	*x = ReleasedLabResult{}
+	mi := &file_pkg_proto_lab_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ReleasedLabResult) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReleasedLabResult) ProtoMessage() {}
+
+func (x *ReleasedLabResult) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_proto_lab_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReleasedLabResult.ProtoReflect.Descriptor instead.
+func (*ReleasedLabResult) Descriptor() ([]byte, []int) {
+	return file_pkg_proto_lab_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *ReleasedLabResult) GetResultId() uint32 {
+	if x != nil {
+		return x.ResultId
+	}
+	return 0
+}
+
+func (x *ReleasedLabResult) GetPatientId() uint32 {
+	if x != nil {
+		return x.PatientId
+	}
+	return 0
+}
+
+func (x *ReleasedLabResult) GetOrderId() uint32 {
+	if x != nil {
+		return x.OrderId
+	}
+	return 0
+}
+
+func (x *ReleasedLabResult) GetOrderNumber() string {
+	if x != nil {
+		return x.OrderNumber
+	}
+	return ""
+}
+
+func (x *ReleasedLabResult) GetTestName() string {
+	if x != nil {
+		return x.TestName
+	}
+	return ""
+}
+
+func (x *ReleasedLabResult) GetTestCode() string {
+	if x != nil {
+		return x.TestCode
+	}
+	return ""
+}
+
+func (x *ReleasedLabResult) GetValue() string {
+	if x != nil {
+		return x.Value
+	}
+	return ""
+}
+
+func (x *ReleasedLabResult) GetUnit() string {
+	if x != nil {
+		return x.Unit
+	}
+	return ""
+}
+
+func (x *ReleasedLabResult) GetReferenceRange() string {
+	if x != nil {
+		return x.ReferenceRange
+	}
+	return ""
+}
+
+func (x *ReleasedLabResult) GetFlag() string {
+	if x != nil {
+		return x.Flag
+	}
+	return ""
+}
+
+func (x *ReleasedLabResult) GetIsAbnormal() bool {
+	if x != nil {
+		return x.IsAbnormal
+	}
+	return false
+}
+
+func (x *ReleasedLabResult) GetIsCritical() bool {
+	if x != nil {
+		return x.IsCritical
+	}
+	return false
+}
+
+func (x *ReleasedLabResult) GetSpecimenCollectedAt() string {
+	if x != nil {
+		return x.SpecimenCollectedAt
+	}
+	return ""
+}
+
+func (x *ReleasedLabResult) GetReleasedAt() string {
+	if x != nil {
+		return x.ReleasedAt
+	}
+	return ""
+}
+
+func (x *ReleasedLabResult) GetPerformedBy() string {
+	if x != nil {
+		return x.PerformedBy
+	}
+	return ""
+}
+
+func (x *ReleasedLabResult) GetVerifiedBy() string {
+	if x != nil {
+		return x.VerifiedBy
+	}
+	return ""
+}
+
+func (x *ReleasedLabResult) GetComment() string {
+	if x != nil {
+		return x.Comment
+	}
+	return ""
+}
+
+func (x *ReleasedLabResult) GetIsActive() bool {
+	if x != nil {
+		return x.IsActive
+	}
+	return false
+}
+
 var File_pkg_proto_lab_proto protoreflect.FileDescriptor
 
 const file_pkg_proto_lab_proto_rawDesc = "" +
@@ -304,7 +503,32 @@ const file_pkg_proto_lab_proto_rawDesc = "" +
 	"\n" +
 	"ordered_at\x18\f \x01(\tR\torderedAt\x12\x16\n" +
 	"\x06status\x18\r \x01(\tR\x06status\x12\x1b\n" +
-	"\tis_active\x18\x0e \x01(\bR\bisActiveB\x0fZ\rpkg/proto/labb\x06proto3"
+	"\tis_active\x18\x0e \x01(\bR\bisActive\"\xc0\x04\n" +
+	"\x11ReleasedLabResult\x12\x1b\n" +
+	"\tresult_id\x18\x01 \x01(\rR\bresultId\x12\x1d\n" +
+	"\n" +
+	"patient_id\x18\x02 \x01(\rR\tpatientId\x12\x19\n" +
+	"\border_id\x18\x03 \x01(\rR\aorderId\x12!\n" +
+	"\forder_number\x18\x04 \x01(\tR\vorderNumber\x12\x1b\n" +
+	"\ttest_name\x18\x05 \x01(\tR\btestName\x12\x1b\n" +
+	"\ttest_code\x18\x06 \x01(\tR\btestCode\x12\x14\n" +
+	"\x05value\x18\a \x01(\tR\x05value\x12\x12\n" +
+	"\x04unit\x18\b \x01(\tR\x04unit\x12'\n" +
+	"\x0freference_range\x18\t \x01(\tR\x0ereferenceRange\x12\x12\n" +
+	"\x04flag\x18\n" +
+	" \x01(\tR\x04flag\x12\x1f\n" +
+	"\vis_abnormal\x18\v \x01(\bR\n" +
+	"isAbnormal\x12\x1f\n" +
+	"\vis_critical\x18\f \x01(\bR\n" +
+	"isCritical\x122\n" +
+	"\x15specimen_collected_at\x18\r \x01(\tR\x13specimenCollectedAt\x12\x1f\n" +
+	"\vreleased_at\x18\x0e \x01(\tR\n" +
+	"releasedAt\x12!\n" +
+	"\fperformed_by\x18\x0f \x01(\tR\vperformedBy\x12\x1f\n" +
+	"\vverified_by\x18\x10 \x01(\tR\n" +
+	"verifiedBy\x12\x18\n" +
+	"\acomment\x18\x11 \x01(\tR\acomment\x12\x1b\n" +
+	"\tis_active\x18\x12 \x01(\bR\bisActiveB\x0fZ\rpkg/proto/labb\x06proto3"
 
 var (
 	file_pkg_proto_lab_proto_rawDescOnce sync.Once
@@ -318,10 +542,11 @@ func file_pkg_proto_lab_proto_rawDescGZIP() []byte {
 	return file_pkg_proto_lab_proto_rawDescData
 }
 
-var file_pkg_proto_lab_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_pkg_proto_lab_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_pkg_proto_lab_proto_goTypes = []any{
-	(*LabOrderLine)(nil), // 0: lab.LabOrderLine
-	(*LabOrder)(nil),     // 1: lab.LabOrder
+	(*LabOrderLine)(nil),      // 0: lab.LabOrderLine
+	(*LabOrder)(nil),          // 1: lab.LabOrder
+	(*ReleasedLabResult)(nil), // 2: lab.ReleasedLabResult
 }
 var file_pkg_proto_lab_proto_depIdxs = []int32{
 	0, // 0: lab.LabOrder.lines:type_name -> lab.LabOrderLine
@@ -343,7 +568,7 @@ func file_pkg_proto_lab_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_pkg_proto_lab_proto_rawDesc), len(file_pkg_proto_lab_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

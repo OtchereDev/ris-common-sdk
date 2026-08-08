@@ -37,9 +37,9 @@ message LabOrder {
   // unpaid STAT order is looking at something already in progress, not something to hold.
   string priority = 6;
 
-  // Who settles. An order against an organization, a referring centre or an insurer is
-  // invoiced monthly and must never appear on a counter's list of outstanding payments;
-  // one against a walk-in patient must.
+  // Who referred the patient. Carried for reporting and for the receipt, not for billing:
+  // every order is paid for through the application whoever referred it, so none of these
+  // changes whether payment is owed or whether the order appears on a cashier's list.
   uint32 organization_id = 7;
   uint32 referring_center_id = 8;
   uint32 insurance_id = 9;
@@ -52,4 +52,48 @@ message LabOrder {
   // being billable, and one already drawn should not.
   string status = 13;
   bool is_active = 14;
+}
+
+// A released lab result, as the patient's EMR needs it.
+//
+// The EMR's lab view was a manual entry form before the lab module existed. This turns it
+// into a read projection: the lab owns the result, the EMR displays it, and nobody retypes
+// a number that has already been verified twice.
+//
+// Sent per result rather than per report because that is the grain the EMR lists at, and
+// because a report can be partially released — the renal panel today, histology next week.
+message ReleasedLabResult {
+  // ResultID is the lab's own id for the result. The EMR keys its projection on it so a
+  // redelivered message updates the row rather than adding a second copy of the same test.
+  uint32 result_id = 1;
+  uint32 patient_id = 2;
+  uint32 order_id = 3;
+  string order_number = 4;
+
+  string test_name = 5;
+  string test_code = 6;
+  // Value as it will be displayed. Already narrowed from whichever column the test reports
+  // in, because the EMR shows a string and should not have to know the difference.
+  string value = 7;
+  string unit = 8;
+  // ReferenceRange is the range that applied when the result was entered, not a live
+  // lookup: a report reprinted next year must show what the value was judged against.
+  string reference_range = 9;
+
+  // Flag is the lab's own: N, H, L, HH, LL or A.
+  string flag = 10;
+  bool is_abnormal = 11;
+  bool is_critical = 12;
+
+  // SpecimenCollectedAt is when the patient's clock started, which is the date a clinician
+  // reads the result against — not when the lab happened to finish it.
+  string specimen_collected_at = 13;
+  string released_at = 14;
+  string performed_by = 15;
+  string verified_by = 16;
+
+  string comment = 17;
+  // IsActive goes false if the result is later retracted, so the EMR can withdraw it
+  // rather than leave a wrong value on a chart.
+  bool is_active = 18;
 }
