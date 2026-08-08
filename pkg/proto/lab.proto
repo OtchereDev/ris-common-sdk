@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package lab;
+
+option go_package = "pkg/proto/lab";
+
+// A lab order, as finance needs to see it.
+//
+// This is a billing projection, not the order. The lab owns the order and everything
+// clinical about it; finance is told only what it needs to raise a charge and take payment.
+// Results, specimens and reference ranges are deliberately absent — finance has no business
+// holding a patient's creatinine, and a projection that carries it becomes a second copy of
+// the record that nobody remembers to keep in step.
+message LabOrderLine {
+  uint32 id = 1;
+  // Exactly one of these is set. A panel bills as one line at the panel's own price, which
+  // is normally less than its members would come to individually.
+  uint32 test_id = 2;
+  uint32 panel_id = 3;
+  // Code and name are copied rather than referenced, so a receipt reprinted next year says
+  // what was actually charged for. Renaming a test in the catalogue must not rewrite
+  // history on a document somebody has already paid against.
+  string code = 4;
+  string name = 5;
+  double price = 6;
+}
+
+message LabOrder {
+  uint32 id = 1;
+  string order_number = 2;
+  uint32 patient_id = 3;
+  repeated LabOrderLine lines = 4;
+  double total_price = 5;
+
+  // Priority decides whether the collection gate can be walked past. STAT and urgent work
+  // is drawn before payment and flagged for finance to chase, so a cashier seeing an
+  // unpaid STAT order is looking at something already in progress, not something to hold.
+  string priority = 6;
+
+  // Who settles. An order against an organization, a referring centre or an insurer is
+  // invoiced monthly and must never appear on a counter's list of outstanding payments;
+  // one against a walk-in patient must.
+  uint32 organization_id = 7;
+  uint32 referring_center_id = 8;
+  uint32 insurance_id = 9;
+
+  uint32 center_id = 10;
+  uint32 ordered_by = 11;
+  string ordered_at = 12;
+
+  // Status carries cancellations. A cancelled order that was never collected should stop
+  // being billable, and one already drawn should not.
+  string status = 13;
+  bool is_active = 14;
+}
