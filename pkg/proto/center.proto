@@ -9,6 +9,11 @@ message Center {
     string name = 2;
     bool is_deleted = 3;
     bool is_main = 4;
+    // Selects the letterhead on documents this centre produces. Lives here because facility
+    // owns centres: a report has to print under the facility that did the work, and every
+    // consumer that renders a document needs the same answer without asking a second
+    // service. Empty means the renderer falls back to its default brand.
+    string brand_key = 5;
 }
 
 message ModalityCenterChange{
