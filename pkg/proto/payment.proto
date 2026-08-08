@@ -29,6 +29,10 @@ message AppointmentPayment {
   string payment_details = 18;
   uint32 insuraner_id = 19;
   double amount_paid = 20;
+  // The lab order this payment settles, when it settles one. Nullable in the same way
+  // appointment_id is: a payment belongs to whichever document it was taken against, and a
+  // patient paying for imaging and labs at one counter gets one record and one receipt.
+  uint32 lab_order_id = 21;
 }
 
 // Payment adjustment
