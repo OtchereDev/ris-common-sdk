@@ -36,6 +36,9 @@ import (
 // EnvVar is the switch that arms the whole package.
 const EnvVar = "SEED_MODE"
 
+// EnvDeliver lets a staging operator opt back into real outbound delivery while seeded.
+const EnvDeliver = "SEED_DELIVER_OUTBOUND"
+
 // The layouts a caller may send, matching the set the lab service already accepts on
 // collected_at so that a client formats a timestamp one way for the whole product.
 var layouts = []string{
@@ -66,6 +69,30 @@ var (
 // per request, never in a loop, so the lookup cost does not matter.
 func Enabled() bool {
 	return strings.EqualFold(strings.TrimSpace(os.Getenv(EnvVar)), "true")
+}
+
+// SuppressOutbound reports whether outbound delivery should be dropped.
+//
+// Seeding a demo environment replays months of real workflows, and every one of them that
+// would have told somebody something tries to. A full run means thousands of emails and
+// SMS to synthetic addresses and invented phone numbers: bounce complaints, a dented
+// sender reputation, real per-message cost, and messages arriving at whatever live number
+// the generator happened to produce.
+//
+// What this does not touch is the in-app notification a user sees inside the product.
+// Those rows belong to the notification service and are written by a different path
+// entirely, so a seeded environment still demonstrates its notification centre — it simply
+// does not post the mail.
+//
+// Always false in production, where seed mode is never armed. Set SEED_DELIVER_OUTBOUND on
+// a staging box to let real messages through anyway, which is worth having when the thing
+// being demonstrated is the email template itself.
+func SuppressOutbound() bool {
+	if !Enabled() {
+		return false
+	}
+
+	return !strings.EqualFold(strings.TrimSpace(os.Getenv(EnvDeliver)), "true")
 }
 
 // Parse interprets a caller-supplied timestamp, reporting whether it was usable.

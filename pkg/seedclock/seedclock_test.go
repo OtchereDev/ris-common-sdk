@@ -60,6 +60,36 @@ func TestEnabledAcceptsAnyCasing(t *testing.T) {
 	}
 }
 
+// Production must never drop a message, whatever else is set.
+func TestSuppressOutboundIsOffInProduction(t *testing.T) {
+	t.Setenv(EnvVar, "false")
+
+	for _, deliver := range []string{"", "true", "false"} {
+		t.Setenv(EnvDeliver, deliver)
+		if SuppressOutbound() {
+			t.Errorf("delivery suppressed in production (%s=%q)", EnvDeliver, deliver)
+		}
+	}
+}
+
+func TestSuppressOutboundDefaultsOnWhenSeeded(t *testing.T) {
+	t.Setenv(EnvVar, "true")
+	t.Setenv(EnvDeliver, "")
+
+	if !SuppressOutbound() {
+		t.Fatal("a seeded environment should not post mail by default")
+	}
+}
+
+func TestSuppressOutboundCanBeOverridden(t *testing.T) {
+	t.Setenv(EnvVar, "true")
+	t.Setenv(EnvDeliver, "true")
+
+	if SuppressOutbound() {
+		t.Fatal("SEED_DELIVER_OUTBOUND should let real messages through")
+	}
+}
+
 func TestParseAcceptsEveryDocumentedLayout(t *testing.T) {
 	for _, input := range []string{
 		"2024-03-01T09:00:00Z",
