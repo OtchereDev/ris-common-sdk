@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/OtchereDev/ris-common-sdk/pkg/db"
+	"github.com/OtchereDev/ris-common-sdk/pkg/seedclock"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -94,6 +95,12 @@ func Connect(ctx context.Context, p SqliteConnectionParam) (*SqliteDB, error) {
 	}
 
 	d.Client = client
+
+	// Registered on the sqlite path too, so a service run locally against sqlite behaves as
+	// it does against postgres. Inert unless SEED_MODE is set; see pkg/seedclock.
+	if err := seedclock.RegisterGORM(d.Client); err != nil {
+		return nil, fmt.Errorf("failed to register seed clock: %w", err)
+	}
 
 	// Get underlying sql.DB to configure connection pool
 	sqlDB, err := d.Client.DB()

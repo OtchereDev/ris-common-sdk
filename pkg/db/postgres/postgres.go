@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/OtchereDev/ris-common-sdk/pkg/db"
+	"github.com/OtchereDev/ris-common-sdk/pkg/seedclock"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -115,6 +116,13 @@ func Connect(ctx context.Context, p PgConnectionParam) (*PgDB, error) {
 
 	d.Client = client
 	d.dsn = dsn
+
+	// Every service's handle is born here, so the seed clock is registered here rather than
+	// in each repository constructor — several of which are struct literals with nowhere to
+	// put it. Inert unless SEED_MODE is set; see pkg/seedclock.
+	if err := seedclock.RegisterGORM(d.Client); err != nil {
+		return nil, fmt.Errorf("failed to register seed clock: %w", err)
+	}
 
 	// Get underlying sql.DB to configure connection pool
 	sqlDB, err := d.Client.DB()
