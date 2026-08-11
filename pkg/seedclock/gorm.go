@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 )
 
 // The callback names, exported as constants so a service that needs to order its own
@@ -37,9 +38,31 @@ func RegisterGORM(db *gorm.DB) error {
 		Register(UpdateCallback, stampUpdate)
 }
 
-// stampCreate fills CreatedAt and UpdatedAt before GORM builds the INSERT.
+// autoFields returns the schema's automatic timestamp fields.
 //
-// GORM's autoCreateTime only fills a field that is still zero, so setting them here is
+// Selected from GORM's own metadata rather than by field name. The obvious implementation
+// looks for CreatedAt and UpdatedAt, and misses every domain timestamp a service declares
+// the same way — finance stamps a payment's PaidAt with autoCreateTime, the lab stamps an
+// order's OrderedAt. Those are exactly the columns a revenue chart and a volume chart group
+// by, so a name-based version backdates the audit columns and leaves the reporting ones at
+// the seed run, which is the failure that looks like it worked.
+//
+// updateOnly narrows to the fields GORM would touch on an UPDATE.
+func autoFields(db *gorm.DB, updateOnly bool) []*schema.Field {
+	var out []*schema.Field
+
+	for _, field := range db.Statement.Schema.Fields {
+		if field.AutoUpdateTime > 0 || (!updateOnly && field.AutoCreateTime > 0) {
+			out = append(out, field)
+		}
+	}
+
+	return out
+}
+
+// stampCreate fills the automatic timestamps before GORM builds the INSERT.
+//
+// GORM's own handling only fills a field that is still zero, so setting them here is
 // preserved rather than overwritten downstream.
 func stampCreate(db *gorm.DB) {
 	at, ok := seedTime(db)
@@ -47,12 +70,13 @@ func stampCreate(db *gorm.DB) {
 		return
 	}
 
+	fields := autoFields(db, false)
 	each(db.Statement.ReflectValue, func(rv reflect.Value) {
-		stamp(db, rv, at, "CreatedAt", "UpdatedAt")
+		stamp(db, rv, at, fields...)
 	})
 }
 
-// stampUpdate keeps UpdatedAt in step on a backdated write.
+// stampUpdate keeps the automatic timestamps in step on a backdated write.
 //
 // Without it a row created in the past is immediately updated in the present, and anything
 // sorting or filtering on updated_at sees the seed run rather than the history it is meant
@@ -63,28 +87,27 @@ func stampUpdate(db *gorm.DB) {
 		return
 	}
 
+	fields := autoFields(db, true)
+
 	// Updates(map[string]any{...}) is the common form in these repositories, and GORM adds
-	// updated_at to the map itself. Overriding the map entry is the only thing that reaches
-	// the generated SQL in that case.
+	// the timestamp columns to the map itself. Overriding the map entries is the only thing
+	// that reaches the generated SQL in that case.
 	//
-	// Keyed off the schema rather than a literal "updated_at". Not every table has the
+	// Driven off the schema rather than a literal "updated_at". Not every table has the
 	// column — the sequence counters are updated by the same code path and have neither
 	// audit column — and naming one that does not exist turns a working update into a
 	// "no such column" failure.
 	if dest, isMap := db.Statement.Dest.(map[string]any); isMap {
-		field := db.Statement.Schema.LookUpField("UpdatedAt")
-		if field == nil {
-			return
-		}
-
-		if _, set := dest[field.DBName]; !set {
-			dest[field.DBName] = at
+		for _, field := range fields {
+			if _, set := dest[field.DBName]; !set {
+				dest[field.DBName] = at
+			}
 		}
 		return
 	}
 
 	each(db.Statement.ReflectValue, func(rv reflect.Value) {
-		stamp(db, rv, at, "UpdatedAt")
+		stamp(db, rv, at, fields...)
 	})
 }
 
@@ -108,18 +131,13 @@ func each(rv reflect.Value, fn func(reflect.Value)) {
 	}
 }
 
-// stamp sets the named schema fields to at, leaving any that already hold a value.
-func stamp(db *gorm.DB, rv reflect.Value, at time.Time, names ...string) {
+// stamp sets the given schema fields to at, leaving any that already hold a value.
+func stamp(db *gorm.DB, rv reflect.Value, at time.Time, fields ...*schema.Field) {
 	if !rv.IsValid() {
 		return
 	}
 
-	for _, name := range names {
-		field := db.Statement.Schema.LookUpField(name)
-		if field == nil {
-			continue
-		}
-
+	for _, field := range fields {
 		if _, zero := field.ValueOf(db.Statement.Context, rv); !zero {
 			continue
 		}

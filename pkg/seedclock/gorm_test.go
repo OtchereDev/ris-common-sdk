@@ -186,6 +186,49 @@ func TestMapUpdateIsBackdated(t *testing.T) {
 	}
 }
 
+// A domain timestamp declared with autoCreateTime must be backdated too.
+//
+// This is the case a name-based implementation gets wrong. Finance stamps a payment's
+// PaidAt this way and the lab stamps an order's OrderedAt — the columns the revenue and
+// volume charts group by. Backdating created_at while leaving those at the seed run
+// produces a demo that looks seeded until somebody opens the reports.
+type receipt struct {
+	ID        uint `gorm:"primary_key"`
+	Amount    float64
+	PaidAt    time.Time `gorm:"autoCreateTime"`
+	CreatedAt time.Time `gorm:"autoCreateTime"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime"`
+}
+
+func TestDomainTimestampsAreBackdated(t *testing.T) {
+	t.Setenv(EnvVar, "true")
+	db := newDB(t)
+
+	if err := db.AutoMigrate(&receipt{}); err != nil {
+		t.Fatalf("migrate: %v", err)
+	}
+
+	ctx := WithTime(context.Background(), seeded)
+	rec := receipt{Amount: 250}
+
+	if err := db.WithContext(ctx).Create(&rec).Error; err != nil {
+		t.Fatalf("create: %v", err)
+	}
+
+	var got receipt
+	if err := db.First(&got, rec.ID).Error; err != nil {
+		t.Fatalf("read back: %v", err)
+	}
+
+	if !got.PaidAt.UTC().Equal(seeded) {
+		t.Errorf("paid_at = %s, want %s — a revenue chart would show the seed run",
+			got.PaidAt.UTC(), seeded)
+	}
+	if !got.CreatedAt.UTC().Equal(seeded) {
+		t.Errorf("created_at = %s, want %s", got.CreatedAt.UTC(), seeded)
+	}
+}
+
 // A table without audit columns must still be updatable under a seeded context.
 //
 // The sequence counters these services use to issue order and specimen numbers have
