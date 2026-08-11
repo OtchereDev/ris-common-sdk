@@ -194,6 +194,45 @@ func StaffMiddleware() fiber.Handler {
 	}
 }
 
+// PatientAccessMiddleware admits anyone who legitimately needs to see who a patient is.
+//
+// That is the radiology staff StaffMiddleware already admits, plus the lab roles. A lab
+// order is placed for a patient, so every lab surface that names one — the order list, the
+// collection queue, the worklist — reads demography from this service. Without the lab roles
+// a technician got a 403, and on a screen that loads several things at once the whole page
+// failed rather than one name going missing.
+//
+// Deliberately separate from StaffMiddleware rather than widening it. That guard also covers
+// the EMR, radiology reports and appointment records — some sixty routes — and a lab
+// technician has no business in a radiologist's notes. This one is for identifying a
+// patient, and is applied only where that is the question.
+func PatientAccessMiddleware() fiber.Handler {
+
+	return func(c *fiber.Ctx) error {
+		user, _ := SerializeRequestUser(c)
+
+		if Contains([]string{
+			UserTypes.FrontDesk,
+			UserTypes.Radiographer,
+			UserTypes.Cashier,
+			UserTypes.Accountant,
+			UserTypes.Admin,
+			UserTypes.Radiologist,
+			UserTypes.ReportingAssistant,
+			UserTypes.Phlebotomist,
+			UserTypes.LabTechnician,
+			UserTypes.LabScientist,
+			UserTypes.Pathologist,
+			UserTypes.LabManager,
+		}, user.UserType) {
+			return c.Next()
+		}
+
+		return c.Status(fiber.StatusForbidden).JSON(PermissionNotFulfilledError)
+
+	}
+}
+
 func AdminMiddleware() fiber.Handler {
 
 	return func(c *fiber.Ctx) error {
@@ -216,10 +255,15 @@ func FinanceMiddleware() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		user, _ := SerializeRequestUser(c)
 
+		// Admin is here, and IsAdmin with it, to match every other guard in this file.
+		// Leaving them out made an administrator the one role that could open a payments
+		// screen and not load it: the web side offers these screens to Admin, so the request
+		// was made and answered with a 403 that named no role and suggested no fix.
 		if Contains([]string{
 			UserTypes.Accountant,
 			UserTypes.Cashier,
-		}, user.UserType) {
+			UserTypes.Admin,
+		}, user.UserType) || user.IsAdmin {
 			return c.Next()
 		}
 

@@ -95,13 +95,34 @@ func (n *Nat) CreateStream(config StreamConfig) error {
 		return fmt.Errorf("error checking stream info: %w", err)
 	}
 
-	// If stream exists, check if subjects match
+	// If the stream exists, bring its subjects in line with what the code asks for.
+	//
+	// This used to log the difference and return, which meant a subject added in code never
+	// reached an environment that already had the stream. Nothing failed at deploy: the
+	// publisher got "no response from stream" at the moment it published, far from the
+	// change, and the log line explaining why sat in the startup output of a different
+	// service. `lab.report_uploaded` went missing exactly this way, and the symptom was
+	// every lab report having no PDF.
+	//
+	// Only the subject list is updated. Retention, limits and storage are left as the
+	// stream was created, since those are operational decisions that may have been tuned
+	// deliberately on a running system.
 	if streamInfo != nil {
 		existingSubjects := streamInfo.Config.Subjects
-		if !subjectsEqual(existingSubjects, config.Subjects) {
-			log.Printf("Stream %s exists with different subjects. Existing: %v, Requested: %v",
-				config.Name, existingSubjects, config.Subjects)
+		if subjectsEqual(existingSubjects, config.Subjects) {
+			return nil
 		}
+
+		updated := streamInfo.Config
+		updated.Subjects = config.Subjects
+
+		if _, err := n.Jet.UpdateStream(&updated); err != nil {
+			return fmt.Errorf("updating subjects on stream %s: %w", config.Name, err)
+		}
+
+		log.Printf("Stream %s subjects updated. Was: %v, now: %v",
+			config.Name, existingSubjects, config.Subjects)
+
 		return nil
 	}
 
