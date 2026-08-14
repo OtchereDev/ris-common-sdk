@@ -103,6 +103,18 @@ message LabSection {
   repeated LabKeyValue rows = 2;
 }
 
+// A titled block of prose. Surgical pathology reports its findings as named sections of
+// text — macroscopy, microscopy, diagnosis — rather than as rows, and each is authored
+// separately by the pathologist, so they travel separately rather than as one blob.
+message LabNarrativeSection {
+  string title = 1;
+  // HTML, as authored in the application's editor.
+  string body = 2;
+  // Printed as the headline block. The diagnosis, on a pathology report: the line the
+  // clinician reads first, and the one the rest of the page exists to support.
+  bool emphasis = 3;
+}
+
 // One panel, which is one page of the report.
 message LabReportPanel {
   // Overrides the catalogue title when set.
@@ -117,12 +129,36 @@ message LabReportPanel {
   // that belongs to the examination rather than to the patient.
   string code = 5;
   // Overrides the catalogue layout when set: numeric, qualitative, three_column, paired,
-  // marker or narrative.
+  // marker, narrative or surgical_pathology.
   string layout = 6;
   repeated LabSection sections = 7;
   // The specimen this examination actually ran on. The report-level specimen lists every
   // specimen on the order, which is wrong on a page reporting one of them.
   string specimen = 8;
+
+  // The four fields below are the surgical pathology page. A histology request carries
+  // intake detail no other examination has — when the tissue was cut, what operation
+  // produced it, which organ it came from — and reports against it in prose rather than
+  // in rows. Carried as their own fields rather than folded into `sections` so the layout
+  // can tell the request apart from the findings without reading titles.
+
+  // The request as it was received: path number, date of biopsy, date of receipt, nature
+  // of operation, the question asked. Printed in the page's patient block, in the order
+  // sent, rather than in a header of their own — two near-identical headers a few
+  // millimetres apart is a page a reader has to check twice to be sure they are not
+  // looking at two different specimens. Do not send a field the patient block already
+  // carries: the organ is the `specimen` field above.
+  repeated LabKeyValue requestDetails = 9;
+  // Clinical history and the diagnosis under consideration, as the clinician gave it.
+  // HTML. This is the requesting side's account, not the pathologist's, which is why it
+  // sits apart from the narrative sections below.
+  string clinicalHistory = 10;
+  // Macroscopy, microscopy, diagnosis. Falls back to `narrative` when empty, so a plain
+  // histopathology report that carries one authored blob still renders.
+  repeated LabNarrativeSection narrativeSections = 11;
+  // The synoptic block under the diagnosis: tumour dimensions, margins, node counts,
+  // stage. Titled "Other features" on the lab's current report.
+  LabSection synoptic = 12;
 }
 
 message LabReportData {

@@ -827,6 +827,72 @@ func (x *LabSection) GetRows() []*LabKeyValue {
 	return nil
 }
 
+// A titled block of prose. Surgical pathology reports its findings as named sections of
+// text — macroscopy, microscopy, diagnosis — rather than as rows, and each is authored
+// separately by the pathologist, so they travel separately rather than as one blob.
+type LabNarrativeSection struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	Title string                 `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
+	// HTML, as authored in the application's editor.
+	Body string `protobuf:"bytes,2,opt,name=body,proto3" json:"body,omitempty"`
+	// Printed as the headline block. The diagnosis, on a pathology report: the line the
+	// clinician reads first, and the one the rest of the page exists to support.
+	Emphasis      bool `protobuf:"varint,3,opt,name=emphasis,proto3" json:"emphasis,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LabNarrativeSection) Reset() {
+	*x = LabNarrativeSection{}
+	mi := &file_pkg_proto_pdf_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LabNarrativeSection) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LabNarrativeSection) ProtoMessage() {}
+
+func (x *LabNarrativeSection) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_proto_pdf_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LabNarrativeSection.ProtoReflect.Descriptor instead.
+func (*LabNarrativeSection) Descriptor() ([]byte, []int) {
+	return file_pkg_proto_pdf_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *LabNarrativeSection) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *LabNarrativeSection) GetBody() string {
+	if x != nil {
+		return x.Body
+	}
+	return ""
+}
+
+func (x *LabNarrativeSection) GetEmphasis() bool {
+	if x != nil {
+		return x.Emphasis
+	}
+	return false
+}
+
 // One panel, which is one page of the report.
 type LabReportPanel struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -842,19 +908,36 @@ type LabReportPanel struct {
 	// that belongs to the examination rather than to the patient.
 	Code string `protobuf:"bytes,5,opt,name=code,proto3" json:"code,omitempty"`
 	// Overrides the catalogue layout when set: numeric, qualitative, three_column, paired,
-	// marker or narrative.
+	// marker, narrative or surgical_pathology.
 	Layout   string        `protobuf:"bytes,6,opt,name=layout,proto3" json:"layout,omitempty"`
 	Sections []*LabSection `protobuf:"bytes,7,rep,name=sections,proto3" json:"sections,omitempty"`
 	// The specimen this examination actually ran on. The report-level specimen lists every
 	// specimen on the order, which is wrong on a page reporting one of them.
-	Specimen      string `protobuf:"bytes,8,opt,name=specimen,proto3" json:"specimen,omitempty"`
+	Specimen string `protobuf:"bytes,8,opt,name=specimen,proto3" json:"specimen,omitempty"`
+	// The request as it was received: path number, date of biopsy, date of receipt, nature
+	// of operation, the question asked. Printed in the page's patient block, in the order
+	// sent, rather than in a header of their own — two near-identical headers a few
+	// millimetres apart is a page a reader has to check twice to be sure they are not
+	// looking at two different specimens. Do not send a field the patient block already
+	// carries: the organ is the `specimen` field above.
+	RequestDetails []*LabKeyValue `protobuf:"bytes,9,rep,name=requestDetails,proto3" json:"requestDetails,omitempty"`
+	// Clinical history and the diagnosis under consideration, as the clinician gave it.
+	// HTML. This is the requesting side's account, not the pathologist's, which is why it
+	// sits apart from the narrative sections below.
+	ClinicalHistory string `protobuf:"bytes,10,opt,name=clinicalHistory,proto3" json:"clinicalHistory,omitempty"`
+	// Macroscopy, microscopy, diagnosis. Falls back to `narrative` when empty, so a plain
+	// histopathology report that carries one authored blob still renders.
+	NarrativeSections []*LabNarrativeSection `protobuf:"bytes,11,rep,name=narrativeSections,proto3" json:"narrativeSections,omitempty"`
+	// The synoptic block under the diagnosis: tumour dimensions, margins, node counts,
+	// stage. Titled "Other features" on the lab's current report.
+	Synoptic      *LabSection `protobuf:"bytes,12,opt,name=synoptic,proto3" json:"synoptic,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *LabReportPanel) Reset() {
 	*x = LabReportPanel{}
-	mi := &file_pkg_proto_pdf_proto_msgTypes[7]
+	mi := &file_pkg_proto_pdf_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -866,7 +949,7 @@ func (x *LabReportPanel) String() string {
 func (*LabReportPanel) ProtoMessage() {}
 
 func (x *LabReportPanel) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_proto_pdf_proto_msgTypes[7]
+	mi := &file_pkg_proto_pdf_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -879,7 +962,7 @@ func (x *LabReportPanel) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LabReportPanel.ProtoReflect.Descriptor instead.
 func (*LabReportPanel) Descriptor() ([]byte, []int) {
-	return file_pkg_proto_pdf_proto_rawDescGZIP(), []int{7}
+	return file_pkg_proto_pdf_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *LabReportPanel) GetTitle() string {
@@ -938,6 +1021,34 @@ func (x *LabReportPanel) GetSpecimen() string {
 	return ""
 }
 
+func (x *LabReportPanel) GetRequestDetails() []*LabKeyValue {
+	if x != nil {
+		return x.RequestDetails
+	}
+	return nil
+}
+
+func (x *LabReportPanel) GetClinicalHistory() string {
+	if x != nil {
+		return x.ClinicalHistory
+	}
+	return ""
+}
+
+func (x *LabReportPanel) GetNarrativeSections() []*LabNarrativeSection {
+	if x != nil {
+		return x.NarrativeSections
+	}
+	return nil
+}
+
+func (x *LabReportPanel) GetSynoptic() *LabSection {
+	if x != nil {
+		return x.Synoptic
+	}
+	return nil
+}
+
 type LabReportData struct {
 	state        protoimpl.MessageState `protogen:"open.v1"`
 	Id           uint32                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -965,7 +1076,7 @@ type LabReportData struct {
 
 func (x *LabReportData) Reset() {
 	*x = LabReportData{}
-	mi := &file_pkg_proto_pdf_proto_msgTypes[8]
+	mi := &file_pkg_proto_pdf_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -977,7 +1088,7 @@ func (x *LabReportData) String() string {
 func (*LabReportData) ProtoMessage() {}
 
 func (x *LabReportData) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_proto_pdf_proto_msgTypes[8]
+	mi := &file_pkg_proto_pdf_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -990,7 +1101,7 @@ func (x *LabReportData) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LabReportData.ProtoReflect.Descriptor instead.
 func (*LabReportData) Descriptor() ([]byte, []int) {
-	return file_pkg_proto_pdf_proto_rawDescGZIP(), []int{8}
+	return file_pkg_proto_pdf_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *LabReportData) GetId() uint32 {
@@ -1127,7 +1238,7 @@ type PdfEvent struct {
 
 func (x *PdfEvent) Reset() {
 	*x = PdfEvent{}
-	mi := &file_pkg_proto_pdf_proto_msgTypes[9]
+	mi := &file_pkg_proto_pdf_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1139,7 +1250,7 @@ func (x *PdfEvent) String() string {
 func (*PdfEvent) ProtoMessage() {}
 
 func (x *PdfEvent) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_proto_pdf_proto_msgTypes[9]
+	mi := &file_pkg_proto_pdf_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1152,7 +1263,7 @@ func (x *PdfEvent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PdfEvent.ProtoReflect.Descriptor instead.
 func (*PdfEvent) Descriptor() ([]byte, []int) {
-	return file_pkg_proto_pdf_proto_rawDescGZIP(), []int{9}
+	return file_pkg_proto_pdf_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *PdfEvent) GetEvent() isPdfEvent_Event {
@@ -1236,7 +1347,7 @@ type FileUploaded struct {
 
 func (x *FileUploaded) Reset() {
 	*x = FileUploaded{}
-	mi := &file_pkg_proto_pdf_proto_msgTypes[10]
+	mi := &file_pkg_proto_pdf_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1248,7 +1359,7 @@ func (x *FileUploaded) String() string {
 func (*FileUploaded) ProtoMessage() {}
 
 func (x *FileUploaded) ProtoReflect() protoreflect.Message {
-	mi := &file_pkg_proto_pdf_proto_msgTypes[10]
+	mi := &file_pkg_proto_pdf_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1261,7 +1372,7 @@ func (x *FileUploaded) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FileUploaded.ProtoReflect.Descriptor instead.
 func (*FileUploaded) Descriptor() ([]byte, []int) {
-	return file_pkg_proto_pdf_proto_rawDescGZIP(), []int{10}
+	return file_pkg_proto_pdf_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *FileUploaded) GetFileKey() string {
@@ -1370,7 +1481,11 @@ const file_pkg_proto_pdf_proto_rawDesc = "" +
 	"\n" +
 	"LabSection\x12\x14\n" +
 	"\x05title\x18\x01 \x01(\tR\x05title\x12&\n" +
-	"\x04rows\x18\x02 \x03(\v2\x12.proto.LabKeyValueR\x04rows\"\x8f\x02\n" +
+	"\x04rows\x18\x02 \x03(\v2\x12.proto.LabKeyValueR\x04rows\"[\n" +
+	"\x13LabNarrativeSection\x12\x14\n" +
+	"\x05title\x18\x01 \x01(\tR\x05title\x12\x12\n" +
+	"\x04body\x18\x02 \x01(\tR\x04body\x12\x1a\n" +
+	"\bemphasis\x18\x03 \x01(\bR\bemphasis\"\xee\x03\n" +
 	"\x0eLabReportPanel\x12\x14\n" +
 	"\x05title\x18\x01 \x01(\tR\x05title\x12*\n" +
 	"\x05lines\x18\x02 \x03(\v2\x14.proto.LabResultLineR\x05lines\x12&\n" +
@@ -1379,7 +1494,12 @@ const file_pkg_proto_pdf_proto_rawDesc = "" +
 	"\x04code\x18\x05 \x01(\tR\x04code\x12\x16\n" +
 	"\x06layout\x18\x06 \x01(\tR\x06layout\x12-\n" +
 	"\bsections\x18\a \x03(\v2\x11.proto.LabSectionR\bsections\x12\x1a\n" +
-	"\bspecimen\x18\b \x01(\tR\bspecimen\"\xa0\x04\n" +
+	"\bspecimen\x18\b \x01(\tR\bspecimen\x12:\n" +
+	"\x0erequestDetails\x18\t \x03(\v2\x12.proto.LabKeyValueR\x0erequestDetails\x12(\n" +
+	"\x0fclinicalHistory\x18\n" +
+	" \x01(\tR\x0fclinicalHistory\x12H\n" +
+	"\x11narrativeSections\x18\v \x03(\v2\x1a.proto.LabNarrativeSectionR\x11narrativeSections\x12-\n" +
+	"\bsynoptic\x18\f \x01(\v2\x11.proto.LabSectionR\bsynoptic\"\xa0\x04\n" +
 	"\rLabReportData\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\rR\x02id\x12\x1a\n" +
 	"\bfileName\x18\x02 \x01(\tR\bfileName\x12\x1e\n" +
@@ -1425,35 +1545,39 @@ func file_pkg_proto_pdf_proto_rawDescGZIP() []byte {
 	return file_pkg_proto_pdf_proto_rawDescData
 }
 
-var file_pkg_proto_pdf_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
+var file_pkg_proto_pdf_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_pkg_proto_pdf_proto_goTypes = []any{
-	(*PaymentItem)(nil),     // 0: proto.PaymentItem
-	(*ReceiptData)(nil),     // 1: proto.ReceiptData
-	(*RequestFormData)(nil), // 2: proto.RequestFormData
-	(*ReportData)(nil),      // 3: proto.ReportData
-	(*LabResultLine)(nil),   // 4: proto.LabResultLine
-	(*LabKeyValue)(nil),     // 5: proto.LabKeyValue
-	(*LabSection)(nil),      // 6: proto.LabSection
-	(*LabReportPanel)(nil),  // 7: proto.LabReportPanel
-	(*LabReportData)(nil),   // 8: proto.LabReportData
-	(*PdfEvent)(nil),        // 9: proto.PdfEvent
-	(*FileUploaded)(nil),    // 10: proto.FileUploaded
+	(*PaymentItem)(nil),         // 0: proto.PaymentItem
+	(*ReceiptData)(nil),         // 1: proto.ReceiptData
+	(*RequestFormData)(nil),     // 2: proto.RequestFormData
+	(*ReportData)(nil),          // 3: proto.ReportData
+	(*LabResultLine)(nil),       // 4: proto.LabResultLine
+	(*LabKeyValue)(nil),         // 5: proto.LabKeyValue
+	(*LabSection)(nil),          // 6: proto.LabSection
+	(*LabNarrativeSection)(nil), // 7: proto.LabNarrativeSection
+	(*LabReportPanel)(nil),      // 8: proto.LabReportPanel
+	(*LabReportData)(nil),       // 9: proto.LabReportData
+	(*PdfEvent)(nil),            // 10: proto.PdfEvent
+	(*FileUploaded)(nil),        // 11: proto.FileUploaded
 }
 var file_pkg_proto_pdf_proto_depIdxs = []int32{
-	0, // 0: proto.ReceiptData.paymentItems:type_name -> proto.PaymentItem
-	5, // 1: proto.LabSection.rows:type_name -> proto.LabKeyValue
-	4, // 2: proto.LabReportPanel.lines:type_name -> proto.LabResultLine
-	6, // 3: proto.LabReportPanel.sections:type_name -> proto.LabSection
-	7, // 4: proto.LabReportData.panels:type_name -> proto.LabReportPanel
-	1, // 5: proto.PdfEvent.receipt:type_name -> proto.ReceiptData
-	2, // 6: proto.PdfEvent.requestForm:type_name -> proto.RequestFormData
-	3, // 7: proto.PdfEvent.report:type_name -> proto.ReportData
-	8, // 8: proto.PdfEvent.labReport:type_name -> proto.LabReportData
-	9, // [9:9] is the sub-list for method output_type
-	9, // [9:9] is the sub-list for method input_type
-	9, // [9:9] is the sub-list for extension type_name
-	9, // [9:9] is the sub-list for extension extendee
-	0, // [0:9] is the sub-list for field type_name
+	0,  // 0: proto.ReceiptData.paymentItems:type_name -> proto.PaymentItem
+	5,  // 1: proto.LabSection.rows:type_name -> proto.LabKeyValue
+	4,  // 2: proto.LabReportPanel.lines:type_name -> proto.LabResultLine
+	6,  // 3: proto.LabReportPanel.sections:type_name -> proto.LabSection
+	5,  // 4: proto.LabReportPanel.requestDetails:type_name -> proto.LabKeyValue
+	7,  // 5: proto.LabReportPanel.narrativeSections:type_name -> proto.LabNarrativeSection
+	6,  // 6: proto.LabReportPanel.synoptic:type_name -> proto.LabSection
+	8,  // 7: proto.LabReportData.panels:type_name -> proto.LabReportPanel
+	1,  // 8: proto.PdfEvent.receipt:type_name -> proto.ReceiptData
+	2,  // 9: proto.PdfEvent.requestForm:type_name -> proto.RequestFormData
+	3,  // 10: proto.PdfEvent.report:type_name -> proto.ReportData
+	9,  // 11: proto.PdfEvent.labReport:type_name -> proto.LabReportData
+	12, // [12:12] is the sub-list for method output_type
+	12, // [12:12] is the sub-list for method input_type
+	12, // [12:12] is the sub-list for extension type_name
+	12, // [12:12] is the sub-list for extension extendee
+	0,  // [0:12] is the sub-list for field type_name
 }
 
 func init() { file_pkg_proto_pdf_proto_init() }
@@ -1461,7 +1585,7 @@ func file_pkg_proto_pdf_proto_init() {
 	if File_pkg_proto_pdf_proto != nil {
 		return
 	}
-	file_pkg_proto_pdf_proto_msgTypes[9].OneofWrappers = []any{
+	file_pkg_proto_pdf_proto_msgTypes[10].OneofWrappers = []any{
 		(*PdfEvent_Receipt)(nil),
 		(*PdfEvent_RequestForm)(nil),
 		(*PdfEvent_Report)(nil),
@@ -1473,7 +1597,7 @@ func file_pkg_proto_pdf_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_pkg_proto_pdf_proto_rawDesc), len(file_pkg_proto_pdf_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   11,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
