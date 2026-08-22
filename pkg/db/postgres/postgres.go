@@ -101,20 +101,26 @@ func Connect(ctx context.Context, p PgConnectionParam) (*PgDB, error) {
 	var dsn string
 	if p.URL != "" {
 		dsn = p.URL
-		if !strings.Contains(dsn, "default_query_exec_mode") {
-			sep := "?"
-			if strings.Contains(dsn, "?") {
-				sep = "&"
+		// key=value DSNs separate params with a space; URL DSNs use ?/&
+		isURL := strings.HasPrefix(dsn, "postgres://") || strings.HasPrefix(dsn, "postgresql://")
+		appendParam := func(key, value string) {
+			if strings.Contains(dsn, key+"=") {
+				return
 			}
-			// key=value DSNs use space; URL DSNs use &/?
-			if strings.HasPrefix(dsn, "postgres://") || strings.HasPrefix(dsn, "postgresql://") {
-				dsn += sep + "default_query_exec_mode=simple_protocol"
+			if isURL {
+				sep := "?"
+				if strings.Contains(dsn, "?") {
+					sep = "&"
+				}
+				dsn += sep + key + "=" + value
 			} else {
-				dsn += " default_query_exec_mode=simple_protocol"
+				dsn += " " + key + "=" + value
 			}
 		}
+		appendParam("sslmode", "require")
+		appendParam("default_query_exec_mode", "simple_protocol")
 	} else {
-		dsn = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=prefer default_query_exec_mode=simple_protocol",
+		dsn = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=require default_query_exec_mode=simple_protocol",
 			p.Host, p.User, p.Password, p.Name, p.Port)
 	}
 
