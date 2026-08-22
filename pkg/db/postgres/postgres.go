@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/OtchereDev/ris-common-sdk/pkg/db"
@@ -100,8 +101,20 @@ func Connect(ctx context.Context, p PgConnectionParam) (*PgDB, error) {
 	var dsn string
 	if p.URL != "" {
 		dsn = p.URL
+		if !strings.Contains(dsn, "default_query_exec_mode") {
+			sep := "?"
+			if strings.Contains(dsn, "?") {
+				sep = "&"
+			}
+			// key=value DSNs use space; URL DSNs use &/?
+			if strings.HasPrefix(dsn, "postgres://") || strings.HasPrefix(dsn, "postgresql://") {
+				dsn += sep + "default_query_exec_mode=simple_protocol"
+			} else {
+				dsn += " default_query_exec_mode=simple_protocol"
+			}
+		}
 	} else {
-		dsn = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=prefer",
+		dsn = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=prefer default_query_exec_mode=simple_protocol",
 			p.Host, p.User, p.Password, p.Name, p.Port)
 	}
 
