@@ -14,7 +14,7 @@ var mapping = map[string][]string{
 		"appointment_number", "appointment_time", "patient_id", "patient_name", "patient_phone", "procedure", "modality", "center", "status", "is_emergency", "referring_doctor", "reporting_doctor", "receipt_number", "total_amount", "amount_paid", "discount_amount", "discount_authorizer", "payment_method", "paid_at",
 	},
 	"reports": {
-		"appointment_number", "patient_id", "patient_name", "procedure", "modality", "status", "report_type", "version_number", "radiologist", "referring_doctor", "referring_hospital", "is_emergency", "created_at", "confirmed_at", "impressions",
+		"appointment_number", "patient_id", "patient_name", "procedure", "modality", "status", "report_type", "version_number", "radiologist", "referring_doctor", "referring_hospital", "is_emergency", "created_at", "confirmed_at",
 	},
 	"referring-centers": {
 		"name", "phone_number", "address", "region", "doctor_count", "has_organization", "organization_name",
