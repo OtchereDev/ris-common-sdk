@@ -5,16 +5,19 @@ var mapping = map[string][]string{
 		"patient_id", "first_name", "last_name", "gender", "dob", "age", "phone_number", "email", "address", "created_at",
 	},
 	"appointments": {
-		"appointment_number", "appointment_time", "patient_id", "patient_name", "patient_phone", "procedure", "modality", "center", "status", "is_emergency", "referring_doctor", "reporting_doctor", "accession_number", "total_amount", "amount_paid", "payment_method", "note", "created_at",
+		"appointment_number", "appointment_time", "patient_id", "patient_name", "patient_phone", "procedure", "modality", "center", "status", "is_emergency", "referring_doctor", "referring_facility", "reporting_doctor", "accession_number", "total_amount", "amount_paid", "payment_method", "note", "created_at",
+	},
+	"requested-appointments": {
+		"created_at", "source", "patient_id", "patient_name", "phone_number", "age", "sex", "address", "procedure", "other_procedure", "modality", "is_emergency", "referring_doctor", "referring_facility", "organization", "clinical_history", "request_form_url",
 	},
 	"receipts": {
-		"appointment_number", "appointment_time", "patient_id", "patient_name", "patient_phone", "procedure", "modality", "center", "status", "is_emergency", "referring_doctor", "reporting_doctor", "total_amount", "amount_paid", "balance",
+		"appointment_number", "appointment_time", "patient_id", "patient_name", "patient_phone", "procedure", "modality", "center", "status", "is_emergency", "referring_doctor", "referring_facility", "reporting_doctor", "total_amount", "amount_paid", "balance",
 	},
 	"paid-appointments": {
-		"appointment_number", "appointment_time", "patient_id", "patient_name", "patient_phone", "procedure", "modality", "center", "status", "is_emergency", "referring_doctor", "reporting_doctor", "receipt_number", "total_amount", "amount_paid", "discount_amount", "discount_authorizer", "payment_method", "paid_at",
+		"appointment_number", "appointment_time", "patient_id", "patient_name", "patient_phone", "procedure", "modality", "center", "status", "is_emergency", "referring_doctor", "referring_facility", "reporting_doctor", "receipt_number", "total_amount", "amount_paid", "discount_amount", "discount_authorizer", "payment_method", "paid_at",
 	},
 	"reports": {
-		"appointment_number", "patient_id", "patient_name", "procedure", "modality", "status", "report_type", "version_number", "radiologist", "referring_doctor", "referring_hospital", "is_emergency", "created_at", "confirmed_at",
+		"appointment_number", "patient_id", "patient_name", "procedure", "modality", "status", "report_type", "version_number", "radiologist", "referring_doctor", "referring_facility", "is_emergency", "created_at", "scan_completed_at", "report_attached_at", "report_completed_at", "confirmed_at",
 	},
 	"referring-centers": {
 		"name", "phone_number", "address", "region", "doctor_count", "has_organization", "organization_name",
