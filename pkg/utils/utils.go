@@ -29,6 +29,84 @@ type JwtPayload struct {
 	// that has already been examined. It never reaches past report verification —
 	// that stays blocked for everyone, because commission has been paid by then.
 	CanEditCompletedAppointment bool `json:"can_edit_completed_appointment"`
+
+	// TenantKey is the facility this token was minted for. Present so a service can tell
+	// that a valid token belongs to a different tenant than the one being addressed.
+	TenantKey string `json:"tid"`
+
+	// Modules is what this user may reach: what the facility licensed, intersected with
+	// what the role grants. Minted by auth, checked by every service at its own API
+	// boundary.
+	Modules ModuleClaim `json:"modules"`
+}
+
+// ModuleClaim is the modules claim, and it distinguishes "no claim" from "a claim of
+// nothing". The two look identical to a length check and mean opposite things: a token
+// minted before entitlements existed carries no claim, while a suspended facility's token
+// carries an empty one. Admitting the first during a rollout is a transition. Admitting the
+// second would hand a suspended facility the product it stopped paying for.
+type ModuleClaim struct {
+	present bool
+	values  []string
+}
+
+// Present reports whether the token carried a modules claim at all.
+func (m ModuleClaim) Present() bool { return m.present }
+
+// Values is the modules held, which may legitimately be none.
+func (m ModuleClaim) Values() []string { return m.values }
+
+// Has reports whether a module is held. Exact match, deliberately: the package's Contains
+// helper is a substring test, and a substring test on entitlements would let "lab" be
+// satisfied by a claim reading "notalab".
+func (m ModuleClaim) Has(module string) bool {
+	for _, held := range m.values {
+		if held == module {
+			return true
+		}
+	}
+
+	return false
+}
+
+// UnmarshalJSON records that the claim was there. A JSON null is treated as absent rather
+// than as an empty entitlement, because nothing mints null deliberately.
+func (m *ModuleClaim) UnmarshalJSON(data []byte) error {
+	if string(data) == "null" {
+		return nil
+	}
+
+	if err := json.Unmarshal(data, &m.values); err != nil {
+		return err
+	}
+
+	m.present = true
+
+	return nil
+}
+
+// MarshalJSON keeps the claim round-tripping as the plain list it is on the wire.
+func (m ModuleClaim) MarshalJSON() ([]byte, error) {
+	if m.values == nil {
+		return json.Marshal([]string{})
+	}
+
+	return json.Marshal(m.values)
+}
+
+// NewModuleClaim builds a claim that is present and holds exactly these modules. Used by
+// auth when it mints a token, and by tests.
+func NewModuleClaim(modules []string) ModuleClaim {
+	if modules == nil {
+		modules = []string{}
+	}
+
+	return ModuleClaim{present: true, values: modules}
+}
+
+// HasModule reports whether this token carries a module.
+func (j *JwtPayload) HasModule(module string) bool {
+	return j.Modules.Has(module)
 }
 
 func SerializeRequestUser(c *fiber.Ctx) (*JwtPayload, error) {
