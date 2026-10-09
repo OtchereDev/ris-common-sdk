@@ -18,3 +18,33 @@ message Procedure {
     double price = 4;
     double flat_commision = 5;
 }
+
+// ListRequest pages through a list in id order. Leave page_token empty for
+// the first page, then pass the previous response's next_page_token.
+message ListRequest {
+    // At most this many items; the server caps it (default 500, max 1000).
+    uint32 page_size = 1;
+    string page_token = 2;
+}
+
+message ListModalitiesResponse {
+    repeated Modality modalities = 1;
+    // Empty on the last page.
+    string next_page_token = 2;
+}
+
+message ListProceduresResponse {
+    repeated Procedure procedures = 1;
+    // Empty on the last page.
+    string next_page_token = 2;
+}
+
+// FacilityService lets other services (e.g. Spectra SHC) list everything
+// facility holds, for a first load and regular checks alongside the
+// facility.* NATS events. It is for services, not browsers: calls carry
+// "authorization: Bearer <MS_FACILITY_SERVICE_TOKEN>" metadata. Lists leave
+// out deleted modalities and procedures.
+service FacilityService {
+    rpc ListModalities(ListRequest) returns (ListModalitiesResponse);
+    rpc ListProcedures(ListRequest) returns (ListProceduresResponse);
+}
