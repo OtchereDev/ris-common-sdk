@@ -6,6 +6,15 @@ option go_package = "pkg/proto/gateway";
 
 service StudyService {
   rpc VerifyStudy(VerifyStudyRequest) returns (VerifyStudyResponse);
+
+  // Study split (F4): list a study's series so a user can assign each one to an appointment.
+  rpc ListStudySeries(ListStudySeriesRequest) returns (ListStudySeriesResponse);
+
+  // Study split (F4): move series into another appointment's study (dcm4chee IOCM
+  // "Move Instances to Study"). The originals are rejected with 113038^DCM
+  // (Incorrect Modality Worklist Entry), so viewers hide them; they stay restorable.
+  // Errors are gRPC status codes (InvalidArgument, NotFound, FailedPrecondition, Unavailable).
+  rpc MoveSeriesToStudy(MoveSeriesToStudyRequest) returns (MoveSeriesToStudyResponse);
 }
 
 message VerifyStudyRequest {
@@ -18,4 +27,55 @@ message VerifyStudyResponse {
   string message = 2;
   string study_uid = 3;
   string accession_number = 4;
+}
+
+message ListStudySeriesRequest {
+  // study_uid is tried first, then accession_number
+  string study_uid = 1;
+  string accession_number = 2;
+}
+
+message StudySeries {
+  string series_uid = 1;
+  string modality = 2;
+  string description = 3;
+  string body_part = 4;
+  int32 series_number = 5;
+  int32 instance_count = 6;
+  string series_date = 7; // YYYYMMDD
+  string series_time = 8; // HHMMSS[.ffffff]
+}
+
+message ListStudySeriesResponse {
+  bool found = 1;
+  string study_uid = 2;
+  string accession_number = 3;
+  string patient_id = 4;
+  string study_date = 5;
+  string study_description = 6;
+  repeated StudySeries series = 7;
+}
+
+message MoveSeriesToStudyRequest {
+  string source_study_uid = 1;
+  repeated string series_uids = 2;
+  // the target appointment's own Study Instance UID and accession number
+  string target_study_uid = 3;
+  string target_accession_number = 4;
+  string target_study_description = 5;           // optional
+  string target_scheduled_procedure_step_id = 6;  // optional, e.g. "SPS-<appointment id>"
+  string target_requested_procedure_id = 7;       // optional
+  // optional guard: refuse unless the source study's Patient ID is this one
+  string expected_patient_id = 8;
+  // who asked (user id), for the gateway log
+  string requested_by = 9;
+}
+
+message MoveSeriesToStudyResponse {
+  bool success = 1; // true when every instance moved
+  string message = 2;
+  int32 moved_instances = 3;
+  int32 failed_instances = 4;
+  string target_study_uid = 5;
+  string target_accession_number = 6;
 }
