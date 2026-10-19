@@ -1,0 +1,160 @@
+// SHCBookingService lets Spectra SHC book its patients' visits into RIS.
+//
+// A visit is one trip to a center: one RIS appointment per procedure, all
+// at the same center and time, tagged with SHC's booking reference so they
+// can be found again. SHC follows what happens next on the APPOINTMENT
+// stream (appointment.status_changed, .updated, .deleted, and report.*).
+//
+// It is for services, not browsers: calls carry
+// "authorization: Bearer <MS_APPOINTMENT_SHC_TOKEN>" metadata.
+syntax = "proto3";
+
+package proto;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "pkg/proto/shcbooking";
+
+// VisitPatient is who the visit is for, as SHC knows them. RIS reuses its
+// own patient with this phone number (any Ghana form), last name and date
+// of birth, or creates one.
+message VisitPatient {
+    string phone_number = 1;  // E.164, e.g. +233201234567
+    string first_name = 2;
+    string last_name = 3;
+    string sex = 4;           // "female" or "male"
+    string date_of_birth = 5; // YYYY-MM-DD
+    string email = 6;
+}
+
+// VisitItem is one procedure of a visit at SHC's price, which RIS bills
+// instead of its own tariff.
+message VisitItem {
+    uint32 procedure_id = 1;
+    int64 price_pesewas = 2; // GHS 1 = 100 pesewas
+}
+
+message BookVisitRequest {
+    // booking_ref is SHC's booking id. Booking again with the same one
+    // returns the visit already made, so a retry never books twice.
+    string booking_ref = 1;
+    // patient is matched or created when patient_id is 0.
+    VisitPatient patient = 2;
+    // patient_id is RIS's patient (from EnsurePatient), used as is.
+    uint32 patient_id = 7;
+    uint32 center_id = 3;
+    google.protobuf.Timestamp appointment_time = 4;
+    repeated VisitItem items = 5;
+    string note = 6;
+}
+
+message EnsurePatientRequest {
+    VisitPatient patient = 1;
+}
+
+// PatientLink is RIS's patient for someone SHC knows. (Not "Patient":
+// patient.proto has that name in this package.)
+message PatientLink {
+    uint32 patient_id = 1;      // RIS's internal id
+    string patient_number = 2;  // RIS's patient number (patient_id), e.g. SPH...
+    bool created = 3;           // made by this call, not found
+}
+
+message RescheduleVisitRequest {
+    string booking_ref = 1;
+    google.protobuf.Timestamp appointment_time = 2;
+    // center_id moves the visit to another center; 0 keeps it.
+    uint32 center_id = 3;
+}
+
+message CancelVisitRequest {
+    string booking_ref = 1;
+    string reason = 2;
+}
+
+message GetVisitRequest {
+    string booking_ref = 1;
+}
+
+// VisitAppointment is one of a visit's RIS appointments.
+message VisitAppointment {
+    uint32 id = 1;
+    uint32 procedure_id = 2;
+    string appointment_number = 3;
+    // RIS's status: scheduled, waiting, in-progress, done, delivered, ...
+    string status = 4;
+    // archived: the visit was cancelled (RIS archives cancelled visits).
+    bool archived = 5;
+}
+
+message Visit {
+    string booking_ref = 1;
+    uint32 patient_id = 2;        // RIS's internal patient id
+    string patient_number = 3;    // RIS's patient number (patient_id), e.g. SPH...
+    uint32 center_id = 4;
+    google.protobuf.Timestamp appointment_time = 5;
+    repeated VisitAppointment appointments = 6;
+}
+
+// VisitReport is the report on one of a visit's appointments. A report
+// has versions; the patient may see the latest verified one (an amended
+// report is a newer version, verified in turn).
+message VisitReport {
+    uint32 appointment_id = 1;
+    // status is the current version's: draft, preliminary, closed or
+    // verified; "" while the appointment has no report.
+    string status = 2;
+    // verified_version is the latest verified version's number; 0 if none
+    // is verified yet.
+    uint32 verified_version = 3;
+    google.protobuf.Timestamp verified_at = 4;
+    // pdf_ready: that version's PDF (with the letterhead) has been made.
+    bool pdf_ready = 5;
+}
+
+message VisitReports {
+    string booking_ref = 1;
+    repeated VisitReport reports = 2;
+}
+
+message GetReportFileRequest {
+    string booking_ref = 1;
+    uint32 appointment_id = 2;
+}
+
+// ReportFile is where to download a report's PDF from for a few minutes.
+// It is for SHC's server to fetch, not to hand to patients.
+message ReportFile {
+    string url = 1;
+    google.protobuf.Timestamp expires_at = 2;
+    uint32 version = 3;
+}
+
+service SHCBookingService {
+    // BookVisit creates the visit's appointments, status scheduled, each
+    // priced at its item's price.
+    // InvalidArgument for a bad request or an unknown procedure or center.
+    rpc BookVisit(BookVisitRequest) returns (Visit);
+    // RescheduleVisit moves every appointment of the visit, keeping their
+    // ids. FailedPrecondition once any has started, or the visit is
+    // cancelled.
+    rpc RescheduleVisit(RescheduleVisitRequest) returns (Visit);
+    // CancelVisit cancels the visit: RIS archives its appointments (they
+    // stay readable here, archived) and takes them off the modality
+    // worklist. FailedPrecondition once any has started; cancelling again
+    // changes nothing.
+    rpc CancelVisit(CancelVisitRequest) returns (Visit);
+    // GetVisit returns the visit; NotFound if there is none.
+    rpc GetVisit(GetVisitRequest) returns (Visit);
+    // EnsurePatient returns RIS's patient matching patient (as BookVisit
+    // matches), creating one if there is none.
+    rpc EnsurePatient(EnsurePatientRequest) returns (PatientLink);
+    // GetVisitReports returns the report on each of the visit's
+    // appointments; NotFound if there is no visit.
+    rpc GetVisitReports(GetVisitRequest) returns (VisitReports);
+    // GetReportFile returns a short-lived link to the PDF of the latest
+    // verified version of the report on one of the visit's appointments.
+    // NotFound if the visit has no such appointment, or it has no
+    // verified report with a PDF yet.
+    rpc GetReportFile(GetReportFileRequest) returns (ReportFile);
+}

@@ -14,6 +14,12 @@ message Center {
     // consumer that renders a document needs the same answer without asking a second
     // service. Empty means the renderer falls back to its default brand.
     string brand_key = 5;
+    // Where the centre is and how to reach it, for patient-facing apps
+    // (e.g. Spectra SHC).
+    string address = 6;
+    string phone_number = 7;
+    string email = 8;
+    string region = 9;
 }
 
 message ModalityCenterChange{

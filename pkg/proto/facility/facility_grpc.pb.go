@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	FacilityService_ListModalities_FullMethodName = "/proto.FacilityService/ListModalities"
 	FacilityService_ListProcedures_FullMethodName = "/proto.FacilityService/ListProcedures"
+	FacilityService_ListCenters_FullMethodName    = "/proto.FacilityService/ListCenters"
 )
 
 // FacilityServiceClient is the client API for FacilityService service.
@@ -31,10 +32,11 @@ const (
 // facility holds, for a first load and regular checks alongside the
 // facility.* NATS events. It is for services, not browsers: calls carry
 // "authorization: Bearer <MS_FACILITY_SERVICE_TOKEN>" metadata. Lists leave
-// out deleted modalities and procedures.
+// out deleted modalities, procedures and centers.
 type FacilityServiceClient interface {
 	ListModalities(ctx context.Context, in *ListRequest, opts ...grpc.CallOption) (*ListModalitiesResponse, error)
 	ListProcedures(ctx context.Context, in *ListRequest, opts ...grpc.CallOption) (*ListProceduresResponse, error)
+	ListCenters(ctx context.Context, in *ListRequest, opts ...grpc.CallOption) (*ListCentersResponse, error)
 }
 
 type facilityServiceClient struct {
@@ -65,6 +67,16 @@ func (c *facilityServiceClient) ListProcedures(ctx context.Context, in *ListRequ
 	return out, nil
 }
 
+func (c *facilityServiceClient) ListCenters(ctx context.Context, in *ListRequest, opts ...grpc.CallOption) (*ListCentersResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListCentersResponse)
+	err := c.cc.Invoke(ctx, FacilityService_ListCenters_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // FacilityServiceServer is the server API for FacilityService service.
 // All implementations must embed UnimplementedFacilityServiceServer
 // for forward compatibility.
@@ -73,10 +85,11 @@ func (c *facilityServiceClient) ListProcedures(ctx context.Context, in *ListRequ
 // facility holds, for a first load and regular checks alongside the
 // facility.* NATS events. It is for services, not browsers: calls carry
 // "authorization: Bearer <MS_FACILITY_SERVICE_TOKEN>" metadata. Lists leave
-// out deleted modalities and procedures.
+// out deleted modalities, procedures and centers.
 type FacilityServiceServer interface {
 	ListModalities(context.Context, *ListRequest) (*ListModalitiesResponse, error)
 	ListProcedures(context.Context, *ListRequest) (*ListProceduresResponse, error)
+	ListCenters(context.Context, *ListRequest) (*ListCentersResponse, error)
 	mustEmbedUnimplementedFacilityServiceServer()
 }
 
@@ -92,6 +105,9 @@ func (UnimplementedFacilityServiceServer) ListModalities(context.Context, *ListR
 }
 func (UnimplementedFacilityServiceServer) ListProcedures(context.Context, *ListRequest) (*ListProceduresResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method ListProcedures not implemented")
+}
+func (UnimplementedFacilityServiceServer) ListCenters(context.Context, *ListRequest) (*ListCentersResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListCenters not implemented")
 }
 func (UnimplementedFacilityServiceServer) mustEmbedUnimplementedFacilityServiceServer() {}
 func (UnimplementedFacilityServiceServer) testEmbeddedByValue()                         {}
@@ -150,6 +166,24 @@ func _FacilityService_ListProcedures_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _FacilityService_ListCenters_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FacilityServiceServer).ListCenters(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FacilityService_ListCenters_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FacilityServiceServer).ListCenters(ctx, req.(*ListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // FacilityService_ServiceDesc is the grpc.ServiceDesc for FacilityService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -164,6 +198,10 @@ var FacilityService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListProcedures",
 			Handler:    _FacilityService_ListProcedures_Handler,
+		},
+		{
+			MethodName: "ListCenters",
+			Handler:    _FacilityService_ListCenters_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
