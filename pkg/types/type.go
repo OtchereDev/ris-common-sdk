@@ -125,6 +125,9 @@ type UpdateUserPassword struct {
 	// appointment that has already been examined. It stops at report verification,
 	// which stays blocked for everyone.
 	CanEditCompletedAppointment bool `json:"can_edit_completed_appointment" gorm:"default:false"`
+
+	// CanViewAnalytics lets someone who isn't an Admin open Analytics.
+	CanViewAnalytics bool `json:"can_view_analytics" gorm:"default:false"`
 }
 
 type AllUserParam struct {
