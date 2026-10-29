@@ -1,0 +1,35 @@
+// SHCPaymentService lets Spectra SHC record, in RIS finance, an SHC
+// appointment its patient paid for in full in the SHC app, so the scan can
+// start without the cashier. (Anything less is paid at the cashier: RIS
+// finance then asks SHC for the balance.)
+//
+// It is for services, not browsers: calls carry
+// "authorization: Bearer <MS_FINANCE_SHC_TOKEN>" metadata.
+syntax = "proto3";
+
+package proto;
+
+option go_package = "pkg/proto/shcpayment";
+
+message RecordAppPaymentRequest {
+    uint32 appointment_id = 1;
+    // amount_pesewas is the appointment's share of what was paid (its
+    // whole price). GHS 1 = 100 pesewas.
+    int64 amount_pesewas = 2;
+    // reference is SHC's: the booking's (SHC-2026-000123).
+    string reference = 3;
+}
+
+message RecordAppPaymentResponse {
+    uint32 payment_id = 1;
+    string receipt_number = 2;
+    // already_paid: the appointment had a payment; nothing was recorded.
+    bool already_paid = 3;
+}
+
+service SHCPaymentService {
+    // RecordAppPayment records the appointment as paid in the SHC app.
+    // Calling it again for a paid appointment changes nothing.
+    // InvalidArgument for an appointment that isn't SHC's.
+    rpc RecordAppPayment(RecordAppPaymentRequest) returns (RecordAppPaymentResponse);
+}

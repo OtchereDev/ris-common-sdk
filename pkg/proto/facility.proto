@@ -39,12 +39,32 @@ message ListProceduresResponse {
     string next_page_token = 2;
 }
 
+// FacilityCenter is a center with what a patient needs to find it and the
+// modalities it offers (ids), for ListCenters.
+message FacilityCenter {
+    uint32 id = 1;
+    string name = 2;
+    bool is_main = 3;
+    string address = 4;
+    string phone_number = 5;
+    string email = 6;
+    string region = 7;
+    repeated uint32 modality_ids = 8;
+}
+
+message ListCentersResponse {
+    repeated FacilityCenter centers = 1;
+    // Empty on the last page.
+    string next_page_token = 2;
+}
+
 // FacilityService lets other services (e.g. Spectra SHC) list everything
 // facility holds, for a first load and regular checks alongside the
 // facility.* NATS events. It is for services, not browsers: calls carry
 // "authorization: Bearer <MS_FACILITY_SERVICE_TOKEN>" metadata. Lists leave
-// out deleted modalities and procedures.
+// out deleted modalities, procedures and centers.
 service FacilityService {
     rpc ListModalities(ListRequest) returns (ListModalitiesResponse);
     rpc ListProcedures(ListRequest) returns (ListProceduresResponse);
+    rpc ListCenters(ListRequest) returns (ListCentersResponse);
 }

@@ -326,6 +326,161 @@ func (x *ListProceduresResponse) GetNextPageToken() string {
 	return ""
 }
 
+// FacilityCenter is a center with what a patient needs to find it and the
+// modalities it offers (ids), for ListCenters.
+type FacilityCenter struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            uint32                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	IsMain        bool                   `protobuf:"varint,3,opt,name=is_main,json=isMain,proto3" json:"is_main,omitempty"`
+	Address       string                 `protobuf:"bytes,4,opt,name=address,proto3" json:"address,omitempty"`
+	PhoneNumber   string                 `protobuf:"bytes,5,opt,name=phone_number,json=phoneNumber,proto3" json:"phone_number,omitempty"`
+	Email         string                 `protobuf:"bytes,6,opt,name=email,proto3" json:"email,omitempty"`
+	Region        string                 `protobuf:"bytes,7,opt,name=region,proto3" json:"region,omitempty"`
+	ModalityIds   []uint32               `protobuf:"varint,8,rep,packed,name=modality_ids,json=modalityIds,proto3" json:"modality_ids,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *FacilityCenter) Reset() {
+	*x = FacilityCenter{}
+	mi := &file_pkg_proto_facility_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FacilityCenter) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FacilityCenter) ProtoMessage() {}
+
+func (x *FacilityCenter) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_proto_facility_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FacilityCenter.ProtoReflect.Descriptor instead.
+func (*FacilityCenter) Descriptor() ([]byte, []int) {
+	return file_pkg_proto_facility_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *FacilityCenter) GetId() uint32 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *FacilityCenter) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *FacilityCenter) GetIsMain() bool {
+	if x != nil {
+		return x.IsMain
+	}
+	return false
+}
+
+func (x *FacilityCenter) GetAddress() string {
+	if x != nil {
+		return x.Address
+	}
+	return ""
+}
+
+func (x *FacilityCenter) GetPhoneNumber() string {
+	if x != nil {
+		return x.PhoneNumber
+	}
+	return ""
+}
+
+func (x *FacilityCenter) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+func (x *FacilityCenter) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
+}
+
+func (x *FacilityCenter) GetModalityIds() []uint32 {
+	if x != nil {
+		return x.ModalityIds
+	}
+	return nil
+}
+
+type ListCentersResponse struct {
+	state   protoimpl.MessageState `protogen:"open.v1"`
+	Centers []*FacilityCenter      `protobuf:"bytes,1,rep,name=centers,proto3" json:"centers,omitempty"`
+	// Empty on the last page.
+	NextPageToken string `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListCentersResponse) Reset() {
+	*x = ListCentersResponse{}
+	mi := &file_pkg_proto_facility_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListCentersResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListCentersResponse) ProtoMessage() {}
+
+func (x *ListCentersResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_pkg_proto_facility_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListCentersResponse.ProtoReflect.Descriptor instead.
+func (*ListCentersResponse) Descriptor() ([]byte, []int) {
+	return file_pkg_proto_facility_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *ListCentersResponse) GetCenters() []*FacilityCenter {
+	if x != nil {
+		return x.Centers
+	}
+	return nil
+}
+
+func (x *ListCentersResponse) GetNextPageToken() string {
+	if x != nil {
+		return x.NextPageToken
+	}
+	return ""
+}
+
 var File_pkg_proto_facility_proto protoreflect.FileDescriptor
 
 const file_pkg_proto_facility_proto_rawDesc = "" +
@@ -357,10 +512,23 @@ const file_pkg_proto_facility_proto_rawDesc = "" +
 	"\n" +
 	"procedures\x18\x01 \x03(\v2\x10.proto.ProcedureR\n" +
 	"procedures\x12&\n" +
-	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken2\x9b\x01\n" +
+	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"\xdb\x01\n" +
+	"\x0eFacilityCenter\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\rR\x02id\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x17\n" +
+	"\ais_main\x18\x03 \x01(\bR\x06isMain\x12\x18\n" +
+	"\aaddress\x18\x04 \x01(\tR\aaddress\x12!\n" +
+	"\fphone_number\x18\x05 \x01(\tR\vphoneNumber\x12\x14\n" +
+	"\x05email\x18\x06 \x01(\tR\x05email\x12\x16\n" +
+	"\x06region\x18\a \x01(\tR\x06region\x12!\n" +
+	"\fmodality_ids\x18\b \x03(\rR\vmodalityIds\"n\n" +
+	"\x13ListCentersResponse\x12/\n" +
+	"\acenters\x18\x01 \x03(\v2\x15.proto.FacilityCenterR\acenters\x12&\n" +
+	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken2\xda\x01\n" +
 	"\x0fFacilityService\x12C\n" +
 	"\x0eListModalities\x12\x12.proto.ListRequest\x1a\x1d.proto.ListModalitiesResponse\x12C\n" +
-	"\x0eListProcedures\x12\x12.proto.ListRequest\x1a\x1d.proto.ListProceduresResponseB\x14Z\x12pkg/proto/facilityb\x06proto3"
+	"\x0eListProcedures\x12\x12.proto.ListRequest\x1a\x1d.proto.ListProceduresResponse\x12=\n" +
+	"\vListCenters\x12\x12.proto.ListRequest\x1a\x1a.proto.ListCentersResponseB\x14Z\x12pkg/proto/facilityb\x06proto3"
 
 var (
 	file_pkg_proto_facility_proto_rawDescOnce sync.Once
@@ -374,26 +542,31 @@ func file_pkg_proto_facility_proto_rawDescGZIP() []byte {
 	return file_pkg_proto_facility_proto_rawDescData
 }
 
-var file_pkg_proto_facility_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_pkg_proto_facility_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_pkg_proto_facility_proto_goTypes = []any{
 	(*Modality)(nil),               // 0: proto.Modality
 	(*Procedure)(nil),              // 1: proto.Procedure
 	(*ListRequest)(nil),            // 2: proto.ListRequest
 	(*ListModalitiesResponse)(nil), // 3: proto.ListModalitiesResponse
 	(*ListProceduresResponse)(nil), // 4: proto.ListProceduresResponse
+	(*FacilityCenter)(nil),         // 5: proto.FacilityCenter
+	(*ListCentersResponse)(nil),    // 6: proto.ListCentersResponse
 }
 var file_pkg_proto_facility_proto_depIdxs = []int32{
 	0, // 0: proto.ListModalitiesResponse.modalities:type_name -> proto.Modality
 	1, // 1: proto.ListProceduresResponse.procedures:type_name -> proto.Procedure
-	2, // 2: proto.FacilityService.ListModalities:input_type -> proto.ListRequest
-	2, // 3: proto.FacilityService.ListProcedures:input_type -> proto.ListRequest
-	3, // 4: proto.FacilityService.ListModalities:output_type -> proto.ListModalitiesResponse
-	4, // 5: proto.FacilityService.ListProcedures:output_type -> proto.ListProceduresResponse
-	4, // [4:6] is the sub-list for method output_type
-	2, // [2:4] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	5, // 2: proto.ListCentersResponse.centers:type_name -> proto.FacilityCenter
+	2, // 3: proto.FacilityService.ListModalities:input_type -> proto.ListRequest
+	2, // 4: proto.FacilityService.ListProcedures:input_type -> proto.ListRequest
+	2, // 5: proto.FacilityService.ListCenters:input_type -> proto.ListRequest
+	3, // 6: proto.FacilityService.ListModalities:output_type -> proto.ListModalitiesResponse
+	4, // 7: proto.FacilityService.ListProcedures:output_type -> proto.ListProceduresResponse
+	6, // 8: proto.FacilityService.ListCenters:output_type -> proto.ListCentersResponse
+	6, // [6:9] is the sub-list for method output_type
+	3, // [3:6] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_pkg_proto_facility_proto_init() }
@@ -407,7 +580,7 @@ func file_pkg_proto_facility_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_pkg_proto_facility_proto_rawDesc), len(file_pkg_proto_facility_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   5,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

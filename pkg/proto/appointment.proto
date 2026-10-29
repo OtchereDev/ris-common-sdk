@@ -36,6 +36,9 @@ message Appointment {
   google.protobuf.Timestamp modified_at = 24;
   bool is_locked = 25;
   string reason_for_locking = 26;
+  // external_ref ties the appointment to a booking elsewhere: "shc:<id>"
+  // for Spectra SHC's visits. Empty for RIS's own.
+  string external_ref = 27;
 }
 
 message ReportVersion {

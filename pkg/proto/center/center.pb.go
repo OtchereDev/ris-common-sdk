@@ -31,7 +31,13 @@ type Center struct {
 	// owns centres: a report has to print under the facility that did the work, and every
 	// consumer that renders a document needs the same answer without asking a second
 	// service. Empty means the renderer falls back to its default brand.
-	BrandKey      string `protobuf:"bytes,5,opt,name=brand_key,json=brandKey,proto3" json:"brand_key,omitempty"`
+	BrandKey string `protobuf:"bytes,5,opt,name=brand_key,json=brandKey,proto3" json:"brand_key,omitempty"`
+	// Where the centre is and how to reach it, for patient-facing apps
+	// (e.g. Spectra SHC).
+	Address       string `protobuf:"bytes,6,opt,name=address,proto3" json:"address,omitempty"`
+	PhoneNumber   string `protobuf:"bytes,7,opt,name=phone_number,json=phoneNumber,proto3" json:"phone_number,omitempty"`
+	Email         string `protobuf:"bytes,8,opt,name=email,proto3" json:"email,omitempty"`
+	Region        string `protobuf:"bytes,9,opt,name=region,proto3" json:"region,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -101,6 +107,34 @@ func (x *Center) GetBrandKey() string {
 	return ""
 }
 
+func (x *Center) GetAddress() string {
+	if x != nil {
+		return x.Address
+	}
+	return ""
+}
+
+func (x *Center) GetPhoneNumber() string {
+	if x != nil {
+		return x.PhoneNumber
+	}
+	return ""
+}
+
+func (x *Center) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+func (x *Center) GetRegion() string {
+	if x != nil {
+		return x.Region
+	}
+	return ""
+}
+
 type ModalityCenterChange struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Action        string                 `protobuf:"bytes,1,opt,name=action,proto3" json:"action,omitempty"` // add or removed
@@ -165,14 +199,18 @@ var File_pkg_proto_center_proto protoreflect.FileDescriptor
 
 const file_pkg_proto_center_proto_rawDesc = "" +
 	"\n" +
-	"\x16pkg/proto/center.proto\x12\x05proto\"\x81\x01\n" +
+	"\x16pkg/proto/center.proto\x12\x05proto\"\xec\x01\n" +
 	"\x06Center\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\rR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1d\n" +
 	"\n" +
 	"is_deleted\x18\x03 \x01(\bR\tisDeleted\x12\x17\n" +
 	"\ais_main\x18\x04 \x01(\bR\x06isMain\x12\x1b\n" +
-	"\tbrand_key\x18\x05 \x01(\tR\bbrandKey\"d\n" +
+	"\tbrand_key\x18\x05 \x01(\tR\bbrandKey\x12\x18\n" +
+	"\aaddress\x18\x06 \x01(\tR\aaddress\x12!\n" +
+	"\fphone_number\x18\a \x01(\tR\vphoneNumber\x12\x14\n" +
+	"\x05email\x18\b \x01(\tR\x05email\x12\x16\n" +
+	"\x06region\x18\t \x01(\tR\x06region\"d\n" +
 	"\x14ModalityCenterChange\x12\x16\n" +
 	"\x06action\x18\x01 \x01(\tR\x06action\x12\x18\n" +
 	"\acenters\x18\x02 \x03(\rR\acenters\x12\x1a\n" +
