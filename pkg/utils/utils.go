@@ -30,6 +30,9 @@ type JwtPayload struct {
 	// that stays blocked for everyone, because commission has been paid by then.
 	CanEditCompletedAppointment bool `json:"can_edit_completed_appointment"`
 
+	// CanViewAnalytics lets someone who isn't an Admin open Analytics.
+	CanViewAnalytics bool `json:"can_view_analytics"`
+
 	// TenantKey is the facility this token was minted for. Present so a service can tell
 	// that a valid token belongs to a different tenant than the one being addressed.
 	TenantKey string `json:"tid"`

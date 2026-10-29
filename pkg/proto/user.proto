@@ -30,4 +30,7 @@ message User {
   // examined. Never reaches past report verification, which stays blocked for
   // everyone because the referring doctor's commission is paid at that point.
   bool can_edit_completed_appointment = 20;
+  // Lets someone who isn't an Admin open Analytics (the boards, Explore,
+  // alerts and email reports). Admins can whatever this says.
+  bool can_view_analytics = 21;
 }
