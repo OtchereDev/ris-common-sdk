@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package = "pkg/proto/analytics";
+
+// Analytics email reports and alerts. Appointments builds them; pdf-gen prints
+// boards; the system service sends the emails.
+
+// "pdf.analytics_board": print a board. pdf-gen renders the page as it is,
+// stores the PDF, and publishes pdf.FileUploaded{fileKey, id: run_id} on
+// reply_subject.
+message BoardPdfRequest {
+  uint32 run_id = 1;
+  // A whole HTML page with its styles inline; nothing is fetched.
+  string html = 2;
+  string file_name = 3;
+  string reply_subject = 4;
+}
+
+// "system.analytics_email": an email with attachments, sent through the
+// facility's email provider. Attachments travel in the message, so keep them
+// small: NATS refuses messages over 1 MB.
+message Email {
+  repeated string to = 1;
+  string subject = 2;
+  string html = 3;
+  string text = 4;
+  repeated Attachment attachments = 5;
+  string reply_to = 6;
+}
+
+message Attachment {
+  string file_name = 1;
+  string content_type = 2;
+  bytes content = 3;
+}
