@@ -94,8 +94,7 @@ func (x *BoardPdfRequest) GetReplySubject() string {
 }
 
 // "system.analytics_email": an email with attachments, sent through the
-// facility's email provider. Attachments travel in the message, so keep them
-// small: NATS refuses messages over 1 MB.
+// facility's email provider.
 type Email struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	To            []string               `protobuf:"bytes,1,rep,name=to,proto3" json:"to,omitempty"`
@@ -180,11 +179,14 @@ func (x *Email) GetReplyTo() string {
 	return ""
 }
 
+// An attachment is fetched from its link when the email is sent, as the mail
+// agents already do; files never travel in the message, which NATS caps at 1 MB.
 type Attachment struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	FileName      string                 `protobuf:"bytes,1,opt,name=file_name,json=fileName,proto3" json:"file_name,omitempty"`
-	ContentType   string                 `protobuf:"bytes,2,opt,name=content_type,json=contentType,proto3" json:"content_type,omitempty"`
-	Content       []byte                 `protobuf:"bytes,3,opt,name=content,proto3" json:"content,omitempty"`
+	state       protoimpl.MessageState `protogen:"open.v1"`
+	FileName    string                 `protobuf:"bytes,1,opt,name=file_name,json=fileName,proto3" json:"file_name,omitempty"`
+	ContentType string                 `protobuf:"bytes,2,opt,name=content_type,json=contentType,proto3" json:"content_type,omitempty"`
+	// A link the system service can download, e.g. a presigned S3 URL.
+	Url           string `protobuf:"bytes,4,opt,name=url,proto3" json:"url,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -233,11 +235,11 @@ func (x *Attachment) GetContentType() string {
 	return ""
 }
 
-func (x *Attachment) GetContent() []byte {
+func (x *Attachment) GetUrl() string {
 	if x != nil {
-		return x.Content
+		return x.Url
 	}
-	return nil
+	return ""
 }
 
 var File_pkg_proto_analytics_proto protoreflect.FileDescriptor
@@ -256,12 +258,12 @@ const file_pkg_proto_analytics_proto_rawDesc = "" +
 	"\x04html\x18\x03 \x01(\tR\x04html\x12\x12\n" +
 	"\x04text\x18\x04 \x01(\tR\x04text\x123\n" +
 	"\vattachments\x18\x05 \x03(\v2\x11.proto.AttachmentR\vattachments\x12\x19\n" +
-	"\breply_to\x18\x06 \x01(\tR\areplyTo\"f\n" +
+	"\breply_to\x18\x06 \x01(\tR\areplyTo\"d\n" +
 	"\n" +
 	"Attachment\x12\x1b\n" +
 	"\tfile_name\x18\x01 \x01(\tR\bfileName\x12!\n" +
-	"\fcontent_type\x18\x02 \x01(\tR\vcontentType\x12\x18\n" +
-	"\acontent\x18\x03 \x01(\fR\acontentB\x15Z\x13pkg/proto/analyticsb\x06proto3"
+	"\fcontent_type\x18\x02 \x01(\tR\vcontentType\x12\x10\n" +
+	"\x03url\x18\x04 \x01(\tR\x03urlJ\x04\b\x03\x10\x04B\x15Z\x13pkg/proto/analyticsb\x06proto3"
 
 var (
 	file_pkg_proto_analytics_proto_rawDescOnce sync.Once
