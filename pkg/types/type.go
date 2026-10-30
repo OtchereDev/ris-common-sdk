@@ -17,6 +17,10 @@ type list struct {
 	Radiologist        Alias
 	Accountant         Alias
 	Admin              Alias
+	// Marketer signs up referring doctors and runs marketing: referring doctors,
+	// hospitals and organisations, campaigns and announcements, and referral analytics,
+	// without the rest of what an Admin can do.
+	Marketer Alias
 
 	// Lab module roles. Module access is a separate axis from role, so these sit alongside
 	// the radiology set rather than replacing it: a user is granted radiology, lab, or
@@ -43,6 +47,7 @@ var UserTypes = &list{
 	Radiologist:        "RADIOLOGIST",
 	Accountant:         "ACCOUNTANT",
 	Admin:              "ADMIN",
+	Marketer:           "MARKETER",
 
 	Phlebotomist:  "PHLEBOTOMIST",
 	LabTechnician: "LABTECHNICIAN",
@@ -60,6 +65,7 @@ var RadiologyUserTypes = []Alias{
 	UserTypes.Radiologist,
 	UserTypes.Accountant,
 	UserTypes.Admin,
+	UserTypes.Marketer,
 }
 
 // LabUserTypes are the roles that staff the lab.

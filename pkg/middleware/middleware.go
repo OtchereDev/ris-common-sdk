@@ -159,6 +159,26 @@ func SetupMiddleAuthMiddleware(s string, cache cache.Cache) {
 	}
 }
 
+// RolesOrAdmin lets in the given roles, and anyone flagged is_admin. For routes
+// that a role besides Admin needs, without opening them to all staff: the
+// referral and marketing routes take Admins, Accountants and Marketers.
+func RolesOrAdmin(roles ...Alias) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		user, _ := SerializeRequestUser(c)
+		if user != nil {
+			if user.IsAdmin {
+				return c.Next()
+			}
+			for _, r := range roles {
+				if strings.EqualFold(user.UserType, string(r)) {
+					return c.Next()
+				}
+			}
+		}
+		return c.Status(fiber.StatusForbidden).JSON(PermissionNotFulfilledError)
+	}
+}
+
 func RoleMiddleware(roles []string) fiber.Handler {
 
 	return func(c *fiber.Ctx) error {
