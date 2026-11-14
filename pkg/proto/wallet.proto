@@ -16,6 +16,29 @@ message GetWalletRequest {
     int32 doctor_id = 1;
 }
 
+// TransferWalletRequest moves money from one doctor's wallet to another's, as when two
+// records of the same doctor are merged. The reference is unique: asking again with the
+// same reference moves nothing more and returns what the first transfer did, so a
+// caller can retry safely.
+message TransferWalletRequest {
+  int32 from_doctor_id = 1;
+  int32 to_doctor_id = 2;
+  string reference = 3;
+  // 0 moves the whole balance; otherwise exactly this much, refused if it isn't there.
+  double amount = 4;
+  string by_name = 5;
+  string reason = 6;
+}
+
+message TransferWalletResult {
+  double amount = 1;
+  // True when this reference had already been transferred and nothing moved now.
+  bool already_done = 2;
+  double from_balance = 3;
+  double to_balance = 4;
+}
+
 service FinanceService {
-  rpc GetWallet (GetWalletRequest) returns (Wallet) {}    
+  rpc GetWallet (GetWalletRequest) returns (Wallet) {}
+  rpc TransferWallet (TransferWalletRequest) returns (TransferWalletResult) {}
 }
