@@ -20,6 +20,11 @@ message CreateWorklistEntry {
   string priority = 13;
   string contrast_agent = 14;
   string accession_number = 15;
+  // The machine the exam is booked on. Empty when none was chosen; the
+  // worklist then offers it to every machine of its modality at the centre.
+  string station_ae_title = 16;
+  uint32 center_id = 17;
+  string center_name = 18;
 }
 
 message CreateModality {
@@ -28,6 +33,9 @@ message CreateModality {
   int32 modality_id = 3;
 }
 
+// A registered imaging machine, sent on mws.station.create whenever one is
+// added or changed and on mws.station.delete when it is removed. station_id
+// is the facility service's equipment id; modality is its short name (CT).
 message CreateStation {
   string ae_title = 1;
   string hostname = 2;
@@ -35,4 +43,8 @@ message CreateStation {
   string description = 4;
   string modality = 5;
   int32 station_id = 6;
+  uint32 center_id = 7;
+  bool is_active = 8;
+  string name = 9;
+  uint32 modality_id = 10;
 }

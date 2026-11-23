@@ -39,8 +39,13 @@ type CreateWorklistEntry struct {
 	Priority            string                 `protobuf:"bytes,13,opt,name=priority,proto3" json:"priority,omitempty"`
 	ContrastAgent       string                 `protobuf:"bytes,14,opt,name=contrast_agent,json=contrastAgent,proto3" json:"contrast_agent,omitempty"`
 	AccessionNumber     string                 `protobuf:"bytes,15,opt,name=accession_number,json=accessionNumber,proto3" json:"accession_number,omitempty"`
-	unknownFields       protoimpl.UnknownFields
-	sizeCache           protoimpl.SizeCache
+	// The machine the exam is booked on. Empty when none was chosen; the
+	// worklist then offers it to every machine of its modality at the centre.
+	StationAeTitle string `protobuf:"bytes,16,opt,name=station_ae_title,json=stationAeTitle,proto3" json:"station_ae_title,omitempty"`
+	CenterId       uint32 `protobuf:"varint,17,opt,name=center_id,json=centerId,proto3" json:"center_id,omitempty"`
+	CenterName     string `protobuf:"bytes,18,opt,name=center_name,json=centerName,proto3" json:"center_name,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *CreateWorklistEntry) Reset() {
@@ -178,6 +183,27 @@ func (x *CreateWorklistEntry) GetAccessionNumber() string {
 	return ""
 }
 
+func (x *CreateWorklistEntry) GetStationAeTitle() string {
+	if x != nil {
+		return x.StationAeTitle
+	}
+	return ""
+}
+
+func (x *CreateWorklistEntry) GetCenterId() uint32 {
+	if x != nil {
+		return x.CenterId
+	}
+	return 0
+}
+
+func (x *CreateWorklistEntry) GetCenterName() string {
+	if x != nil {
+		return x.CenterName
+	}
+	return ""
+}
+
 type CreateModality struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
 	Modality       string                 `protobuf:"bytes,1,opt,name=modality,proto3" json:"modality,omitempty"`
@@ -238,6 +264,9 @@ func (x *CreateModality) GetModalityId() int32 {
 	return 0
 }
 
+// A registered imaging machine, sent on mws.station.create whenever one is
+// added or changed and on mws.station.delete when it is removed. station_id
+// is the facility service's equipment id; modality is its short name (CT).
 type CreateStation struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	AeTitle       string                 `protobuf:"bytes,1,opt,name=ae_title,json=aeTitle,proto3" json:"ae_title,omitempty"`
@@ -246,6 +275,10 @@ type CreateStation struct {
 	Description   string                 `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
 	Modality      string                 `protobuf:"bytes,5,opt,name=modality,proto3" json:"modality,omitempty"`
 	StationId     int32                  `protobuf:"varint,6,opt,name=station_id,json=stationId,proto3" json:"station_id,omitempty"`
+	CenterId      uint32                 `protobuf:"varint,7,opt,name=center_id,json=centerId,proto3" json:"center_id,omitempty"`
+	IsActive      bool                   `protobuf:"varint,8,opt,name=is_active,json=isActive,proto3" json:"is_active,omitempty"`
+	Name          string                 `protobuf:"bytes,9,opt,name=name,proto3" json:"name,omitempty"`
+	ModalityId    uint32                 `protobuf:"varint,10,opt,name=modality_id,json=modalityId,proto3" json:"modality_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -322,11 +355,39 @@ func (x *CreateStation) GetStationId() int32 {
 	return 0
 }
 
+func (x *CreateStation) GetCenterId() uint32 {
+	if x != nil {
+		return x.CenterId
+	}
+	return 0
+}
+
+func (x *CreateStation) GetIsActive() bool {
+	if x != nil {
+		return x.IsActive
+	}
+	return false
+}
+
+func (x *CreateStation) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *CreateStation) GetModalityId() uint32 {
+	if x != nil {
+		return x.ModalityId
+	}
+	return 0
+}
+
 var File_pkg_proto_mws_proto protoreflect.FileDescriptor
 
 const file_pkg_proto_mws_proto_rawDesc = "" +
 	"\n" +
-	"\x13pkg/proto/mws.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x82\x05\n" +
+	"\x13pkg/proto/mws.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xea\x05\n" +
 	"\x13CreateWorklistEntry\x12\x1d\n" +
 	"\n" +
 	"patient_id\x18\x01 \x01(\tR\tpatientId\x12!\n" +
@@ -345,12 +406,16 @@ const file_pkg_proto_mws_proto_rawDesc = "" +
 	"\x06status\x18\f \x01(\tR\x06status\x12\x1a\n" +
 	"\bpriority\x18\r \x01(\tR\bpriority\x12%\n" +
 	"\x0econtrast_agent\x18\x0e \x01(\tR\rcontrastAgent\x12)\n" +
-	"\x10accession_number\x18\x0f \x01(\tR\x0faccessionNumber\"w\n" +
+	"\x10accession_number\x18\x0f \x01(\tR\x0faccessionNumber\x12(\n" +
+	"\x10station_ae_title\x18\x10 \x01(\tR\x0estationAeTitle\x12\x1b\n" +
+	"\tcenter_id\x18\x11 \x01(\rR\bcenterId\x12\x1f\n" +
+	"\vcenter_name\x18\x12 \x01(\tR\n" +
+	"centerName\"w\n" +
 	"\x0eCreateModality\x12\x1a\n" +
 	"\bmodality\x18\x01 \x01(\tR\bmodality\x12(\n" +
 	"\x10station_ae_title\x18\x02 \x01(\tR\x0estationAeTitle\x12\x1f\n" +
 	"\vmodality_id\x18\x03 \x01(\x05R\n" +
-	"modalityId\"\xb7\x01\n" +
+	"modalityId\"\xa6\x02\n" +
 	"\rCreateStation\x12\x19\n" +
 	"\bae_title\x18\x01 \x01(\tR\aaeTitle\x12\x1a\n" +
 	"\bhostname\x18\x02 \x01(\tR\bhostname\x12\x12\n" +
@@ -358,7 +423,13 @@ const file_pkg_proto_mws_proto_rawDesc = "" +
 	"\vdescription\x18\x04 \x01(\tR\vdescription\x12\x1a\n" +
 	"\bmodality\x18\x05 \x01(\tR\bmodality\x12\x1d\n" +
 	"\n" +
-	"station_id\x18\x06 \x01(\x05R\tstationIdB\x14Z\x12pkg/proto/worklistb\x06proto3"
+	"station_id\x18\x06 \x01(\x05R\tstationId\x12\x1b\n" +
+	"\tcenter_id\x18\a \x01(\rR\bcenterId\x12\x1b\n" +
+	"\tis_active\x18\b \x01(\bR\bisActive\x12\x12\n" +
+	"\x04name\x18\t \x01(\tR\x04name\x12\x1f\n" +
+	"\vmodality_id\x18\n" +
+	" \x01(\rR\n" +
+	"modalityIdB\x14Z\x12pkg/proto/worklistb\x06proto3"
 
 var (
 	file_pkg_proto_mws_proto_rawDescOnce sync.Once
