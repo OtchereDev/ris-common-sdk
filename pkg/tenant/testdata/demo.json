@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "key": "demo",
+  "version": 3,
+  "published_at": "2026-11-23T09:00:00Z",
+  "display_name": "Demo Diagnostics",
+  "status": "active",
+  "domains": ["demo.spectraris.com"],
+  "modules": {
+    "radiology": "enabled",
+    "lab": "read_only",
+    "analytics": "enabled",
+    "ask": "off"
+  },
+  "features": ["whatsapp_reports", "multi_centre"],
+  "limits": {
+    "staff_seats": 25,
+    "centres": 3,
+    "sms_per_month": 5000,
+    "ai_tokens_per_month": 2000000
+  },
+  "usage_mtd": {
+    "as_of": "2026-11-22",
+    "meters": { "sms": 3120, "ai_tokens": 410233 }
+  },
+  "profile": {
+    "key": "demo",
+    "name": "Demo Diagnostics",
+    "site": "www.demo.example",
+    "primary": "#31287f",
+    "accent": "#0b9bdc",
+    "radius": 0.625,
+    "logo": {},
+    "locale": { "tag": "en-GH", "currency": "GHS", "currencyPrefix": "GHS", "currencySymbol": "GH₵" },
+    "contact": { "address": "1 Test Street, Accra", "phone": "+233 30 000 0000", "email": "hello@demo.example" },
+    "channels": {
+      "smsSenderId": "DemoDx",
+      "emailFromName": "Demo Diagnostics",
+      "emailFromAddress": "hello@demo.example",
+      "pushTopic": "DemoGeneral",
+      "footerLinks": [{ "label": "Contact", "href": "mailto:hello@demo.example" }]
+    },
+    "links": { "system": "https://demo.spectraris.com" },
+    "patientIdPrefix": "DMO-",
+    "radiology": { "defaultRadiologist": "Dr. A. Example", "defaultRadiologistTitle": "Consultant Radiologist" },
+    "dicom": { "accessionPrefix": "DMO", "studyUidRoot": "" },
+    "document": {
+      "footerColor": "#0b76a8",
+      "contact": [[{ "icon": "location", "text": "1 Test Street, Accra" }, { "icon": "phone", "text": "+233 30 000 0000" }]]
+    },
+    "aFieldANewerControlPlaneAdded": "ignored by this build"
+  },
+  "a_top_level_field_from_the_future": true
+}
