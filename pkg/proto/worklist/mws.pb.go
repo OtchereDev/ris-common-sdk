@@ -44,8 +44,11 @@ type CreateWorklistEntry struct {
 	StationAeTitle string `protobuf:"bytes,16,opt,name=station_ae_title,json=stationAeTitle,proto3" json:"station_ae_title,omitempty"`
 	CenterId       uint32 `protobuf:"varint,17,opt,name=center_id,json=centerId,proto3" json:"center_id,omitempty"`
 	CenterName     string `protobuf:"bytes,18,opt,name=center_name,json=centerName,proto3" json:"center_name,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+	// The facility service's modality id. modality above is a DICOM code, and
+	// several modalities share "OT", so the worklist matches machines by id.
+	ModalityId    uint32 `protobuf:"varint,19,opt,name=modality_id,json=modalityId,proto3" json:"modality_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *CreateWorklistEntry) Reset() {
@@ -202,6 +205,13 @@ func (x *CreateWorklistEntry) GetCenterName() string {
 		return x.CenterName
 	}
 	return ""
+}
+
+func (x *CreateWorklistEntry) GetModalityId() uint32 {
+	if x != nil {
+		return x.ModalityId
+	}
+	return 0
 }
 
 type CreateModality struct {
@@ -387,7 +397,7 @@ var File_pkg_proto_mws_proto protoreflect.FileDescriptor
 
 const file_pkg_proto_mws_proto_rawDesc = "" +
 	"\n" +
-	"\x13pkg/proto/mws.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\xea\x05\n" +
+	"\x13pkg/proto/mws.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"\x8b\x06\n" +
 	"\x13CreateWorklistEntry\x12\x1d\n" +
 	"\n" +
 	"patient_id\x18\x01 \x01(\tR\tpatientId\x12!\n" +
@@ -410,7 +420,9 @@ const file_pkg_proto_mws_proto_rawDesc = "" +
 	"\x10station_ae_title\x18\x10 \x01(\tR\x0estationAeTitle\x12\x1b\n" +
 	"\tcenter_id\x18\x11 \x01(\rR\bcenterId\x12\x1f\n" +
 	"\vcenter_name\x18\x12 \x01(\tR\n" +
-	"centerName\"w\n" +
+	"centerName\x12\x1f\n" +
+	"\vmodality_id\x18\x13 \x01(\rR\n" +
+	"modalityId\"w\n" +
 	"\x0eCreateModality\x12\x1a\n" +
 	"\bmodality\x18\x01 \x01(\tR\bmodality\x12(\n" +
 	"\x10station_ae_title\x18\x02 \x01(\tR\x0estationAeTitle\x12\x1f\n" +

@@ -25,6 +25,9 @@ message CreateWorklistEntry {
   string station_ae_title = 16;
   uint32 center_id = 17;
   string center_name = 18;
+  // The facility service's modality id. modality above is a DICOM code, and
+  // several modalities share "OT", so the worklist matches machines by id.
+  uint32 modality_id = 19;
 }
 
 message CreateModality {
