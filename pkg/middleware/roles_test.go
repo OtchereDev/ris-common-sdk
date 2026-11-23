@@ -40,9 +40,15 @@ func TestRolesOrAdmin(t *testing.T) {
 	}
 }
 
+// A marketer works on the radiology side: radiology, plus outreach and the referral
+// measures in analytics, and never lab.
 func TestMarketerHoldsRadiology(t *testing.T) {
 	got := ModulesForRole(UserTypes.Marketer, false)
-	if len(got) != 1 || got[0] != Modules.Radiology {
-		t.Errorf("a marketer's modules = %v, want radiology", got)
+	holds := map[Module]bool{}
+	for _, m := range got {
+		holds[m] = true
+	}
+	if !holds[Modules.Radiology] || holds[Modules.Lab] {
+		t.Errorf("a marketer's modules = %v, want radiology and not lab", got)
 	}
 }
