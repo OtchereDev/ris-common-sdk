@@ -112,3 +112,65 @@ func TestParseModules(t *testing.T) {
 		})
 	}
 }
+
+func TestGrantedModules(t *testing.T) {
+	m := Modules
+	cases := []struct {
+		name  string
+		grant Grant
+		want  []Module
+	}{
+		{"a radiographer staffs radiology only", Grant{Role: UserTypes.Radiographer}, []Module{m.Radiology}},
+		{"a radiologist also gets AI reporting", Grant{Role: UserTypes.Radiologist}, []Module{m.Radiology, m.AIReporting}},
+		{"a reporting assistant also gets AI reporting", Grant{Role: UserTypes.ReportingAssistant}, []Module{m.Radiology, m.AIReporting}},
+		{"a marketer runs outreach and reads analytics", Grant{Role: UserTypes.Marketer}, []Module{m.Radiology, m.Analytics, m.Outreach}},
+		{"an accountant reaches outreach", Grant{Role: UserTypes.Accountant}, []Module{m.Radiology, m.Outreach}},
+		{"a cashier with analytics access gets analytics and ask", Grant{Role: UserTypes.Cashier, CanViewAnalytics: true}, []Module{m.Radiology, m.Analytics, m.Ask}},
+		{"a lab scientist staffs lab", Grant{Role: UserTypes.LabScientist}, []Module{m.Lab}},
+		{"a lab manager with analytics access", Grant{Role: UserTypes.LabManager, CanViewAnalytics: true}, []Module{m.Lab, m.Analytics, m.Ask}},
+		{"an admin by role holds everything", Grant{Role: UserTypes.Admin}, AllModules},
+		{"an admin by flag holds everything", Grant{Role: UserTypes.Cashier, IsAdmin: true}, AllModules},
+		{"a referring doctor gets the doctor app", Grant{Role: RoleDoctor}, []Module{m.DoctorApp}},
+		{"a doctor's assistant gets the doctor app", Grant{Role: RoleDoctorAssistant}, []Module{m.DoctorApp}},
+		{"a patient gets the patient app", Grant{Role: RolePatient}, []Module{m.PatientApp}},
+		{"an organisation user gets organisations", Grant{Role: RoleOrganisationUser}, []Module{m.Organisations}},
+		{"non-staff roles match whatever their case", Grant{Role: "patient"}, []Module{m.PatientApp}},
+		{"analytics access means nothing to a doctor", Grant{Role: RoleDoctor, CanViewAnalytics: true}, []Module{m.DoctorApp}},
+		{"analytics access means nothing without a role", Grant{CanViewAnalytics: true}, nil},
+		{"a role nobody has heard of grants nothing", Grant{Role: "TIMELORD"}, nil},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			if got := GrantedModules(tc.grant); !reflect.DeepEqual(got, tc.want) {
+				t.Fatalf("GrantedModules(%+v) = %v, want %v", tc.grant, got, tc.want)
+			}
+		})
+	}
+}
+
+// Every role a staff user may be assigned must grant something, or someone given that role
+// can reach nothing once modules are enforced.
+func TestEveryAssignableRoleGrantsAModule(t *testing.T) {
+	for _, role := range AssignableUserTypes {
+		if len(GrantedModules(Grant{Role: role})) == 0 {
+			t.Errorf("role %s grants no module", role)
+		}
+	}
+}
+
+func TestEveryModuleIsGrantedToSomeoneBesidesAdmins(t *testing.T) {
+	roles := append(append([]Alias{}, AssignableUserTypes...), RoleDoctor, RoleDoctorAssistant, RolePatient, RoleOrganisationUser)
+	for _, module := range AllModules {
+		found := false
+		for _, role := range roles {
+			for _, flag := range []bool{false, true} {
+				if HasGrant(Grant{Role: role, CanViewAnalytics: flag}, module) {
+					found = true
+				}
+			}
+		}
+		if !found {
+			t.Errorf("only admins can ever hold %s", module)
+		}
+	}
+}

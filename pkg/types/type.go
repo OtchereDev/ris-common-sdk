@@ -163,23 +163,48 @@ type AllUserParam struct {
 type Module = string
 
 type moduleList struct {
-	Radiology Module
-	Lab       Module
+	Radiology     Module
+	Lab           Module
+	AIReporting   Module
+	Analytics     Module
+	Ask           Module
+	Outreach      Module
+	PatientApp    Module
+	DoctorApp     Module
+	Organisations Module
 }
 
-// Modules is the vocabulary. It is closed on purpose: it appears in three places that must
-// agree - here, the enum in the infra repo's tenants/schema.json, and MS_AUTH_TENANT_MODULES
-// in a tenant's rendered env - and a value that exists in only one of them entitles nobody.
+// Modules is the vocabulary. It is closed on purpose: a value that exists in only one of
+// the places that must agree - here, the tenant record (pkg/tenant), and the web app's
+// app/lib/permissons.ts - entitles nobody. The catalogue and what each covers is in
+// docs/enterprise/entitlements-and-limits.md in the infra repository.
 var Modules = &moduleList{
-	Radiology: "radiology",
-	Lab:       "lab",
+	Radiology:     "radiology",
+	Lab:           "lab",
+	AIReporting:   "ai_reporting",
+	Analytics:     "analytics",
+	Ask:           "ask",
+	Outreach:      "outreach",
+	PatientApp:    "patient_app",
+	DoctorApp:     "doctor_app",
+	Organisations: "organisations",
 }
 
 // AllModules is every module this build knows about.
-var AllModules = []Module{Modules.Radiology, Modules.Lab}
+var AllModules = []Module{
+	Modules.Radiology, Modules.Lab, Modules.AIReporting, Modules.Analytics, Modules.Ask,
+	Modules.Outreach, Modules.PatientApp, Modules.DoctorApp, Modules.Organisations,
+}
 
-// moduleByRole maps a role to the module it staffs. This is the grant layer: what a person
-// could hold, before the facility's entitlement is applied.
+// The roles that are not staff. Their tokens carry these exact values in "role".
+const (
+	RoleDoctor           Alias = "Doctor"   // a referring doctor
+	RoleDoctorAssistant  Alias = "Delegate" // someone a referring doctor added as an assistant
+	RolePatient          Alias = "Patient"
+	RoleOrganisationUser Alias = "Staff" // a user of a corporate client's portal
+)
+
+// moduleByRole maps a staff role to the clinical module it staffs.
 var moduleByRole = func() map[Alias]Module {
 	m := make(map[Alias]Module, len(RadiologyUserTypes)+len(LabUserTypes))
 	for _, role := range RadiologyUserTypes {
@@ -191,21 +216,86 @@ var moduleByRole = func() map[Alias]Module {
 	return m
 }()
 
-// ModulesForRole is what a role grants, before entitlement.
+// extraByRole is what a role grants on top of the module it staffs.
+var extraByRole = map[Alias][]Module{
+	UserTypes.Radiologist:        {Modules.AIReporting},
+	UserTypes.ReportingAssistant: {Modules.AIReporting},
+	// Marketers run outreach, and read the referral measures in Analytics; which measures
+	// is decided inside Analytics, not here.
+	UserTypes.Marketer: {Modules.Outreach, Modules.Analytics},
+	// The referral and marketing routes take Accountants as well as Marketers.
+	UserTypes.Accountant: {Modules.Outreach},
+}
+
+// appByRole is the one module each non-staff role exists for.
+var appByRole = map[string]Module{
+	strings.ToLower(RoleDoctor):           Modules.DoctorApp,
+	strings.ToLower(RoleDoctorAssistant):  Modules.DoctorApp,
+	strings.ToLower(RolePatient):          Modules.PatientApp,
+	strings.ToLower(RoleOrganisationUser): Modules.Organisations,
+}
+
+// Grant is what a token says about its holder that decides which modules they may hold.
+type Grant struct {
+	Role             Alias
+	IsAdmin          bool
+	CanViewAnalytics bool
+}
+
+// GrantedModules is what a person may hold, before the tenant's entitlement is applied.
 //
-// An admin grants every module rather than only radiology. Administration is not a
-// radiology job that happens to appear in that list; an admin of a facility that licensed
-// lab has to be able to administer it. Any other role grants exactly the one module it
-// staffs, and an unrecognised role grants nothing - a role the service has never heard of
-// is not a reason to hand out access.
-func ModulesForRole(role Alias, isAdmin bool) []Module {
-	if isAdmin || role == UserTypes.Admin {
+// An admin holds every module: administering a facility that licensed lab means
+// administering lab. Anyone else holds the module their role staffs, what that role adds,
+// and Analytics and Ask if they were given Analytics access. A role nobody has heard of
+// grants nothing - an unrecognised role is not a reason to hand out access.
+//
+// The order follows AllModules, so the claim minted from it is stable.
+func GrantedModules(g Grant) []Module {
+	if g.IsAdmin || g.Role == UserTypes.Admin {
 		return append([]Module{}, AllModules...)
 	}
-	if module, ok := moduleByRole[role]; ok {
-		return []Module{module}
+
+	held := map[Module]bool{}
+	staffModule, staff := moduleByRole[g.Role]
+	if staff {
+		held[staffModule] = true
+		for _, extra := range extraByRole[g.Role] {
+			held[extra] = true
+		}
 	}
-	return nil
+	if m, ok := appByRole[strings.ToLower(g.Role)]; ok {
+		held[m] = true
+	}
+	// Analytics access is a staff permission. A doctor's or patient's token carrying the
+	// flag by mistake gets nothing from it.
+	if g.CanViewAnalytics && staff {
+		held[Modules.Analytics] = true
+		held[Modules.Ask] = true
+	}
+
+	var out []Module
+	for _, m := range AllModules {
+		if held[m] {
+			out = append(out, m)
+		}
+	}
+	return out
+}
+
+// HasGrant reports whether g holds module m.
+func HasGrant(g Grant, m Module) bool {
+	for _, held := range GrantedModules(g) {
+		if held == m {
+			return true
+		}
+	}
+	return false
+}
+
+// ModulesForRole is GrantedModules for a role alone, without Analytics access. Kept for
+// callers that only have the role; new code should use GrantedModules.
+func ModulesForRole(role Alias, isAdmin bool) []Module {
+	return GrantedModules(Grant{Role: role, IsAdmin: isAdmin})
 }
 
 // IntersectModules is the entitlement applied to the grant: what the facility licensed, and
