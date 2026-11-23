@@ -12,7 +12,7 @@ func TestModulesForRole(t *testing.T) {
 		isAdmin bool
 		want    []Module
 	}{
-		{"radiographer staffs radiology", UserTypes.Radiographer, false, []Module{Modules.Radiology}},
+		{"radiographer staffs radiology and serves corporate clients", UserTypes.Radiographer, false, []Module{Modules.Radiology, Modules.Organisations}},
 		{"pathologist staffs lab", UserTypes.Pathologist, false, []Module{Modules.Lab}},
 		{"admin by role holds everything", UserTypes.Admin, false, AllModules},
 		{"admin by flag holds everything", UserTypes.Cashier, true, AllModules},
@@ -120,12 +120,12 @@ func TestGrantedModules(t *testing.T) {
 		grant Grant
 		want  []Module
 	}{
-		{"a radiographer staffs radiology only", Grant{Role: UserTypes.Radiographer}, []Module{m.Radiology}},
-		{"a radiologist also gets AI reporting", Grant{Role: UserTypes.Radiologist}, []Module{m.Radiology, m.AIReporting}},
-		{"a reporting assistant also gets AI reporting", Grant{Role: UserTypes.ReportingAssistant}, []Module{m.Radiology, m.AIReporting}},
-		{"a marketer runs outreach and reads analytics", Grant{Role: UserTypes.Marketer}, []Module{m.Radiology, m.Analytics, m.Outreach}},
-		{"an accountant reaches outreach", Grant{Role: UserTypes.Accountant}, []Module{m.Radiology, m.Outreach}},
-		{"a cashier with analytics access gets analytics and ask", Grant{Role: UserTypes.Cashier, CanViewAnalytics: true}, []Module{m.Radiology, m.Analytics, m.Ask}},
+		{"a radiographer staffs radiology, and serves corporate clients", Grant{Role: UserTypes.Radiographer}, []Module{m.Radiology, m.Organisations}},
+		{"a radiologist also gets AI reporting", Grant{Role: UserTypes.Radiologist}, []Module{m.Radiology, m.AIReporting, m.Organisations}},
+		{"a reporting assistant also gets AI reporting", Grant{Role: UserTypes.ReportingAssistant}, []Module{m.Radiology, m.AIReporting, m.Organisations}},
+		{"a marketer runs outreach and reads analytics", Grant{Role: UserTypes.Marketer}, []Module{m.Radiology, m.Analytics, m.Outreach, m.Organisations}},
+		{"an accountant reaches outreach", Grant{Role: UserTypes.Accountant}, []Module{m.Radiology, m.Outreach, m.Organisations}},
+		{"a cashier with analytics access gets analytics and ask", Grant{Role: UserTypes.Cashier, CanViewAnalytics: true}, []Module{m.Radiology, m.Analytics, m.Ask, m.Organisations}},
 		{"a lab scientist staffs lab", Grant{Role: UserTypes.LabScientist}, []Module{m.Lab}},
 		{"a lab manager with analytics access", Grant{Role: UserTypes.LabManager, CanViewAnalytics: true}, []Module{m.Lab, m.Analytics, m.Ask}},
 		{"an admin by role holds everything", Grant{Role: UserTypes.Admin}, AllModules},

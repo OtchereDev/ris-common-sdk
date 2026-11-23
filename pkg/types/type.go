@@ -262,6 +262,11 @@ func GrantedModules(g Grant) []Module {
 		for _, extra := range extraByRole[g.Role] {
 			held[extra] = true
 		}
+		// Corporate clients are served by the radiology desk: booking for them, billing
+		// them, running their portal. Whether the tenant has the module decides the rest.
+		if staffModule == Modules.Radiology {
+			held[Modules.Organisations] = true
+		}
 	}
 	if m, ok := appByRole[strings.ToLower(g.Role)]; ok {
 		held[m] = true
