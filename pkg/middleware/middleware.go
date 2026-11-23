@@ -133,6 +133,7 @@ func configDefault(config ...Config) Config {
 
 func New(config Config) fiber.Handler {
 	cfg := configDefault(config)
+	authDecode.Store(&cfg.Decode)
 
 	return func(c *fiber.Ctx) error {
 		if cfg.Filter != nil && cfg.Filter(c) {
