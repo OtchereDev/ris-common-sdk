@@ -278,19 +278,23 @@ func (x *CreateModality) GetModalityId() int32 {
 // added or changed and on mws.station.delete when it is removed. station_id
 // is the facility service's equipment id; modality is its short name (CT).
 type CreateStation struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	AeTitle       string                 `protobuf:"bytes,1,opt,name=ae_title,json=aeTitle,proto3" json:"ae_title,omitempty"`
-	Hostname      string                 `protobuf:"bytes,2,opt,name=hostname,proto3" json:"hostname,omitempty"`
-	Port          int32                  `protobuf:"varint,3,opt,name=port,proto3" json:"port,omitempty"`
-	Description   string                 `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
-	Modality      string                 `protobuf:"bytes,5,opt,name=modality,proto3" json:"modality,omitempty"`
-	StationId     int32                  `protobuf:"varint,6,opt,name=station_id,json=stationId,proto3" json:"station_id,omitempty"`
-	CenterId      uint32                 `protobuf:"varint,7,opt,name=center_id,json=centerId,proto3" json:"center_id,omitempty"`
-	IsActive      bool                   `protobuf:"varint,8,opt,name=is_active,json=isActive,proto3" json:"is_active,omitempty"`
-	Name          string                 `protobuf:"bytes,9,opt,name=name,proto3" json:"name,omitempty"`
-	ModalityId    uint32                 `protobuf:"varint,10,opt,name=modality_id,json=modalityId,proto3" json:"modality_id,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state       protoimpl.MessageState `protogen:"open.v1"`
+	AeTitle     string                 `protobuf:"bytes,1,opt,name=ae_title,json=aeTitle,proto3" json:"ae_title,omitempty"`
+	Hostname    string                 `protobuf:"bytes,2,opt,name=hostname,proto3" json:"hostname,omitempty"`
+	Port        int32                  `protobuf:"varint,3,opt,name=port,proto3" json:"port,omitempty"`
+	Description string                 `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
+	Modality    string                 `protobuf:"bytes,5,opt,name=modality,proto3" json:"modality,omitempty"`
+	StationId   int32                  `protobuf:"varint,6,opt,name=station_id,json=stationId,proto3" json:"station_id,omitempty"`
+	CenterId    uint32                 `protobuf:"varint,7,opt,name=center_id,json=centerId,proto3" json:"center_id,omitempty"`
+	IsActive    bool                   `protobuf:"varint,8,opt,name=is_active,json=isActive,proto3" json:"is_active,omitempty"`
+	Name        string                 `protobuf:"bytes,9,opt,name=name,proto3" json:"name,omitempty"`
+	ModalityId  uint32                 `protobuf:"varint,10,opt,name=modality_id,json=modalityId,proto3" json:"modality_id,omitempty"`
+	// How long each procedure takes on this machine, in minutes, by the
+	// facility service's procedure id. A procedure left out has no set length,
+	// so its bookings neither end nor block one another.
+	ProcedureMinutes map[uint32]uint32 `protobuf:"bytes,11,rep,name=procedure_minutes,json=procedureMinutes,proto3" json:"procedure_minutes,omitempty" protobuf_key:"varint,1,opt,name=key" protobuf_val:"varint,2,opt,name=value"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
 }
 
 func (x *CreateStation) Reset() {
@@ -393,6 +397,13 @@ func (x *CreateStation) GetModalityId() uint32 {
 	return 0
 }
 
+func (x *CreateStation) GetProcedureMinutes() map[uint32]uint32 {
+	if x != nil {
+		return x.ProcedureMinutes
+	}
+	return nil
+}
+
 var File_pkg_proto_mws_proto protoreflect.FileDescriptor
 
 const file_pkg_proto_mws_proto_rawDesc = "" +
@@ -427,7 +438,7 @@ const file_pkg_proto_mws_proto_rawDesc = "" +
 	"\bmodality\x18\x01 \x01(\tR\bmodality\x12(\n" +
 	"\x10station_ae_title\x18\x02 \x01(\tR\x0estationAeTitle\x12\x1f\n" +
 	"\vmodality_id\x18\x03 \x01(\x05R\n" +
-	"modalityId\"\xa6\x02\n" +
+	"modalityId\"\xbe\x03\n" +
 	"\rCreateStation\x12\x19\n" +
 	"\bae_title\x18\x01 \x01(\tR\aaeTitle\x12\x1a\n" +
 	"\bhostname\x18\x02 \x01(\tR\bhostname\x12\x12\n" +
@@ -441,7 +452,11 @@ const file_pkg_proto_mws_proto_rawDesc = "" +
 	"\x04name\x18\t \x01(\tR\x04name\x12\x1f\n" +
 	"\vmodality_id\x18\n" +
 	" \x01(\rR\n" +
-	"modalityIdB\x14Z\x12pkg/proto/worklistb\x06proto3"
+	"modalityId\x12Q\n" +
+	"\x11procedure_minutes\x18\v \x03(\v2$.CreateStation.ProcedureMinutesEntryR\x10procedureMinutes\x1aC\n" +
+	"\x15ProcedureMinutesEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\rR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\rR\x05value:\x028\x01B\x14Z\x12pkg/proto/worklistb\x06proto3"
 
 var (
 	file_pkg_proto_mws_proto_rawDescOnce sync.Once
@@ -455,21 +470,23 @@ func file_pkg_proto_mws_proto_rawDescGZIP() []byte {
 	return file_pkg_proto_mws_proto_rawDescData
 }
 
-var file_pkg_proto_mws_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_pkg_proto_mws_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_pkg_proto_mws_proto_goTypes = []any{
 	(*CreateWorklistEntry)(nil),   // 0: CreateWorklistEntry
 	(*CreateModality)(nil),        // 1: CreateModality
 	(*CreateStation)(nil),         // 2: CreateStation
-	(*timestamppb.Timestamp)(nil), // 3: google.protobuf.Timestamp
+	nil,                           // 3: CreateStation.ProcedureMinutesEntry
+	(*timestamppb.Timestamp)(nil), // 4: google.protobuf.Timestamp
 }
 var file_pkg_proto_mws_proto_depIdxs = []int32{
-	3, // 0: CreateWorklistEntry.patient_birth_date:type_name -> google.protobuf.Timestamp
-	3, // 1: CreateWorklistEntry.sps_start_date:type_name -> google.protobuf.Timestamp
-	2, // [2:2] is the sub-list for method output_type
-	2, // [2:2] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	4, // 0: CreateWorklistEntry.patient_birth_date:type_name -> google.protobuf.Timestamp
+	4, // 1: CreateWorklistEntry.sps_start_date:type_name -> google.protobuf.Timestamp
+	3, // 2: CreateStation.procedure_minutes:type_name -> CreateStation.ProcedureMinutesEntry
+	3, // [3:3] is the sub-list for method output_type
+	3, // [3:3] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_pkg_proto_mws_proto_init() }
@@ -483,7 +500,7 @@ func file_pkg_proto_mws_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_pkg_proto_mws_proto_rawDesc), len(file_pkg_proto_mws_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

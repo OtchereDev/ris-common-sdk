@@ -50,4 +50,8 @@ message CreateStation {
   bool is_active = 8;
   string name = 9;
   uint32 modality_id = 10;
+  // How long each procedure takes on this machine, in minutes, by the
+  // facility service's procedure id. A procedure left out has no set length,
+  // so its bookings neither end nor block one another.
+  map<uint32, uint32> procedure_minutes = 11;
 }
