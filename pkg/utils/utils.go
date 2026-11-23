@@ -41,6 +41,14 @@ type JwtPayload struct {
 	// what the role grants. Minted by auth, checked by every service at its own API
 	// boundary.
 	Modules ModuleClaim `json:"modules"`
+
+	// Features are the tenant's feature flags at the time the token was minted, for the web
+	// app. A service deciding something should ask pkg/tenant, which is current.
+	Features []string `json:"features,omitempty"`
+
+	// TenantStatus is the tenant's status at the time the token was minted, for the web app's
+	// banners. Like Features, a service should ask pkg/tenant.
+	TenantStatus string `json:"tenant_status,omitempty"`
 }
 
 // ModuleClaim is the modules claim, and it distinguishes "no claim" from "a claim of
