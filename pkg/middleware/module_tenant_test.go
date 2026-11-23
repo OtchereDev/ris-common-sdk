@@ -196,6 +196,21 @@ func TestWarnModeReportsButNeverLoosens(t *testing.T) {
 		}
 	})
 
+	t.Run("a newly guarded module locks nobody out", func(t *testing.T) {
+		// Today's tokens only ever carry radiology, and nothing checked analytics or the
+		// doctor app before. Guarding those routes in warn mode must change nothing.
+		withTenant(t, ModuleWarn) // the tenant has no analytics
+		logged := captureLog(t)
+
+		got := send(t, staff(UserTypes.Cashier, []string{Modules.Radiology}), "POST", "/analytics/query", RequireModule(Modules.Analytics))
+		if got.status != 200 {
+			t.Fatalf("status = %d, want 200", got.status)
+		}
+		if !strings.Contains(logged.String(), "would refuse") {
+			t.Fatal("the would-be refusal wasn't reported")
+		}
+	})
+
 	t.Run("a request both checks allow logs nothing", func(t *testing.T) {
 		withTenant(t, ModuleWarn, tenanttest.WithModule(lab, tenant.ModuleEnabled))
 		logged := captureLog(t)
@@ -247,4 +262,34 @@ func TestRedactPath(t *testing.T) {
 			t.Errorf("redactPath(%q) = %q, want %q", in, got, want)
 		}
 	}
+}
+
+func TestWarnModeWithoutATenantRecord(t *testing.T) {
+	t.Cleanup(func() { SetModuleEnforcement(ModuleWarn) })
+
+	t.Run("a doctor reaching a newly guarded radiology route is admitted and reported", func(t *testing.T) {
+		SetModuleEnforcement(ModuleWarn)
+		logged := captureLog(t)
+		t.Cleanup(func() {
+			wouldRefuse.Lock()
+			clear(wouldRefuse.last)
+			wouldRefuse.Unlock()
+		})
+
+		got := send(t, staff(RoleDoctor, []string{}), "GET", "/doctor/reports", RequireModule(Modules.Radiology))
+		if got.status != 200 {
+			t.Fatalf("status = %d, want 200", got.status)
+		}
+		if !strings.Contains(logged.String(), "claim lacks the module") {
+			t.Fatalf("want a claim-based report, got %q", logged.String())
+		}
+	})
+
+	t.Run("enforce mode without a record applies the claim to every module", func(t *testing.T) {
+		SetModuleEnforcement(ModuleEnforce)
+		got := send(t, staff(RoleDoctor, []string{}), "GET", "/doctor/reports", RequireModule(Modules.Radiology))
+		if got.status != 403 {
+			t.Fatalf("status = %d, want 403", got.status)
+		}
+	})
 }

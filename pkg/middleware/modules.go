@@ -44,9 +44,11 @@ const (
 	// Each would-be refusal is logged with the tenant, role, route, module and reason, so a
 	// wrong grant or a write route that should be a read is found before it blocks anyone.
 	//
-	// Warn never lets through anything the earlier rule refuses: a token whose modules
-	// claim lacks the module is still refused, as it always has been. That is what keeps a
-	// suspended facility, whose tokens carry an empty claim, from getting its product back.
+	// Warn changes nothing about who gets in. A route behaves as it did before it was
+	// guarded: for lab, the one module the token's claim has always been enforced on, a
+	// token whose claim lacks it is still refused, which is what keeps a suspended
+	// facility's lab from coming back; for every other module there was no check, so
+	// there still isn't one, only the report.
 	//
 	// It is the rollout setting, not a destination.
 	ModuleWarn ModuleEnforcement = iota
@@ -156,14 +158,21 @@ func CheckModuleFor(c *fiber.Ctx, module string, access Access) error {
 		return ErrUnauthenticated
 	}
 
-	earlier := claimCheck(user, module)
+	reading := access.reads(c.Method())
+	byClaim := claimCheck(user, module)
 
 	t := tenant.Default()
 	if t == nil {
-		return earlier
+		// No tenant record yet: the token's claim is the only rule there is.
+		if moduleEnforcement == ModuleEnforce || claimEnforced[module] {
+			return byClaim
+		}
+		if byClaim != nil {
+			reportWouldRefuse(c, nil, user, module, "", reading, "token's modules claim lacks the module")
+		}
+		return nil
 	}
 
-	reading := access.reads(c.Method())
 	refusal, state, reason := tenantCheck(t, user, module, reading)
 
 	if moduleEnforcement == ModuleEnforce {
@@ -172,8 +181,16 @@ func CheckModuleFor(c *fiber.Ctx, module string, access Access) error {
 	if refusal != nil {
 		reportWouldRefuse(c, t, user, module, state, reading, reason)
 	}
-	return earlier
+	if claimEnforced[module] {
+		return byClaim
+	}
+	return nil
 }
+
+// claimEnforced are the modules the token's claim was enforced on before tenant records:
+// lab, by the lab service. In warn mode those keep that rule, and every other module keeps
+// having none, so turning a service's guards on in warn mode can't lock anyone out.
+var claimEnforced = map[string]bool{Modules.Lab: true}
 
 // tenantCheck is the rule: the role grants the module, and the tenant has it in a state
 // that allows this kind of request.
@@ -229,6 +246,8 @@ var wouldRefuse = struct {
 
 const wouldRefuseEvery = time.Minute
 
+// reportWouldRefuse logs a refusal warn mode didn't apply. t is nil when the service has no
+// tenant record and the refusal comes from the token's claim.
 func reportWouldRefuse(c *fiber.Ctx, t *tenant.Tenant, user *JwtPayload, module string, state tenant.ModuleState, reading bool, reason string) {
 	path := redactPath(c.Path())
 	key := fmt.Sprintf("%s|%s|%s|%s|%s", module, reason, strings.ToUpper(user.UserType), c.Method(), path)
@@ -249,10 +268,14 @@ func reportWouldRefuse(c *fiber.Ctx, t *tenant.Tenant, user *JwtPayload, module 
 	if reading {
 		access = "read"
 	}
+	tenantKey, version := user.TenantKey, int64(0)
+	if t != nil {
+		tenantKey, version = t.Key(), t.Version()
+	}
 	moduleLog().Warn("module check would refuse",
 		"mode", "warn",
-		"tenant", t.Key(),
-		"tenant_version", t.Version(),
+		"tenant", tenantKey,
+		"tenant_version", version,
 		"module", module,
 		"state", string(state),
 		"access", access,
