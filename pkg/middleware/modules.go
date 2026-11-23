@@ -157,34 +157,68 @@ func CheckModuleFor(c *fiber.Ctx, module string, access Access) error {
 	if err != nil || user == nil {
 		return ErrUnauthenticated
 	}
+	return decide(c, user, []string{module}, access)
+}
 
+// decide is the rule for a request that may reach any one of modules.
+func decide(c *fiber.Ctx, user *JwtPayload, modules []string, access Access) error {
 	reading := access.reads(c.Method())
-	byClaim := claimCheck(user, module)
+	label := strings.Join(modules, "|")
+
+	byClaim := ErrModuleNotLicensed
+	enforcedByClaim := false
+	for _, m := range modules {
+		if claimCheck(user, m) == nil {
+			byClaim = nil
+		}
+		enforcedByClaim = enforcedByClaim || claimEnforced[m]
+	}
 
 	t := tenant.Default()
 	if t == nil {
 		// No tenant record yet: the token's claim is the only rule there is.
-		if moduleEnforcement == ModuleEnforce || claimEnforced[module] {
+		if moduleEnforcement == ModuleEnforce || enforcedByClaim {
 			return byClaim
 		}
 		if byClaim != nil {
-			reportWouldRefuse(c, nil, user, module, "", reading, "token's modules claim lacks the module")
+			reportWouldRefuse(c, nil, user, label, "", reading, "token's modules claim lacks the module")
 		}
 		return nil
 	}
 
-	refusal, state, reason := tenantCheck(t, user, module, reading)
+	refusal, state, reason := tenantCheckAny(t, user, modules, reading)
 
 	if moduleEnforcement == ModuleEnforce {
 		return refusal
 	}
 	if refusal != nil {
-		reportWouldRefuse(c, t, user, module, state, reading, reason)
+		reportWouldRefuse(c, t, user, label, state, reading, reason)
 	}
-	if claimEnforced[module] {
+	if enforcedByClaim {
 		return byClaim
 	}
 	return nil
+}
+
+// tenantCheckAny allows the request if any one of modules allows it. If none does, it
+// reports the refusal that says most: a module the person holds but the tenant doesn't
+// allow, before one their role doesn't include at all.
+func tenantCheckAny(t *tenant.Tenant, user *JwtPayload, modules []string, reading bool) (error, tenant.ModuleState, string) {
+	var (
+		refusal error
+		state   tenant.ModuleState
+		reason  string
+	)
+	for _, m := range modules {
+		err, s, r := tenantCheck(t, user, m, reading)
+		if err == nil {
+			return nil, s, ""
+		}
+		if refusal == nil || (errors.Is(refusal, ErrModuleNotGranted) && !errors.Is(err, ErrModuleNotGranted)) {
+			refusal, state, reason = err, s, r
+		}
+	}
+	return refusal, state, reason
 }
 
 // claimEnforced are the modules the token's claim was enforced on before tenant records:
