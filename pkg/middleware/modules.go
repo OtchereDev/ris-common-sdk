@@ -173,6 +173,12 @@ func decide(c *fiber.Ctx, user *JwtPayload, modules []string, access Access) err
 		}
 		enforcedByClaim = enforcedByClaim || claimEnforced[m]
 	}
+	// A token with no claim at all predates entitlements. Where the claim still decides,
+	// warn mode lets it through, and says so.
+	if byClaim == nil && !user.Modules.Present() && enforcedByClaim {
+		log.Printf("module %q: admitting user %s on a token with no modules claim; set "+
+			"module enforcement to enforce once auth is deployed", label, user.UserID)
+	}
 
 	t := tenant.Default()
 	if t == nil {
@@ -259,8 +265,6 @@ func claimCheck(user *JwtPayload, module string) error {
 	// thing from a claim of nothing, which is what a suspended facility mints and which is
 	// refused in either mode.
 	if !user.Modules.Present() && moduleEnforcement == ModuleWarn {
-		log.Printf("module %q: admitting user %s on a token with no modules claim; set "+
-			"module enforcement to enforce once auth is deployed", module, user.UserID)
 		return nil
 	}
 
