@@ -8,6 +8,7 @@ import (
 	"log/slog"
 	"maps"
 	"os"
+	"path/filepath"
 	"slices"
 	"strings"
 	"sync"
@@ -39,9 +40,17 @@ type Options struct {
 
 	// Logger defaults to slog.Default().
 	Logger *slog.Logger
+
+	// ReportDir, with Service, is where the service says which record version it has loaded:
+	// <ReportDir>/<Service>.json, written at boot and on each accepted reload. The host's agent
+	// reads it and tells the control plane, so the Console can show "saved vs in use". Either
+	// one empty turns this off. A failure to write is logged and changes nothing else.
+	ReportDir string
+	Service   string
 }
 
-// OptionsFromEnv reads TENANT_FILE (default DefaultPath) and TENANT_KEY.
+// OptionsFromEnv reads TENANT_FILE (default DefaultPath), TENANT_KEY, TENANT_REPORT_DIR and
+// TENANT_SERVICE.
 func OptionsFromEnv() Options {
 	path := strings.TrimSpace(os.Getenv("TENANT_FILE"))
 	if path == "" {
@@ -51,6 +60,8 @@ func OptionsFromEnv() Options {
 		Path:         path,
 		ExpectKey:    strings.TrimSpace(os.Getenv("TENANT_KEY")),
 		PollInterval: DefaultPollInterval,
+		ReportDir:    strings.TrimSpace(os.Getenv("TENANT_REPORT_DIR")),
+		Service:      strings.TrimSpace(os.Getenv("TENANT_SERVICE")),
 	}
 }
 
@@ -62,6 +73,8 @@ type Tenant struct {
 	path      string
 	expectKey string
 	log       *slog.Logger
+	reportDir string
+	service   string
 
 	mu        sync.Mutex
 	listeners []func(*Tenant)
@@ -89,6 +102,8 @@ func Open(ctx context.Context, opts Options) (*Tenant, error) {
 	t := &Tenant{
 		path:      opts.Path,
 		expectKey: opts.ExpectKey,
+		reportDir: opts.ReportDir,
+		service:   opts.Service,
 		log:       opts.Logger.With("component", "tenant", "path", opts.Path),
 		stop:      make(chan struct{}),
 		stopped:   make(chan struct{}),
@@ -101,6 +116,7 @@ func Open(ctx context.Context, opts Options) (*Tenant, error) {
 	t.rec.Store(rec)
 	t.stamp = st
 	t.log.Info("tenant record loaded", "tenant", rec.Key, "version", rec.Version, "status", rec.Status)
+	t.writeLoaded(rec)
 
 	if opts.PollInterval > 0 {
 		go t.watch(ctx, opts.PollInterval)
@@ -322,6 +338,7 @@ func (t *Tenant) reload() {
 
 	t.rec.Store(next)
 	t.log.Info("tenant record updated", "tenant", next.Key, "from", cur.Version, "to", next.Version, "status", next.Status)
+	t.writeLoaded(next)
 
 	t.mu.Lock()
 	listeners := slices.Clone(t.listeners)
@@ -348,3 +365,41 @@ func SetDefault(t *Tenant) { defaultTenant.Store(t) }
 // Default is the tenant set by SetDefault, or nil before it is called. For code that can't
 // be handed a *Tenant, such as middleware registered before the service is wired up.
 func Default() *Tenant { return defaultTenant.Load() }
+
+// Loaded is what a service writes to say which record it has loaded, for the host's agent.
+type Loaded struct {
+	Service       string    `json:"service"`
+	Tenant        string    `json:"tenant"`
+	RecordVersion int64     `json:"record_version"`
+	LoadedAt      time.Time `json:"loaded_at"`
+}
+
+// LoadedFile is where a service's Loaded goes in dir.
+func LoadedFile(dir, service string) string { return filepath.Join(dir, service+".json") }
+
+// writeLoaded writes <ReportDir>/<Service>.json by temporary file and rename, so the agent
+// never reads half of one. Nothing here may stop the service: a failure is only logged.
+func (t *Tenant) writeLoaded(r *Record) {
+	if t.reportDir == "" || t.service == "" {
+		return
+	}
+	data, err := json.Marshal(Loaded{Service: t.service, Tenant: r.Key, RecordVersion: r.Version, LoadedAt: time.Now().UTC()})
+	if err == nil {
+		var tmp *os.File
+		if tmp, err = os.CreateTemp(t.reportDir, "."+t.service+"-*.json"); err == nil {
+			_, err = tmp.Write(data)
+			if cerr := tmp.Close(); err == nil {
+				err = cerr
+			}
+			if err == nil {
+				err = os.Rename(tmp.Name(), LoadedFile(t.reportDir, t.service))
+			}
+			if err != nil {
+				os.Remove(tmp.Name())
+			}
+		}
+	}
+	if err != nil {
+		t.log.Warn("couldn't say which tenant record is loaded; the Console won't show it", "dir", t.reportDir, "error", err)
+	}
+}
