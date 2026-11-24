@@ -348,7 +348,9 @@ func TestOptionsFromEnv(t *testing.T) {
 	}
 	t.Setenv("TENANT_FILE", "/run/tenant/tenant.json")
 	t.Setenv("TENANT_KEY", " pluslab ")
-	if o := tenant.OptionsFromEnv(); o.Path != "/run/tenant/tenant.json" || o.ExpectKey != "pluslab" {
+	t.Setenv("TENANT_REPORT_DIR", "/etc/spectra/tenant-loaded")
+	t.Setenv("TENANT_SERVICE", "auth")
+	if o := tenant.OptionsFromEnv(); o.Path != "/run/tenant/tenant.json" || o.ExpectKey != "pluslab" || o.ReportDir != "/etc/spectra/tenant-loaded" || o.Service != "auth" {
 		t.Fatalf("from env: %+v", o)
 	}
 }
@@ -363,3 +365,45 @@ func TestDefault(t *testing.T) {
 }
 
 var _ io.Writer = (*logs)(nil)
+
+func TestSaysWhichRecordIsLoaded(t *testing.T) {
+	dir := t.TempDir()
+	reports := t.TempDir()
+	path := filepath.Join(dir, "tenant.json")
+	publish(t, path, version(1))
+	tn, _ := open(t, path, func(o *tenant.Options) { o.ReportDir, o.Service = reports, "appointment" })
+
+	loaded := func() tenant.Loaded {
+		var l tenant.Loaded
+		data, err := os.ReadFile(tenant.LoadedFile(reports, "appointment"))
+		if err == nil {
+			err = json.Unmarshal(data, &l)
+		}
+		if err != nil {
+			t.Fatal(err)
+		}
+		return l
+	}
+	if l := loaded(); l.RecordVersion != 1 || l.Tenant != "demo" || l.Service != "appointment" || l.LoadedAt.IsZero() {
+		t.Fatalf("at boot: %+v", l)
+	}
+	publish(t, path, version(2))
+	eventually(t, "version 2", func() bool { return tn.Version() == 2 })
+	eventually(t, "the report", func() bool { return loaded().RecordVersion == 2 })
+
+	// A refused record isn't reported as loaded.
+	writeRaw(t, path, []byte("not json"))
+	settle()
+	if l := loaded(); l.RecordVersion != 2 {
+		t.Fatalf("after a refused record: %+v", l)
+	}
+}
+
+func TestCantWriteTheReportStillRuns(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "tenant.json")
+	publish(t, path, version(1))
+	tn, logged := open(t, path, func(o *tenant.Options) { o.ReportDir, o.Service = "/nonexistent/dir", "auth" })
+	if tn.Version() != 1 || !strings.Contains(logged.String(), "couldn't say which tenant record is loaded") {
+		t.Fatalf("version %d, log %q", tn.Version(), logged.String())
+	}
+}
