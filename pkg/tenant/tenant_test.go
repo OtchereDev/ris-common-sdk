@@ -309,6 +309,25 @@ func TestProfileIsACopy(t *testing.T) {
 	}
 }
 
+func TestRecordIsACopy(t *testing.T) {
+	tn := tenanttest.New(t, func(r *tenant.Record) {
+		r.Messages = &tenant.Messages{
+			SMS:      map[string]string{"login_code": "{{code}}"},
+			WhatsApp: &tenant.WhatsApp{Templates: map[string]string{"report_ready": "HX" + strings.Repeat("1", 32)}},
+		}
+	})
+	r := tn.Record()
+	if r.Key != tn.Key() || r.Messages.SMS["login_code"] != "{{code}}" {
+		t.Fatalf("record: %+v", r)
+	}
+	r.Messages.SMS["login_code"] = "changed"
+	r.Messages.WhatsApp.Templates["report_ready"] = "changed"
+	r.Modules["lab"] = tenant.ModuleEnabled
+	if q := tn.Record(); q.Messages.SMS["login_code"] == "changed" || q.Messages.WhatsApp.Templates["report_ready"] == "changed" || q.Modules["lab"] != "" {
+		t.Fatal("changing a returned record changed the tenant's")
+	}
+}
+
 func TestConcurrentReadsDuringReloads(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "tenant.json")
 	publish(t, path, version(1))

@@ -219,6 +219,29 @@ func (t *Tenant) UsageMTD(meter string) (int64, string) {
 // copy; changing it changes nothing.
 func (t *Tenant) Profile() Profile { return t.rec.Load().Profile.clone() }
 
+// Record is the whole record, for code that renders from it, such as pkg/messages. The
+// returned value is a copy; changing it changes nothing.
+func (t *Tenant) Record() Record {
+	r := *t.rec.Load()
+	r.Domains = slices.Clone(r.Domains)
+	r.Modules = maps.Clone(r.Modules)
+	r.Features = slices.Clone(r.Features)
+	r.Limits = maps.Clone(r.Limits)
+	r.Profile = r.Profile.clone()
+	if r.Messages != nil {
+		m := *r.Messages
+		m.Email = maps.Clone(m.Email)
+		m.SMS = maps.Clone(m.SMS)
+		if m.WhatsApp != nil {
+			w := *m.WhatsApp
+			w.Templates = maps.Clone(w.Templates)
+			m.WhatsApp = &w
+		}
+		r.Messages = &m
+	}
+	return r
+}
+
 func (p Profile) clone() Profile {
 	p.Channels.FooterLinks = slices.Clone(p.Channels.FooterLinks)
 	p.Mobile.AppleAppIDs = slices.Clone(p.Mobile.AppleAppIDs)
