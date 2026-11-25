@@ -125,7 +125,7 @@ type Profile struct {
 	Document        Document  `json:"document"`
 }
 
-// Logo holds artwork as a data: URI or bare base64.
+// Logo holds the keys of the tenant's artwork in platform's asset bucket (images.go).
 type Logo struct {
 	Full    string `json:"full,omitempty"`
 	Mark    string `json:"mark,omitempty"`
@@ -312,6 +312,7 @@ func (p *Profile) validate(recordKey string) []error {
 	if t := p.Locale.Tag; t != "" && !tagPattern.MatchString(t) {
 		bad("locale.tag", "%q is not a BCP 47 language tag", t)
 	}
+	errs = append(errs, p.validateImages(recordKey)...)
 	if root := p.DICOM.StudyUIDRoot; root != "" {
 		if !uidPattern.MatchString(root) {
 			bad("dicom.studyUidRoot", "%q is not a DICOM UID", root)
@@ -336,6 +337,7 @@ func (r *Record) ValidateForPublish(prev *Record) error {
 	if !hasClinical {
 		errs = append(errs, errors.New("modules: a tenant needs radiology or lab"))
 	}
+	errs = append(errs, r.Profile.inlineImages()...)
 
 	if prev != nil {
 		if prev.Key != r.Key {
