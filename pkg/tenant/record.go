@@ -45,6 +45,10 @@ type Record struct {
 	UsageMTD *UsageMTD `json:"usage_mtd,omitempty"`
 
 	Profile Profile `json:"profile"`
+
+	// Messages is what the tenant changes about the emails, texts and WhatsApp messages it
+	// sends (messages.go). Absent means the product's defaults.
+	Messages *Messages `json:"messages,omitempty"`
 }
 
 // UsageMTD is month-to-date usage per meter, as of a day.
@@ -277,6 +281,9 @@ func (r *Record) Validate() error {
 	}
 
 	errs = append(errs, r.Profile.validate(r.Key)...)
+	if r.Messages != nil {
+		errs = append(errs, r.Messages.validate()...)
+	}
 	return errors.Join(errs...)
 }
 
@@ -338,6 +345,9 @@ func (r *Record) ValidateForPublish(prev *Record) error {
 		errs = append(errs, errors.New("modules: a tenant needs radiology or lab"))
 	}
 	errs = append(errs, r.Profile.inlineImages()...)
+	if r.Messages != nil {
+		errs = append(errs, r.Messages.forPublish()...)
+	}
 
 	if prev != nil {
 		if prev.Key != r.Key {
@@ -370,6 +380,13 @@ func CheckAcross(records []Record) error {
 			func(r *Record) string { return r.Profile.DICOM.AccessionPrefix }},
 		{"profile.channels.pushTopic", "one tenant's push notifications arrive on the other's devices",
 			func(r *Record) string { return r.Profile.Channels.PushTopic }},
+		{"messages.whatsapp.messaging_service_sid", "one tenant's WhatsApp messages go out under the other's name",
+			func(r *Record) string {
+				if r.Messages == nil || r.Messages.WhatsApp == nil {
+					return ""
+				}
+				return r.Messages.WhatsApp.MessagingServiceSID
+			}},
 	} {
 		owners := map[string][]string{}
 		for i := range records {
