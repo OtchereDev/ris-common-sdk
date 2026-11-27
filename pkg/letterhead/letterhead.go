@@ -57,8 +57,9 @@ type Images func(ctx context.Context, value string) (string, error)
 // FromProfile resolves a tenant's letterhead.
 //
 // The document overrides win where they are set; otherwise the facility's one identity serves
-// both screen and page. The mark doubles as the watermark where the profile names no separate
-// one: it is the square lockup, which is what sits behind a page of results.
+// both screen and page. A watermark is drawn only when the profile sets one
+// (document.watermark): a tenant that hasn't asked for one gets none, rather than its mark
+// behind every report.
 func FromProfile(ctx context.Context, p *tenant.Profile, images Images) (Letterhead, error) {
 	pick := func(slots ...tenant.ImageSlot) string {
 		for _, s := range slots {
@@ -81,7 +82,7 @@ func FromProfile(ctx context.Context, p *tenant.Profile, images Images) (Letterh
 	if l.Logo, err = resolve(ctx, images, pick(tenant.ImageDocumentLogo, tenant.ImageLogoFull)); err != nil {
 		return l, fmt.Errorf("logo: %w", err)
 	}
-	if l.Watermark, err = resolve(ctx, images, pick(tenant.ImageDocumentWatermark, tenant.ImageLogoMark)); err != nil {
+	if l.Watermark, err = resolve(ctx, images, pick(tenant.ImageDocumentWatermark)); err != nil {
 		return l, fmt.Errorf("watermark: %w", err)
 	}
 	if l.WatermarkOpacity <= 0 {

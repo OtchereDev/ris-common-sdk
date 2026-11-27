@@ -39,9 +39,9 @@ func TestFromProfile(t *testing.T) {
 	if l.Name != "Demo RIS" || l.Logo != "data:image/png;base64,FOR-"+p.Logo.Full {
 		t.Errorf("name %q, logo %q", l.Name, l.Logo)
 	}
-	// The mark doubles as the watermark.
-	if l.Watermark != "data:image/png;base64,FOR-"+p.Logo.Mark {
-		t.Errorf("watermark %q", l.Watermark)
+	// The mark is not a watermark: one is drawn only when the profile sets it.
+	if l.Watermark != "" {
+		t.Errorf("a watermark without one set: %q", l.Watermark)
 	}
 	if l.WatermarkOpacity != letterhead.DefaultWatermarkOpacity || l.FooterColor != letterhead.DefaultFooterColor {
 		t.Errorf("defaults: %v %q", l.WatermarkOpacity, l.FooterColor)
